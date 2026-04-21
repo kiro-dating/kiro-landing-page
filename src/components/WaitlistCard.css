@@ -1,0 +1,323 @@
+.waitlist-card {
+  max-width: 700px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px;
+  border-radius: 24px;
+}
+
+.waitlist-content h2 {
+  font-size: 2.2rem;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.waitlist-content p {
+  text-align: center;
+  margin-bottom: 32px;
+  font-size: 1.1rem;
+}
+
+.waitlist-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto; /* Center the form in the card */
+}
+
+/* We removed the min-width: 768px flex-direction: row to keep it in a column natively */
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  height: 56px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: 28px; /* Adjusted for 56px height */
+  padding: 0 20px;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+body.light-mode .input-wrapper {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.input-wrapper.focused {
+  border-color: rgba(255, 59, 48, 0.6);
+  box-shadow: 0 0 15px rgba(255, 59, 48, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+body.light-mode .input-wrapper.focused {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.input-icon {
+  color: var(--text-secondary);
+  margin-right: 12px;
+}
+
+.input-wrapper input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-size: 16px;
+  outline: none;
+  font-family: var(--font-inter);
+  width: 100%;
+}
+
+.input-wrapper input::placeholder {
+  color: var(--text-secondary);
+}
+
+.phone-wrapper {
+  padding-left: 16px;
+}
+
+.country-code {
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-size: 1rem;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: opacity 0.2s ease;
+  max-width: 120px;
+  text-overflow: ellipsis;
+}
+
+.country-code:hover {
+  opacity: 0.8;
+}
+
+.country-code option, .country-code optgroup {
+  background: var(--bg-color);
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+body.light-mode .country-code option, body.light-mode .country-code optgroup {
+  background: #ffffff;
+  color: #121214;
+}
+
+.divider {
+  width: 1px;
+  height: 24px;
+  background: var(--glass-border);
+  margin: 0 12px;
+  flex-shrink: 0;
+}
+
+.btn-wrapper {
+  width: 100%;
+  margin-top: 8px; /* Slight extra gap before button in column layout */
+}
+
+.btn-wrapper button {
+  height: 56px;
+  border-radius: 28px; /* Adjusted for 56px height */
+  padding: 0 28px;
+  white-space: nowrap;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-wrapper button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 59, 48, 0.25);
+}
+
+/* GENDER SEGMENTED CONTROL */
+.segmented-control-wrapper {
+  width: 100%;
+}
+
+.segmented-control {
+  display: flex;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: 28px;
+  height: 56px;
+  padding: 4px;
+  position: relative;
+}
+
+body.light-mode .segmented-control {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.segment-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-radius: 24px;
+  color: var(--text-secondary);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.segment-btn.active {
+  color: #fff;
+}
+
+body.light-mode .segment-btn.active {
+  color: #121214;
+}
+
+.segment-label {
+  position: relative;
+  z-index: 2;
+}
+
+.segment-active-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 59, 48, 0.6);
+  border-radius: 24px;
+  z-index: 0;
+  box-shadow: 0 4px 12px rgba(255, 59, 48, 0.3);
+}
+
+body.light-mode .segment-active-bg {
+  background: rgba(255, 59, 48, 0.8);
+}
+
+/* CUSTOM DROPDOWN LIST */
+.custom-dropdown-container {
+  cursor: pointer;
+  position: relative;
+}
+
+.dropdown-display {
+  flex: 1;
+  font-size: 16px;
+  color: var(--text-primary);
+  user-select: none;
+}
+
+.dropdown-display.placeholder {
+  color: var(--text-secondary);
+}
+
+.dropdown-arrow {
+  color: var(--text-secondary);
+  transition: transform 0.3s ease;
+}
+
+.dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 64px; /* 56px height + 8px gap */
+  left: 0;
+  width: 100%;
+  background: var(--bg-color); /* solid background fallback */
+  padding: 8px;
+  border-radius: 16px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Make it truly glass over the app since it's a floating menu */
+.dropdown-menu.glass-panel {
+  background: #1c1c1e; /* Solid — no transparency to prevent content bleed-through */
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+}
+
+body.light-mode .dropdown-menu.glass-panel {
+  background: #f2f2f7; /* Solid light equivalent */
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+.dropdown-item {
+  padding: 12px 16px;
+  font-size: 15px;
+  color: var(--text-secondary);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+body.light-mode .dropdown-item:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.dropdown-item.active {
+  background: rgba(255, 59, 48, 0.1);
+  color: var(--accent-red);
+  font-weight: 500;
+}
+
+.phone-error-msg {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--accent-red);
+  margin-top: -4px; /* Pull it closer to the phone input */
+  padding-left: 4px;
+}
+
+/* SUCCESS / ERROR MESSAGES */
+.submit-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.success-message {
+  background: rgba(52, 199, 89, 0.1);
+  border: 1px solid rgba(52, 199, 89, 0.3);
+  color: #34c759;
+}
+
+.error-message {
+  background: rgba(255, 59, 48, 0.1);
+  border: 1px solid rgba(255, 59, 48, 0.3);
+  color: var(--accent-red);
+}
+
+@media (max-width: 767px) {
+  .waitlist-card {
+    padding: 24px;
+  }
+}

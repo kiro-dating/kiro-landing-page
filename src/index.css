@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg-color: #070709;
+  --text-primary: #ffffff;
+  --text-secondary: #9999a1;
+  --accent-red: #ff3b30;
+  --accent-red-glow: rgba(255, 59, 48, 0.4);
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --font-inter: 'Inter', sans-serif;
+}
+
+body.light-mode {
+  --bg-color: #f7f7f9;
+  --text-primary: #121214;
+  --text-secondary: #666670;
+  --accent-red-glow: rgba(255, 59, 48, 0.15);
+  --glass-bg: rgba(0, 0, 0, 0.03);
+  --glass-border: rgba(0, 0, 0, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-inter);
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Base Utility Classes */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #ffffff 0%, #a4a4b5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Ambient Glows handled in InteractiveBackground.css */
+
+/* Glassmorphism */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Autofill Overrides (Permanent Transparent Fix for Chrome/Safari) */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active,
+select:-webkit-autofill,
+select:-webkit-autofill:hover, 
+select:-webkit-autofill:focus, 
+select:-webkit-autofill:active {
+  /* Makes the inner box shadow truly transparent, so glass effect shows beneath */
+  -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
+  box-shadow: 0 0 0px 1000px transparent inset !important;
+  
+  /* Retains the text color properly */
+  -webkit-text-fill-color: var(--text-primary) !important;
+  color: var(--text-primary) !important;
+  caret-color: var(--text-primary) !important;
+
+  /* The magic trick: delays the browser from ever applying its default autofill background color */
+  transition: background-color 9999s ease-in-out 0s, color 9999s ease-in-out 0s !important;
+  
+  /* Fallback UI: If Chrome absolutely forces it, use the dark OS theme autofill color, avoiding harsh whites */
+  color-scheme: dark !important; 
+}
+
+body.light-mode input:-webkit-autofill,
+body.light-mode select:-webkit-autofill {
+  color-scheme: light !important;
+}

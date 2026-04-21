@@ -1,0 +1,46 @@
+{
+  "hero": {
+    "brand": "Kiro",
+    "tagline": "Arrête de swiper. Viens rencontrer.",
+    "secondary": "Sois parmi les premiers à tester Kiro",
+    "cta": "Sois parmi les premiers"
+  },
+  "waitlist": {
+    "title": "Accès anticipé",
+    "subtitle": "Rejoins les premiers utilisateurs de Kiro",
+    "placeholder_email": "Entrez votre adresse email",
+    "placeholder_phone": "Téléphone",
+    "gender_label": "Sexe",
+    "gender_male": "Homme",
+    "gender_female": "Femme",
+    "gender_other": "Autre",
+    "age_label": "Tranche d'âge",
+    "age_placeholder": "Sélectionnez votre âge",
+    "age_18_30": "18 à 30 ans",
+    "age_31_42": "31 à 42 ans",
+    "age_43_60": "43 à 60 ans",
+    "age_60_plus": "60 ans et plus",
+    "button": "Réserver ma place"
+  },
+  "preview": {
+    "match": "C'est un Match !"
+  },
+  "features": {
+    "title": "Pourquoi Kiro ?",
+    "item1_title": "Traduction bidirectionnelle",
+    "item1_desc": "Discute sans barrière de langue grâce à la traduction instantanée.",
+    "item2_title": "Connexions sociales",
+    "item2_desc": "Retrouve et connecte avec des profils liés à TikTok, Instagram et Facebook.",
+    "item3_title": "Plans premium accessibles",
+    "item3_desc": "Des options premium simples et abordables pour améliorer ton expérience.",
+    "item4_title": "Culture haïtienne mise en avant",
+    "item4_desc": "Une plateforme qui valorise la culture, les valeurs et la communauté haïtienne."
+  },
+  "partnerships": {
+    "title": "Partenariats avec les créateurs",
+    "text": "Kiro facilite la <span class='highlight'>collaboration</span> et booste votre <span class='highlight'>visibilité</span>.",
+    "point1": "Mise en avant des profils",
+    "point2": "Collaborations avec des créateurs",
+    "point3": "Opportunités de visibilité"
+  }
+}

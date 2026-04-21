@@ -1,0 +1,152 @@
+.partnerships-section {
+  padding: 80px 0 100px 0;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.partnerships-content {
+  max-width: 800px;
+  width: 100%;
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border-radius: 24px;
+}
+
+.partnerships-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.partnerships-text {
+  font-size: 1.15rem; /* ~18-20px based on root */
+  line-height: 1.6;
+  max-width: 550px;
+  margin: 0 auto 40px auto;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+body.light-mode .partnerships-text {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.partnerships-text .highlight {
+  color: #ffffff;
+  font-weight: 500;
+  border-bottom: 2px solid rgba(255, 59, 48, 0.6); /* Option B feature: red accent */
+  padding-bottom: 2px;
+}
+
+body.light-mode .partnerships-text .highlight {
+  color: #121214;
+}
+
+.partnerships-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 480px;
+  margin-bottom: 48px; /* space before social icons */
+}
+
+.partnerships-list li {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 1.1rem;
+  text-align: left;
+}
+
+.check-icon {
+  color: var(--accent-red);
+  flex-shrink: 0;
+}
+
+/* SOCIAL INTEGRATION */
+.socials-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  position: relative;
+}
+
+.social-item-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.social-icon-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  outline: none;
+}
+
+body.light-mode .social-icon-btn {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.social-icon-btn:hover {
+  border-color: rgba(255, 59, 48, 0.6);
+  box-shadow: 0 0 20px rgba(255, 59, 48, 0.3);
+  color: var(--accent-red);
+}
+
+body.light-mode .social-icon-btn:hover {
+  background: rgba(255, 59, 48, 0.1);
+}
+
+.social-tooltip {
+  position: absolute;
+  top: -50px;
+  background: #1c1c1e;
+  border: 1px solid var(--glass-border);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  z-index: 10;
+}
+
+body.light-mode .social-tooltip {
+  background: #fff;
+  color: #121214;
+  border-color: rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+  .partnerships-content {
+    padding: 40px 24px;
+  }
+  .socials-container {
+    gap: 16px;
+  }
+  .social-icon-btn {
+    width: 48px;
+    height: 48px;
+  }
+  .social-tooltip {
+    display: none; /* Tooltips usually don't work well on tap-only mobile */
+  }
+}

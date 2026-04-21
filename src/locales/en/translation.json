@@ -1,0 +1,46 @@
+{
+  "hero": {
+    "brand": "Kiro",
+    "tagline": "Stop swiping. Start meeting.",
+    "secondary": "Be among the first to test Kiro",
+    "cta": "Be among the first"
+  },
+  "waitlist": {
+    "title": "Early Access",
+    "subtitle": "Join the first users of Kiro",
+    "placeholder_email": "Enter your email address",
+    "placeholder_phone": "Phone",
+    "gender_label": "Gender",
+    "gender_male": "Men",
+    "gender_female": "Women",
+    "gender_other": "Other",
+    "age_label": "Age Bracket",
+    "age_placeholder": "Select your age",
+    "age_18_30": "18 to 30",
+    "age_31_42": "31 to 42",
+    "age_43_60": "43 to 60",
+    "age_60_plus": "60 and over",
+    "button": "Reserve my spot"
+  },
+  "preview": {
+    "match": "It's a Match!"
+  },
+  "features": {
+    "title": "Why Kiro?",
+    "item1_title": "Two-way Translation",
+    "item1_desc": "Chat without language barriers thanks to instant translation.",
+    "item2_title": "Social Connections",
+    "item2_desc": "Find and connect with profiles linked to TikTok, Instagram, and Facebook.",
+    "item3_title": "Accessible Premium Plans",
+    "item3_desc": "Simple and affordable premium options to enhance your experience.",
+    "item4_title": "Haitian Culture Highlighted",
+    "item4_desc": "A platform that values Haitian culture, values, and community."
+  },
+  "partnerships": {
+    "title": "Creator Partnerships",
+    "text": "Kiro makes <span class='highlight'>collaboration</span> easy and boosts your <span class='highlight'>visibility</span>.",
+    "point1": "Profile highlighting",
+    "point2": "Creator collaborations",
+    "point3": "Visibility opportunities"
+  }
+}

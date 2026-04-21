@@ -1,0 +1,57 @@
+.interactive-bg-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.ambient-glow {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(80px); /* Reduced blur for Safari performance/compatibility */
+}
+
+.primary-glow {
+  background: radial-gradient(circle at center, rgba(255, 59, 48, 0.4), transparent 60%);
+  width: 70vw;
+  height: 70vw;
+  top: -20vw;
+  left: 15vw;
+  opacity: 0.8;
+}
+
+body.light-mode .primary-glow {
+  opacity: 0.4;
+  background: radial-gradient(circle at center, rgba(255, 59, 48, 0.15), transparent 60%);
+}
+
+.secondary-glow {
+  background: radial-gradient(circle at center, rgba(164, 164, 181, 0.08), transparent 60%);
+  width: 60vw;
+  height: 60vw;
+  bottom: -10vw;
+  right: -5vw;
+  opacity: 0.6;
+}
+
+body.light-mode .secondary-glow {
+  background: radial-gradient(circle at center, rgba(0, 0, 0, 0.04), transparent 60%);
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .ambient-glow {
+    filter: blur(60px);
+  }
+  .primary-glow {
+    width: 100vw;
+    height: 100vw;
+    top: -30vw;
+    left: 0;
+  }
+}

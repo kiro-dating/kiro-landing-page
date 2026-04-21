@@ -1,0 +1,23 @@
+.premium-button {
+  background: var(--accent-red);
+  color: white;
+  border: none;
+  border-radius: 9999px; /* Pill shape */
+  padding: 14px 28px;
+  font-size: 16px;
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(255, 59, 48, 0.2);
+  transition: box-shadow 0.3s ease, background 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  outline: none;
+}
+
+.premium-button:hover, .premium-button:focus-visible {
+  background: #ff5247;
+  box-shadow: 0 0 20px var(--accent-red-glow), 0 4px 14px rgba(255, 59, 48, 0.3);
+}

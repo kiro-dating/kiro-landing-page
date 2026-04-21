@@ -1,0 +1,121 @@
+.hero-section {
+  padding-top: 140px;
+  text-align: center;
+  position: relative;
+  z-index: 10;
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mb-2 {
+  margin-bottom: 8px;
+}
+
+.hero-brand-name {
+  font-size: 6.5rem; /* Very large */
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -3px;
+  color: var(--text-primary);
+  margin-bottom: 0px;
+}
+
+.title-gradient {
+  background: linear-gradient(135deg, #ffffff 0%, #d1d1dd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+body.light-mode .title-gradient {
+  background: linear-gradient(135deg, #111111 0%, #555555 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-tagline {
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: #ffffff; /* High contrast */
+  letter-spacing: -0.5px;
+}
+
+body.light-mode .hero-tagline {
+  color: #121214;
+}
+
+.hero-secondary {
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+.hero-tagline-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+/* Background animated glow specific to Hero */
+.hero-radial-glow {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80vw;
+  height: 80vw;
+  background: radial-gradient(circle, rgba(255, 59, 48, 0.15) 0%, transparent 60%);
+  filter: blur(60px);
+  z-index: -1;
+  pointer-events: none;
+  animation: pulseGlow 8s ease-in-out infinite alternate;
+}
+
+@keyframes pulseGlow {
+  0% { opacity: 0.6; transform: translate(-50%, -50%) scale(0.95); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+}
+
+body.light-mode .hero-radial-glow {
+  background: radial-gradient(circle, rgba(255, 59, 48, 0.08) 0%, transparent 60%);
+}
+
+/* Hero specific button styling */
+.hero-btn {
+  box-shadow: 0 4px 20px rgba(255, 59, 48, 0.3);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 30px rgba(255, 59, 48, 0.5);
+}
+
+/* Utilities used in Hero.jsx */
+.mt-4 {
+  margin-top: 16px;
+}
+
+.m-0 {
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .hero-brand-name {
+    font-size: 4.5rem;
+  }
+
+  .hero-tagline {
+    font-size: 1.4rem;
+  }
+}
