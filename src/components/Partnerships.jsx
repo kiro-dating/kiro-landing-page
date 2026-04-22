@@ -46,16 +46,19 @@ export const Partnerships = () => {
   const [hoveredSocial, setHoveredSocial] = useState(null);
   const partnershipPoints = [
     {
+      id: 'monetize',
       icon: BadgeDollarSign,
       title: t('partnerships.item1_title'),
       description: t('partnerships.item1_desc')
     },
     {
+      id: 'grow',
       icon: TrendingUp,
       title: t('partnerships.item2_title'),
       description: t('partnerships.item2_desc')
     },
     {
+      id: 'accessible',
       icon: Globe,
       title: t('partnerships.item3_title'),
       description: t('partnerships.item3_desc')
@@ -100,8 +103,8 @@ export const Partnerships = () => {
         />
         
         <motion.ul className="partnerships-list" variants={containerVariants}>
-          {partnershipPoints.map(({ icon: Icon, title, description }) => (
-            <motion.li key={title} variants={itemVariants} className="partnerships-list-item">
+          {partnershipPoints.map(({ id, icon: Icon, title, description }) => (
+            <motion.li key={id} variants={itemVariants} className="partnerships-list-item">
               <div className="check-icon-wrap">
                 <Icon size={22} className="check-icon" />
               </div>

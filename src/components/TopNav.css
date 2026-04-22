@@ -100,6 +100,11 @@
   background: var(--text-primary);
 }
 
+body.light-mode .lang-btn.active {
+  color: #f7f7f9;
+  background: #121214;
+}
+
 .nav-divider {
   width: 1px;
   height: 16px;
