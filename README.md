@@ -59,15 +59,15 @@ npm install
 
 ## 🔐 Configuration Supabase
 
-### 1. Créer le fichier `.env` à la racine
+### 1. Copier le fichier d'exemple
 
 ```bash
-cp .env.example .env   # ou créez-le manuellement
+cp .env.example .env
 ```
 
-> ⚠️ Le fichier `.env` est ignoré par Git (`.gitignore`). Ne commitez jamais vos clés.
+> ⚠️ Le fichier `.env` est ignoré par Git. Ne commitez **jamais** vos clés réelles.
 
-### 2. Remplir les variables
+### 2. Remplir les variables dans `.env`
 
 ```env
 VITE_SUPABASE_URL=https://xxxx.supabase.co
