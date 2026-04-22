@@ -29,7 +29,10 @@
     "errors": {
       "phone_required": "Phone number is required",
       "country_unrecognized": "Country not recognized",
-      "invalid_phone": "Invalid phone number for this country"
+      "invalid_phone": "Invalid phone number for this country",
+      "duplicate_email": "This email address is already on the waitlist.",
+      "duplicate_phone": "This phone number is already on the waitlist.",
+      "duplicate_generic": "This signup is already on the waitlist."
     },
     "country_groups": {
       "top": "Top",

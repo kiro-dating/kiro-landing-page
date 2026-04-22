@@ -29,7 +29,10 @@
     "errors": {
       "phone_required": "Nimewo telefòn lan obligatwa",
       "country_unrecognized": "Peyi a pa rekonèt",
-      "invalid_phone": "Nimewo a pa valab pou peyi sa a"
+      "invalid_phone": "Nimewo a pa valab pou peyi sa a",
+      "duplicate_email": "Adrès imèl sa a deja sou lis la.",
+      "duplicate_phone": "Nimewo telefòn sa a deja sou lis la.",
+      "duplicate_generic": "Enskripsyon sa a deja sou lis la."
     },
     "country_groups": {
       "top": "Prensipal",

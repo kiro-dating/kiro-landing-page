@@ -29,7 +29,10 @@
     "errors": {
       "phone_required": "Le numéro de téléphone est requis",
       "country_unrecognized": "Pays non reconnu",
-      "invalid_phone": "Numéro invalide pour ce pays"
+      "invalid_phone": "Numéro invalide pour ce pays",
+      "duplicate_email": "Cette adresse email est déjà inscrite sur la liste.",
+      "duplicate_phone": "Ce numéro de téléphone est déjà inscrit sur la liste.",
+      "duplicate_generic": "Cette inscription existe déjà sur la liste."
     },
     "country_groups": {
       "top": "Principaux",

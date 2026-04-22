@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Mail, ArrowRight, ChevronDown, Calendar, CheckCircle, AlertCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "./Button";
-import { addToWaitlist } from "../services/waitlistService";
+import { addToWaitlist, DUPLICATE_WAITLIST_CODE } from "../services/waitlistService";
 import { validatePhoneNumber } from "../utils/phoneValidation";
 import { trackEvent } from "../lib/analytics";
 import "./WaitlistCard.css";
@@ -19,6 +19,7 @@ export const WaitlistCard = () => {
   const [isAgeOpen, setIsAgeOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error'
+  const [submitErrorMessage, setSubmitErrorMessage] = useState("");
   const [phoneError, setPhoneError] = useState(null);
   const [hasTrackedFormView, setHasTrackedFormView] = useState(false);
 
@@ -117,6 +118,7 @@ export const WaitlistCard = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitStatus(null);
+    setSubmitErrorMessage("");
     hasSubmitAttemptRef.current = true;
 
     trackEvent('waitlist_submit_click', {
@@ -143,6 +145,7 @@ export const WaitlistCard = () => {
       });
 
       setSubmitStatus("success");
+      setSubmitErrorMessage("");
       trackEvent('waitlist_submit_success', {
         event_category: 'conversion',
         event_label: 'Waitlist Form',
@@ -158,9 +161,20 @@ export const WaitlistCard = () => {
     } catch (err) {
       console.error("Waitlist error:", err);
       setSubmitStatus("error");
+      const duplicateField = err?.code === DUPLICATE_WAITLIST_CODE ? err.duplicateField : null;
+      const messageKey =
+        duplicateField === 'email'
+          ? 'waitlist.errors.duplicate_email'
+          : duplicateField === 'phone'
+            ? 'waitlist.errors.duplicate_phone'
+            : duplicateField === 'unknown'
+              ? 'waitlist.errors.duplicate_generic'
+              : 'waitlist.messages.error';
+      setSubmitErrorMessage(t(messageKey));
       trackEvent('waitlist_submit_error', {
         event_category: 'error',
         event_label: 'Waitlist Form',
+        error_type: duplicateField ? `duplicate_${duplicateField}` : 'generic',
       });
     } finally {
       setIsLoading(false);
@@ -339,7 +353,7 @@ export const WaitlistCard = () => {
                 exit={{ opacity: 0 }}
               >
                 <AlertCircle size={18} />
-                {t("waitlist.messages.error")}
+                {submitErrorMessage || t("waitlist.messages.error")}
               </motion.div>
             )}
           </AnimatePresence>

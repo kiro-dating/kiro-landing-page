@@ -94,7 +94,23 @@ create table if not exists waitlist_users (
 );
 ```
 
+Ensuite, appliquez aussi la migration anti-doublons :
+
+```sql
+alter table waitlist_users
+  add column if not exists email_normalized text
+  generated always as (lower(btrim(email))) stored;
+
+create unique index if not exists waitlist_users_email_normalized_idx
+  on waitlist_users (email_normalized);
+
+create unique index if not exists waitlist_users_phone_idx
+  on waitlist_users (phone)
+  where phone is not null;
+```
+
 > Pensez à activer Row Level Security (RLS) et à créer une policy `INSERT` pour `anon` si nécessaire.
+> Le repo contient une migration complète dans `supabase/migrations/20260422_prevent_waitlist_duplicates.sql` qui nettoie aussi les doublons existants avant d'ajouter les index uniques.
 
 ---
 
