@@ -33,14 +33,21 @@
     "item2_desc": "Retrouve et connecte avec des profils liés à TikTok, Instagram et Facebook.",
     "item3_title": "Plans premium accessibles",
     "item3_desc": "Des options premium simples et abordables pour améliorer ton expérience.",
-    "item4_title": "Culture haïtienne mise en avant",
-    "item4_desc": "Une plateforme qui valorise la culture, les valeurs et la communauté haïtienne."
+    "item4_title": "Mode inconnu",
+    "item4_desc": "Rencontre sans révéler tes infos personnelles."
   },
   "partnerships": {
     "title": "Partenariats avec les créateurs",
+    "subtitle": "Kiro facilite la collaboration et booste votre visibilité.",
     "text": "Kiro facilite la <span class='highlight'>collaboration</span> et booste votre <span class='highlight'>visibilité</span>.",
-    "point1": "Mise en avant des profils",
-    "point2": "Collaborations avec des créateurs",
-    "point3": "Opportunités de visibilité"
+    "point1": "Monétise ton audience",
+    "point2": "Fais grandir ta communauté",
+    "point3": "Accessible à tous",
+    "item1_title": "Monétise ton audience",
+    "item1_desc": "Gagne de l'argent avec tes recommandations",
+    "item2_title": "Fais grandir ta communauté",
+    "item2_desc": "Attire une audience engagée",
+    "item3_title": "Accessible à tous",
+    "item3_desc": "Pas besoin d'être une star"
   }
 }

@@ -23,7 +23,7 @@
 }
 
 .partnerships-text {
-  font-size: 1.15rem; /* ~18-20px based on root */
+  font-size: 1.15rem;
   line-height: 1.6;
   max-width: 550px;
   margin: 0 auto 40px auto;
@@ -37,7 +37,7 @@ body.light-mode .partnerships-text {
 .partnerships-text .highlight {
   color: #ffffff;
   font-weight: 500;
-  border-bottom: 2px solid rgba(255, 59, 48, 0.6); /* Option B feature: red accent */
+  border-bottom: 2px solid rgba(255, 59, 48, 0.6);
   padding-bottom: 2px;
 }
 
@@ -52,7 +52,7 @@ body.light-mode .partnerships-text .highlight {
   gap: 20px;
   width: 100%;
   max-width: 480px;
-  margin-bottom: 48px; /* space before social icons */
+  margin-bottom: 48px;
 }
 
 .partnerships-list li {
@@ -68,7 +68,6 @@ body.light-mode .partnerships-text .highlight {
   flex-shrink: 0;
 }
 
-/* SOCIAL INTEGRATION */
 .socials-container {
   display: flex;
   justify-content: center;
@@ -90,10 +89,10 @@ body.light-mode .partnerships-text .highlight {
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--glass-border);
-  color: var(--text-primary);
   display: flex;
   justify-content: center;
   align-items: center;
+  color: var(--text-primary);
   cursor: pointer;
   transition: box-shadow 0.3s ease, border-color 0.3s ease;
   outline: none;
@@ -147,6 +146,6 @@ body.light-mode .social-tooltip {
     height: 48px;
   }
   .social-tooltip {
-    display: none; /* Tooltips usually don't work well on tap-only mobile */
+    display: none;
   }
 }

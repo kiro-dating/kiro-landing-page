@@ -27,20 +27,27 @@
   },
   "features": {
     "title": "Why Kiro?",
-    "item1_title": "Two-way Translation",
+    "item1_title": "Bidirectional Translation",
     "item1_desc": "Chat without language barriers thanks to instant translation.",
     "item2_title": "Social Connections",
     "item2_desc": "Find and connect with profiles linked to TikTok, Instagram, and Facebook.",
     "item3_title": "Accessible Premium Plans",
     "item3_desc": "Simple and affordable premium options to enhance your experience.",
-    "item4_title": "Haitian Culture Highlighted",
-    "item4_desc": "A platform that values Haitian culture, values, and community."
+    "item4_title": "Anonymous Mode",
+    "item4_desc": "Meet without revealing your personal info."
   },
   "partnerships": {
     "title": "Creator Partnerships",
+    "subtitle": "Kiro facilitates collaboration and boosts your visibility.",
     "text": "Kiro makes <span class='highlight'>collaboration</span> easy and boosts your <span class='highlight'>visibility</span>.",
-    "point1": "Profile highlighting",
-    "point2": "Creator collaborations",
-    "point3": "Visibility opportunities"
+    "point1": "Monetize your audience",
+    "point2": "Grow your community",
+    "point3": "Accessible to everyone",
+    "item1_title": "Monetize your audience",
+    "item1_desc": "Earn money through your recommendations",
+    "item2_title": "Grow your community",
+    "item2_desc": "Attract an engaged audience",
+    "item3_title": "Accessible to everyone",
+    "item3_desc": "No need to be a star"
   }
 }

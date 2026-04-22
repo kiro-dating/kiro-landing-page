@@ -1,0 +1,53 @@
+{
+  "hero": {
+    "brand": "Kiro",
+    "tagline": "Kanpe swipe. Vini rankontre.",
+    "secondary": "Se youn nan premye yo ki teste Kiro",
+    "cta": "Se youn nan premye yo"
+  },
+  "waitlist": {
+    "title": "Aksè bonè",
+    "subtitle": "Antre nan premye itilizatè Kiro yo",
+    "placeholder_email": "Antre adrès imèl ou",
+    "placeholder_phone": "Telefòn",
+    "gender_label": "Sèks",
+    "gender_male": "Gason",
+    "gender_female": "Fi",
+    "gender_other": "Lòt",
+    "age_label": "Tranch laj",
+    "age_placeholder": "Chwazi laj ou",
+    "age_18_30": "18 a 30 an",
+    "age_31_42": "31 a 42 an",
+    "age_43_60": "43 a 60 an",
+    "age_60_plus": "60 an ak plis",
+    "button": "Rezève plas mwen"
+  },
+  "preview": {
+    "match": "Se yon Match!"
+  },
+  "features": {
+    "title": "Pouki Kiro?",
+    "item1_title": "Tradiksyon bidireksyonèl",
+    "item1_desc": "Diskite san baryè lang gras ak tradiksyon enstantane.",
+    "item2_title": "Koneksyon sosyal",
+    "item2_desc": "Jwenn epi konekte ak pwofil ki lye ak TikTok, Instagram ak Facebook.",
+    "item3_title": "Plan prim aksesib",
+    "item3_desc": "Opsyon prim senp ak abòdab pou amelyore eksperyans ou.",
+    "item4_title": "Mòd enkoni",
+    "item4_desc": "Rankontre san ou pa reveye enfòmasyon pèsonèl ou."
+  },
+  "partnerships": {
+    "title": "Patenarya ak kreyatè yo",
+    "subtitle": "Kiro fasilite kolaborasyon ak ranfòse vizibilite ou.",
+    "text": "Kiro rann <span class='highlight'>kolaborasyon</span> pi fasil epi li ogmante <span class='highlight'>vizibilite</span> ou.",
+    "point1": "Monétize odyans ou",
+    "point2": "Fè kominote ou grandi",
+    "point3": "Aksesib pou tout moun",
+    "item1_title": "Monétize odyans ou",
+    "item1_desc": "Fè lajan ak rekòmandasyon ou yo",
+    "item2_title": "Fè kominote ou grandi",
+    "item2_desc": "Atire yon odyans angaje",
+    "item3_title": "Aksesib pou tout moun",
+    "item3_desc": "Ou pa bezwen yon selebrite"
+  }
+}
