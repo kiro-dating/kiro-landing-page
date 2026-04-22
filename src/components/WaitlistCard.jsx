@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "./Button";
 import { addToWaitlist } from "../services/waitlistService";
 import { validatePhoneNumber } from "../utils/phoneValidation";
+import { trackEvent } from "../lib/analytics";
 import "./WaitlistCard.css";
 
 export const WaitlistCard = () => {
@@ -19,8 +20,12 @@ export const WaitlistCard = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error'
   const [phoneError, setPhoneError] = useState(null);
+  const [hasTrackedFormView, setHasTrackedFormView] = useState(false);
 
   const dropdownRef = useRef(null);
+  const cardRef = useRef(null);
+  const formViewStartedAtRef = useRef(null);
+  const hasSubmitAttemptRef = useRef(false);
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -39,6 +44,53 @@ export const WaitlistCard = () => {
     const timer = setTimeout(() => setSubmitStatus(null), 10000);
     return () => clearTimeout(timer);
   }, [submitStatus]);
+
+  useEffect(() => {
+    if (!cardRef.current || hasTrackedFormView) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          formViewStartedAtRef.current = Date.now();
+          setHasTrackedFormView(true);
+          trackEvent('waitlist_form_view', {
+            event_category: 'engagement',
+            event_label: 'Waitlist Form',
+          });
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.35 }
+    );
+
+    observer.observe(cardRef.current);
+
+    return () => observer.disconnect();
+  }, [hasTrackedFormView]);
+
+  useEffect(() => {
+    const handlePageHide = () => {
+      if (!hasTrackedFormView || hasSubmitAttemptRef.current || !formViewStartedAtRef.current) {
+        return;
+      }
+
+      const secondsViewed = Math.max(
+        1,
+        Math.round((Date.now() - formViewStartedAtRef.current) / 1000)
+      );
+
+      trackEvent('waitlist_form_abandon', {
+        event_category: 'engagement',
+        event_label: 'Waitlist Form',
+        seconds_viewed: secondsViewed,
+      });
+    };
+
+    window.addEventListener('pagehide', handlePageHide);
+    return () => window.removeEventListener('pagehide', handlePageHide);
+  }, [hasTrackedFormView]);
 
   // Validate phone live when phone or country changes (only after first touch)
   const handlePhoneChange = (e) => {
@@ -65,6 +117,12 @@ export const WaitlistCard = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitStatus(null);
+    hasSubmitAttemptRef.current = true;
+
+    trackEvent('waitlist_submit_click', {
+      event_category: 'engagement',
+      event_label: 'Waitlist Form Submit',
+    });
 
     // Phone validation on submit
     const { isValid, formatted, error, errorKey } = validatePhoneNumber(phone, countryCode);
@@ -85,6 +143,10 @@ export const WaitlistCard = () => {
       });
 
       setSubmitStatus("success");
+      trackEvent('waitlist_submit_success', {
+        event_category: 'conversion',
+        event_label: 'Waitlist Form',
+      });
 
       // Reset form
       setEmail("");
@@ -96,6 +158,10 @@ export const WaitlistCard = () => {
     } catch (err) {
       console.error("Waitlist error:", err);
       setSubmitStatus("error");
+      trackEvent('waitlist_submit_error', {
+        event_category: 'error',
+        event_label: 'Waitlist Form',
+      });
     } finally {
       setIsLoading(false);
     }
@@ -104,6 +170,7 @@ export const WaitlistCard = () => {
   return (
     <motion.div
       id="waitlist"
+      ref={cardRef}
       className="glass-panel waitlist-card"
       whileHover={{ boxShadow: "0 10px 40px rgba(0, 0, 0, 0.2)" }}
       transition={{ duration: 0.3 }}

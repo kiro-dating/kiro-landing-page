@@ -5,11 +5,20 @@ import { motion } from 'framer-motion';
 import { Button } from './Button';
 import { TextEffect } from './TextEffect';
 import { TextScramble } from './TextScramble';
+import { trackEvent } from '../lib/analytics';
 import './Hero.css';
 
 export const Hero = () => {
   const { t, i18n } = useTranslation();
   const [isScrambleTriggered, setIsScrambleTriggered] = useState(false);
+  const handleWaitlistClick = () => {
+    trackEvent('waitlist_click', {
+      event_category: 'engagement',
+      event_label: 'CTA Waitlist'
+    });
+
+    document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
 
   return (
     <div className="hero-section">
@@ -57,7 +66,7 @@ export const Hero = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.45 }}
         >
-          <Button className="hero-btn" onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
+          <Button className="hero-btn" onClick={handleWaitlistClick}>
             {t('hero.cta')} <ArrowRight size={18} />
           </Button>
         </motion.div>
