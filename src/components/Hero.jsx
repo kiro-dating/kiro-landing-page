@@ -8,7 +8,7 @@ import { TextScramble } from './TextScramble';
 import './Hero.css';
 
 export const Hero = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [isScrambleTriggered, setIsScrambleTriggered] = useState(false);
 
   return (
@@ -34,16 +34,17 @@ export const Hero = () => {
         </motion.h1>
         
         <div className="hero-tagline-wrapper mt-4">
-          <h2 className="hero-tagline m-0">
+          <h2 className="hero-tagline m-0" key={`tagline-${i18n.language}`}>
             <TextEffect preset="fade-in-blur" speedReveal={1.1} speedSegment={0.3}>
               {t('hero.tagline')}
             </TextEffect>
           </h2>
           <motion.p 
             className="hero-secondary text-secondary m-0"
+            key={`secondary-${i18n.language}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 1.2 }} /* delayed to show after text effect */
+            transition={{ duration: 0.8, delay: 1.2 }}
           >
             {t('hero.secondary')}
           </motion.p>
