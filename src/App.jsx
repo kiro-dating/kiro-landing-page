@@ -1,4 +1,5 @@
 import React from 'react'
+import { Analytics } from '@vercel/analytics/react'
 import { Hero } from './components/Hero'
 import { AppPreview } from './components/AppPreview'
 import { WaitlistCard } from './components/WaitlistCard'
@@ -38,6 +39,8 @@ function App() {
           <Partnerships />
         </AnimatedSection>
       </main>
+
+      <Analytics />
     </div>
   )
 }
