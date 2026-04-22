@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Languages, Users, Sparkles, Heart } from 'lucide-react';
+import { Languages, Users, Sparkles, EyeOff } from 'lucide-react';
 import './Features.css';
 
 export const Features = () => {
@@ -23,7 +23,7 @@ export const Features = () => {
       desc: t('features.item3_desc')
     },
     {
-      icon: <Heart size={24} />,
+      icon: <EyeOff size={24} />,
       title: t('features.item4_title'),
       desc: t('features.item4_desc')
     }

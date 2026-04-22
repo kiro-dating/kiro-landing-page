@@ -20,7 +20,21 @@
     "age_31_42": "31 to 42",
     "age_43_60": "43 to 60",
     "age_60_plus": "60 and over",
-    "button": "Reserve my spot"
+    "button": "Reserve my spot",
+    "messages": {
+      "loading": "Sending...",
+      "success": "You're on the list...",
+      "error": "Something went wrong. Please try again."
+    },
+    "errors": {
+      "phone_required": "Phone number is required",
+      "country_unrecognized": "Country not recognized",
+      "invalid_phone": "Invalid phone number for this country"
+    },
+    "country_groups": {
+      "top": "Top",
+      "extended": "Extended"
+    }
   },
   "preview": {
     "match": "It's a Match!"
@@ -40,14 +54,19 @@
     "title": "Creator Partnerships",
     "subtitle": "Kiro facilitates collaboration and boosts your visibility.",
     "text": "Kiro makes <span class='highlight'>collaboration</span> easy and boosts your <span class='highlight'>visibility</span>.",
-    "point1": "Monetize your audience",
-    "point2": "Grow your community",
-    "point3": "Accessible to everyone",
+    "point1": "Monetize your audience and earn money through your recommendations.",
+    "point2": "Grow your community by attracting an engaged audience.",
+    "point3": "Accessible to everyone, with no need to already be a star.",
     "item1_title": "Monetize your audience",
     "item1_desc": "Earn money through your recommendations",
     "item2_title": "Grow your community",
     "item2_desc": "Attract an engaged audience",
     "item3_title": "Accessible to everyone",
-    "item3_desc": "No need to be a star"
+    "item3_desc": "No need to be a star",
+    "socials": {
+      "tiktok": "Dating lives, dynamic content, and viral reach",
+      "instagram": "Profiles, stories, and visual connections",
+      "facebook": "Community, events, and interactions"
+    }
   }
 }

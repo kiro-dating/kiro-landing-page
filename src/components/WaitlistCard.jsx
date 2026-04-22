@@ -45,8 +45,8 @@ export const WaitlistCard = () => {
     const value = e.target.value;
     setPhone(value);
     if (value.trim()) {
-      const { error } = validatePhoneNumber(value, countryCode);
-      setPhoneError(error);
+      const { error, errorKey } = validatePhoneNumber(value, countryCode);
+      setPhoneError(errorKey ? t(errorKey) : error);
     } else {
       setPhoneError(null);
     }
@@ -57,8 +57,8 @@ export const WaitlistCard = () => {
     const newCountry = e.target.value;
     setCountryCode(newCountry);
     if (phone.trim()) {
-      const { error } = validatePhoneNumber(phone, newCountry);
-      setPhoneError(error);
+      const { error, errorKey } = validatePhoneNumber(phone, newCountry);
+      setPhoneError(errorKey ? t(errorKey) : error);
     }
   };
 
@@ -67,9 +67,9 @@ export const WaitlistCard = () => {
     setSubmitStatus(null);
 
     // Phone validation on submit
-    const { isValid, formatted, error } = validatePhoneNumber(phone, countryCode);
+    const { isValid, formatted, error, errorKey } = validatePhoneNumber(phone, countryCode);
     if (!isValid) {
-      setPhoneError(error || "Numéro invalide pour ce pays");
+      setPhoneError(errorKey ? t(errorKey) : error || t("waitlist.errors.invalid_phone"));
       return;
     }
     setPhoneError(null);
@@ -202,7 +202,7 @@ export const WaitlistCard = () => {
               value={countryCode}
               onChange={handleCountryChange}
             >
-              <optgroup label="Top">
+              <optgroup label={t("waitlist.country_groups.top")}>
                 <option value="+1_CA">🇨🇦 +1 (CA)</option>
                 <option value="+509_HT">🇭🇹 +509 (HT)</option>
                 <option value="+1_US">🇺🇸 +1 (US)</option>
@@ -211,7 +211,7 @@ export const WaitlistCard = () => {
                 <option value="+56_CL">🇨🇱 +56 (CL)</option>
                 <option value="+1_DO">🇩🇴 +1 (DO)</option>
               </optgroup>
-              <optgroup label="Extended">
+              <optgroup label={t("waitlist.country_groups.extended")}>
                 <option value="+1_BS">🇧🇸 +1 (BS)</option>
                 <option value="+1_TC">🇹🇨 +1 (TC)</option>
                 <option value="+590_GP">🇬🇵 +590 (GP)</option>
@@ -261,7 +261,7 @@ export const WaitlistCard = () => {
                 exit={{ opacity: 0 }}
               >
                 <CheckCircle size={18} />
-                Tu es sur la liste...
+                {t("waitlist.messages.success")}
               </motion.div>
             )}
             {submitStatus === 'error' && (
@@ -272,14 +272,14 @@ export const WaitlistCard = () => {
                 exit={{ opacity: 0 }}
               >
                 <AlertCircle size={18} />
-                Une erreur est survenue. Réessaie.
+                {t("waitlist.messages.error")}
               </motion.div>
             )}
           </AnimatePresence>
 
           <div className="btn-wrapper">
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Envoi en cours..." : <>{t("waitlist.button")} <ArrowRight size={18} /></>}
+              {isLoading ? t("waitlist.messages.loading") : <>{t("waitlist.button")} <ArrowRight size={18} /></>}
             </Button>
           </div>
         </form>

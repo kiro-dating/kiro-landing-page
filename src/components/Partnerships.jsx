@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2 } from 'lucide-react';
+import { BadgeDollarSign, Globe, TrendingUp } from 'lucide-react';
 import './Partnerships.css';
 
 const containerVariants = {
@@ -44,22 +44,39 @@ const FacebookIcon = ({ size = 24 }) => (
 export const Partnerships = () => {
   const { t } = useTranslation();
   const [hoveredSocial, setHoveredSocial] = useState(null);
+  const partnershipPoints = [
+    {
+      icon: BadgeDollarSign,
+      title: t('partnerships.item1_title'),
+      description: t('partnerships.item1_desc')
+    },
+    {
+      icon: TrendingUp,
+      title: t('partnerships.item2_title'),
+      description: t('partnerships.item2_desc')
+    },
+    {
+      icon: Globe,
+      title: t('partnerships.item3_title'),
+      description: t('partnerships.item3_desc')
+    }
+  ];
 
   const socials = [
     {
       id: 'tiktok',
       icon: <TikTokIcon />,
-      message: "Live rencontres, contenu dynamique et viral"
+      message: t('partnerships.socials.tiktok')
     },
     {
       id: 'instagram',
       icon: <InstagramIcon size={24} />,
-      message: "Profils, stories et connexions visuelles"
+      message: t('partnerships.socials.instagram')
     },
     {
       id: 'facebook',
       icon: <FacebookIcon size={24} />,
-      message: "Communauté, événements et interactions"
+      message: t('partnerships.socials.facebook')
     }
   ];
 
@@ -83,18 +100,17 @@ export const Partnerships = () => {
         />
         
         <motion.ul className="partnerships-list" variants={containerVariants}>
-          <motion.li variants={itemVariants}>
-            <CheckCircle2 size={24} className="check-icon" />
-            <span>{t('partnerships.point1')}</span>
-          </motion.li>
-          <motion.li variants={itemVariants}>
-            <CheckCircle2 size={24} className="check-icon" />
-            <span>{t('partnerships.point2')}</span>
-          </motion.li>
-          <motion.li variants={itemVariants}>
-            <CheckCircle2 size={24} className="check-icon" />
-            <span>{t('partnerships.point3')}</span>
-          </motion.li>
+          {partnershipPoints.map(({ icon: Icon, title, description }) => (
+            <motion.li key={title} variants={itemVariants} className="partnerships-list-item">
+              <div className="check-icon-wrap">
+                <Icon size={22} className="check-icon" />
+              </div>
+              <div className="partnership-copy">
+                <span className="partnership-point-title">{title}</span>
+                <span className="partnership-point-desc">{description}</span>
+              </div>
+            </motion.li>
+          ))}
         </motion.ul>
 
         <motion.div variants={itemVariants} className="socials-container">

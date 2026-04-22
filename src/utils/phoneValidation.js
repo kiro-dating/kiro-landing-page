@@ -32,6 +32,7 @@ export const validatePhoneNumber = (phone, countryCode) => {
       isValid: false,
       formatted: null,
       error: 'Le numéro de téléphone est requis',
+      errorKey: 'waitlist.errors.phone_required',
     };
   }
 
@@ -41,6 +42,7 @@ export const validatePhoneNumber = (phone, countryCode) => {
       isValid: false,
       formatted: null,
       error: 'Pays non reconnu',
+      errorKey: 'waitlist.errors.country_unrecognized',
     };
   }
 
@@ -52,6 +54,7 @@ export const validatePhoneNumber = (phone, countryCode) => {
         isValid: false,
         formatted: null,
         error: 'Numéro invalide pour ce pays',
+        errorKey: 'waitlist.errors.invalid_phone',
       };
     }
 
@@ -70,6 +73,7 @@ export const validatePhoneNumber = (phone, countryCode) => {
         isValid: false,
         formatted: null,
         error: 'Numéro invalide pour ce pays',
+        errorKey: 'waitlist.errors.invalid_phone',
       };
     }
 
@@ -77,6 +81,7 @@ export const validatePhoneNumber = (phone, countryCode) => {
       isValid: true,
       formatted: parsed.format('E.164'), // e.g. "+15141234567"
       error: null,
+      errorKey: null,
     };
   } catch (err) {
     if (err instanceof ParseError) {
@@ -84,12 +89,14 @@ export const validatePhoneNumber = (phone, countryCode) => {
         isValid: false,
         formatted: null,
         error: 'Numéro invalide pour ce pays',
+        errorKey: 'waitlist.errors.invalid_phone',
       };
     }
     return {
       isValid: false,
       formatted: null,
       error: 'Numéro invalide pour ce pays',
+      errorKey: 'waitlist.errors.invalid_phone',
     };
   }
 };
