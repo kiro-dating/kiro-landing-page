@@ -1,13 +1,13 @@
 {
   "hero": {
     "brand": "Kiro",
-    "tagline": "Kanpe swipe. Vini rankontre.",
-    "secondary": "Se youn nan premye yo ki teste Kiro",
-    "cta": "Se youn nan premye yo"
+    "tagline": "Sispann swipe. Vini fè bon jan rankont.",
+    "secondary": "Pa rate okazyon sa, Fè pati premye mounn ki eseye Kiro",
+    "cta": "Klike la pouw enskri"
   },
   "waitlist": {
-    "title": "Aksè bonè",
-    "subtitle": "Antre nan premye itilizatè Kiro yo",
+    "title": "Aksè priyoritè",
+    "subtitle": "Fè pati premye itilizatè Kiro yo",
     "placeholder_email": "Antre adrès imèl ou",
     "placeholder_phone": "Telefòn",
     "gender_label": "Sèks",
@@ -20,34 +20,53 @@
     "age_31_42": "31 a 42 an",
     "age_43_60": "43 a 60 an",
     "age_60_plus": "60 an ak plis",
-    "button": "Rezève plas mwen"
+    "button": "Rezève plas mwen",
+    "messages": {
+      "loading": "N ap voye sa...",
+      "success": "Ou sou lis la deja...",
+      "error": "Gen yon erè ki rive. Tanpri eseye ankò."
+    },
+    "errors": {
+      "phone_required": "Nimewo telefòn lan obligatwa",
+      "country_unrecognized": "Peyi a pa rekonèt",
+      "invalid_phone": "Nimewo a pa valab pou peyi sa a"
+    },
+    "country_groups": {
+      "top": "Prensipal",
+      "extended": "Elaji"
+    }
   },
   "preview": {
     "match": "Se yon Match!"
   },
   "features": {
-    "title": "Pouki Kiro?",
+    "title": "Poukisa ou dwe chwazi Kiro?",
     "item1_title": "Tradiksyon bidireksyonèl",
     "item1_desc": "Diskite san baryè lang gras ak tradiksyon enstantane.",
     "item2_title": "Koneksyon sosyal",
     "item2_desc": "Jwenn epi konekte ak pwofil ki lye ak TikTok, Instagram ak Facebook.",
-    "item3_title": "Plan prim aksesib",
-    "item3_desc": "Opsyon prim senp ak abòdab pou amelyore eksperyans ou.",
+    "item3_title": "Plan vip ak yon pri ki aksesib",
+    "item3_desc": "Anpil opsyon abòdab pou amelyore eksperyans ou.",
     "item4_title": "Mòd enkoni",
-    "item4_desc": "Rankontre san ou pa reveye enfòmasyon pèsonèl ou."
+    "item4_desc": "Rankontre mounn ou vle san ou pa bay enfòmasyon pèsonèl ou."
   },
   "partnerships": {
     "title": "Patenarya ak kreyatè yo",
     "subtitle": "Kiro fasilite kolaborasyon ak ranfòse vizibilite ou.",
     "text": "Kiro rann <span class='highlight'>kolaborasyon</span> pi fasil epi li ogmante <span class='highlight'>vizibilite</span> ou.",
-    "point1": "Monétize odyans ou",
-    "point2": "Fè kominote ou grandi",
-    "point3": "Aksesib pou tout moun",
+    "point1": "Monétize odyans ou epi fè lajan ak rekòmandasyon ou yo.",
+    "point2": "Fè kominote ou grandi lè ou atire yon odyans angaje.",
+    "point3": "Aksesib pou tout moun, san ou pa bezwen deja yon vedèt.",
     "item1_title": "Monétize odyans ou",
     "item1_desc": "Fè lajan ak rekòmandasyon ou yo",
     "item2_title": "Fè kominote ou grandi",
     "item2_desc": "Atire yon odyans angaje",
     "item3_title": "Aksesib pou tout moun",
-    "item3_desc": "Ou pa bezwen yon selebrite"
+    "item3_desc": "Ou pa bezwen yon selebrite",
+    "socials": {
+      "tiktok": "Live rankont, kontni dinamik ak gwo vizibilite",
+      "instagram": "Pwofil, stories ak koneksyon vizyèl",
+      "facebook": "Kominote, evènman ak entèraksyon"
+    }
   }
 }

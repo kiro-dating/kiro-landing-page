@@ -27,9 +27,9 @@ export const TopNav = () => {
     <div className="top-nav-container">
       <div className="logo-brand">
         <img
-          src="/logo_kiro.png"
+          src="/icon_kiro.png"
           alt="Kiro"
-          style={{ width: "80px", height: "80px", objectFit: "contain" }}
+          style={{ width: "48px", height: "48px", objectFit: "contain" }}
         />
       </div>
       <div className="top-nav">
@@ -60,6 +60,12 @@ export const TopNav = () => {
             onClick={() => changeLanguage("en")}
           >
             EN
+          </button>
+          <button
+            className={`lang-btn ${i18n.language === "ht" ? "active" : ""}`}
+            onClick={() => changeLanguage("ht")}
+          >
+            HT
           </button>
         </div>
       </div>
