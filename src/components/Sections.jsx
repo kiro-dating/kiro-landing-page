@@ -7,6 +7,7 @@ import {
   MapPin, ShieldCheck, Music, PartyPopper, Compass,
   Send, Play, ArrowRight,
   Leaf, Flame, Crown, Gem,
+  ChevronRight, Plane, Heart,
 } from 'lucide-react';
 import { Button } from './Button';
 import CardSwap, { Card } from './CardSwap';
@@ -94,7 +95,7 @@ const GAME_CARDS = [
 ];
 
 /* Illustrations légères, 100 % CSS/SVG — aucune image à charger */
-const GameIllustration = ({ index }) => {
+const GameIllustration = ({ index, completedLabel }) => {
   if (index === 0) {
     return (
       <div className="gi gi-match5" aria-hidden="true">
@@ -139,10 +140,21 @@ const GameIllustration = ({ index }) => {
   }
   return (
     <div className="gi gi-date" aria-hidden="true">
-      <div className="date-cal"><CalendarCheck size={30} /></div>
-      <div className="date-bar">
-        <i />
-        <span>70%</span>
+      {/* Passeport de la vraie vie (maquette) : carnet + cœur + avion */}
+      <div className="date-passport">
+        <Plane size={17} className="dp-plane" />
+        <div className="dp-book">
+          <span className="dp-emblem"><Heart size={13} fill="currentColor" /></span>
+        </div>
+        <b className="dp-spark">✦</b>
+      </div>
+      <div className="date-row">
+        <div className="date-cal"><CalendarCheck size={22} /></div>
+        <div className="date-meta">
+          <b>70%</b>
+          <span>{completedLabel}</span>
+        </div>
+        <div className="date-bar"><i /></div>
       </div>
     </div>
   );
@@ -197,10 +209,10 @@ const GameCardContent = ({ i, gKey, t }) => {
         <h3>{t(`games.${gKey}_title`)}</h3>
         <p>{t(`games.${gKey}_text`)}</p>
         <button type="button" className="game-more" onClick={() => setOpen(!open)}>
-          {open ? t('games.less') : t('games.more')}
+          {open ? t('games.less') : t('games.more')} <ChevronRight size={15} />
         </button>
       </div>
-      <GameIllustration index={i} />
+      <GameIllustration index={i} completedLabel={t('games.completed')} />
     </>
   );
 };
