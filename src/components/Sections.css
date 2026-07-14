@@ -492,6 +492,75 @@
   .gi { min-height: 170px; }
 }
 
+/* ── Tablette (641–860 px) : mêmes compositions que le mobile,
+   simplement en plus grand — chaque carte est travaillée à part ── */
+@media (min-width: 641px) and (max-width: 860px) {
+  .game-card {
+    padding: 32px 28px 26px;
+    /* Les éléments glissés dans les coins sont rognés proprement */
+    overflow: hidden;
+  }
+
+  .gi { min-height: 0; }
+
+  /* Numéro en pastille, comme en mobile */
+  .game-num {
+    margin-bottom: 12px;
+    padding: 4px 13px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, currentColor 28%, transparent);
+    background: color-mix(in srgb, currentColor 9%, transparent);
+    font-size: 0.78rem;
+    opacity: 0.9;
+  }
+
+  /* 01 — points à gauche, anneau à droite */
+  .gi-match5 {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-end;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 14px;
+  }
+  .compat-ring { width: 148px; height: 148px; }
+  .compat-ring span { width: 110px; height: 110px; font-size: 1.6rem; }
+  .q-dots { margin: 0 0 16px; }
+
+  /* 02 — duo de cartes à droite, orbite et étincelle assorties */
+  .gi-tod { justify-content: flex-end; padding-right: 12px; margin-top: -8px; }
+  .tod-card { width: 98px; height: 130px; border-radius: 16px; }
+  .tod-card svg { width: 28px; height: 28px; }
+  .tod-a::before { width: 70px; height: 70px; }
+  .tod-orbit { width: 280px; height: 150px; left: auto; right: -30px; transform: translateY(-50%) rotate(-16deg); }
+  .ts-2 { top: auto; bottom: 14px; right: auto; left: 7%; }
+  .ts-1, .ts-3, .tod-dot { display: none; }
+
+  /* 03 — tuiles centrées avec de l'air, « ? » menthe incliné */
+  .gc-mint { padding-top: 32px; padding-bottom: 34px; }
+  .gi-guess { display: flex; gap: 12px; justify-content: center; margin: 16px 0 6px; }
+  .gi-guess span { width: 58px; height: 70px; border-radius: 14px; font-size: 1.5rem; }
+  .gi-guess span:nth-child(2) { transform: rotate(-5deg) translateY(3px); }
+  .gi-guess .mystery { background: #1d8a70; transform: rotate(4deg); }
+
+  /* 04 — progression à gauche, passeport pivoté rogné dans le coin droit */
+  .gi-date { display: flex; flex-direction: row; align-items: center; gap: 16px; }
+  .date-row { flex: 1; min-width: 0; max-width: none; order: 1; }
+  .date-passport {
+    order: 2;
+    flex-shrink: 0;
+    width: 118px;
+    height: 118px;
+    margin: -16px -18px -22px 0;
+  }
+  .dp-book { width: 64px; height: 84px; border-radius: 10px 14px 14px 10px; transform: rotate(16deg); }
+  .dp-emblem { width: 38px; height: 38px; }
+  .dp-plane { bottom: 26px; left: 2px; }
+  .dp-spark { top: 8px; right: 6px; }
+  .date-cal { width: 50px; height: 50px; }
+  .date-bar { height: 11px; }
+}
+
 /* ── Mobile : cartes compactes, tout tient dans l'écran ── */
 @media (max-width: 640px) {
   .game-card {
