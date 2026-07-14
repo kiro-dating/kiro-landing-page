@@ -1,75 +1,114 @@
 {
+  "nav": {
+    "discover": "Dekouvri",
+    "games": "Jwèt",
+    "plans": "Plan yo",
+    "support": "Sipò",
+    "contact": "Kontak",
+    "language": "Lang"
+  },
   "hero": {
     "brand": "Kiro",
-    "tagline": "Sispann swipe. Vini fè bon jan rankont.",
-    "secondary": "Pa rate okazyon sa, Fè pati premye mounn ki eseye Kiro",
-    "cta": "Klike la pouw enskri"
+    "tagline": "Sispann swipe. Vin rankontre.",
+    "secondary": "App rankont ki kraze glas la : jwèt, kote, evènman ak kominote pou kreye vre koneksyon.",
+    "cta_test": "Teste Kiro",
+    "cta_more": "Konnen plis",
+    "scroll": "Dekouvri",
+    "tagline_1": "Kraze glas la,",
+    "tagline_2": "fè premye pa a"
   },
-  "waitlist": {
-    "title": "Aksè priyoritè",
-    "subtitle": "Fè pati premye itilizatè Kiro yo",
-    "placeholder_email": "Antre adrès imèl ou",
-    "placeholder_phone": "Telefòn",
-    "gender_label": "Sèks",
-    "gender_male": "Gason",
-    "gender_female": "Fi",
-    "gender_other": "Lòt",
-    "age_label": "Tranch laj",
-    "age_placeholder": "Chwazi laj ou",
-    "age_18_30": "18 a 30 an",
-    "age_31_42": "31 a 42 an",
-    "age_43_60": "43 a 60 an",
-    "age_60_plus": "60 an ak plis",
-    "button": "Rezève plas mwen",
-    "messages": {
-      "loading": "N ap voye sa...",
-      "success": "Ou sou lis la deja...",
-      "error": "Gen yon erè ki rive. Tanpri eseye ankò."
-    },
-    "errors": {
-      "phone_required": "Nimewo telefòn lan obligatwa",
-      "country_unrecognized": "Peyi a pa rekonèt",
-      "invalid_phone": "Nimewo a pa valab pou peyi sa a",
-      "duplicate_email": "Adrès imèl sa a deja sou lis la.",
-      "duplicate_phone": "Nimewo telefòn sa a deja sou lis la.",
-      "duplicate_generic": "Enskripsyon sa a deja sou lis la."
-    },
-    "country_groups": {
-      "top": "Prensipal",
-      "extended": "Elaji"
-    }
+  "modals": {
+    "close": "Fèmen",
+    "test_title": "Teste Kiro kounye a",
+    "test_body": "Antre nan kominote a: aksè a vèsyon beta a, echanj dirèk ak ekip la ak premye manm yo.",
+    "test_button": "Antre nan gwoup Telegram nan",
+    "beta_title": "Teste Kiro, li senp",
+    "lang_title": "Chwazi yon lang",
+    "test_whatsapp": "Antre nan chanèl WhatsApp la",
+    "beta_ios_title": "Sou iPhone (iOS)",
+    "beta_ios_step1": "Telechaje <tf>TestFlight</tf>, aplikasyon ofisyèl Apple la, nan App Store.",
+    "beta_ios_step2": "Antre nan gwoup <tg>Telegram</tg> nan oswa chanèl <wa>WhatsApp</wa> la, epi klike sou lyen envitasyon an.",
+    "beta_ios_step3": "Tout bagay pare: ou ka teste Kiro!",
+    "beta_android_title": "Sou Android",
+    "beta_android_desc": "Pa gen okenn lòt aplikasyon pou telechaje: antre nan gwoup <tg>Telegram</tg> nan oswa chanèl <wa>WhatsApp</wa> la, klike sou lyen an, epi Google Play ap ouvri dirèkteman pou enstale app la."
   },
-  "preview": {
-    "match": "Se yon Match!"
+  "concept": {
+    "eyebrow": "Konsèp la",
+    "title": "Kiro: bon jan teknoloji pou vrè rankont.",
+    "intro": "Aplikasyon rankont tradisyonèl yo pa mache ankò: jijman rapid, pwofil vid, konvèsasyon ki bay tèt chaje. Kiro fè bagay yo yon lòt jan. Nou pa sèlman ede w jwenn match — nou akonpanye w jiskaske w chita nan premye randevou a.",
+    "quote": "Kiro pa sèlman mete w an kontak. Kiro mete w sou devan sèn nan.",
+    "point1_title": "Pèsonalite an premye.",
+    "point1_desc": "Fini ak pwofil vid. Afinite a soti nan tès sikolojik Big Five nou an.",
+    "point2_title": "Kote nou abitye ale.",
+    "point2_desc": "Rejwenn san danje moun ki frekante menm kote ak ou (fòm, kafe...).",
+    "point3_title": "Jwèt pou kase glas la.",
+    "point3_desc": "Fini ak «Bonswa, kijan w ye?». Ti jwèt nou yo kreye atraksyon san presyon.",
+    "point4_title": "Soti sou ekran an, ale nan lavi reyèl.",
+    "point4_desc": "Kiro pwopoze kote, senkronize kalandriye nou epi planifye vrè randevou a."
   },
-  "features": {
-    "title": "Poukisa ou dwe chwazi Kiro?",
-    "item1_title": "Tradiksyon bidireksyonèl",
-    "item1_desc": "Diskite san baryè lang gras ak tradiksyon enstantane.",
-    "item2_title": "Koneksyon sosyal",
-    "item2_desc": "Jwenn epi konekte ak pwofil ki lye ak TikTok, Instagram ak Facebook.",
-    "item3_title": "Plan vip ak yon pri ki aksesib",
-    "item3_desc": "Anpil opsyon abòdab pou amelyore eksperyans ou.",
-    "item4_title": "Mòd enkoni",
-    "item4_desc": "Rankontre mounn ou vle san ou pa bay enfòmasyon pèsonèl ou."
+  "games": {
+    "eyebrow": "Entèraksyon dinamik",
+    "title": "Ou pa ka fòse atraksyon. Se nan jwe li fèt.",
+    "desc": "Estrès «kisa pou m ekri a» ak «Bonswa» ki rete san repons yo, se bagay ki pase. Kiro ranplase kè sote premye mesaj la ak plezi jwèt la. Dekouvri eksperyans entèaktif nou yo, ki fèt pou transfòme yon senp kiryozite an yon vrè koneksyon.",
+    "game1_title": "Match 5: etensèl pwen komen yo",
+    "game1_text": "5 kesyon byen chwazi pou mezire konpatibilite nou an tan reyèl. Dekouvri san pèdi tan, an pousantaj, sa ki rasanble nou. Nou reponn egzakteman lekontrè? Pa gen pwoblèm. Algoritm nan ap raple nou sa ak yon ti souri: kontrè yo souvan fè pi bèl istwa yo.",
+    "game2_title": "Aksyon oswa Verite,\nsan filtè, 100 % espontane",
+    "game2_text": "Poukisa rete òdinè lè w ka rete nan memwa moun? Gran klasik sa a, nou reyenvante l, se zam sekrè pou kòmanse yon konvèsasyon san efò. Kit kesyon an komik, odasye oswa pwofon, se chemen ki pi kout pou kenbe atansyon moun nan epi fè enterè a monte nan kèk segonn.",
+    "game3_title": "Devine nimewo m: atizay pou relanse konvèsasyon an",
+    "game3_text": "Konvèsasyon an ap febli? Pa kite silans lan enstale. Lanse ti defi rapid sa a pou chofe anbyans lan epi reveye kiryozite l. Objektif la senp, men efè a imedya: ou reveye konplisite a, detann atmosfè a epi remete plezi a nan mitan echanj lan.",
+    "game4_title": "Perfect Date: paspò pou lavi reyèl la",
+    "game4_text": "Dènye tès la anvan nou rankontre tout bon. Èske w vrèman konnen moun w ap pale avè l la? Pase tès final la. Si w pwouve ou konnen l ak omwen 70 % bon repons, vityèl la kanpe la: Kiro pran relèv la epi li pwopoze nou planifye premye vrè randevou nou an san pèdi tan."
   },
-  "partnerships": {
-    "title": "Patenarya ak kreyatè yo",
-    "subtitle": "Kiro fasilite kolaborasyon ak ranfòse vizibilite ou.",
-    "text": "Kiro rann <span class='highlight'>kolaborasyon</span> pi fasil epi li ogmante <span class='highlight'>vizibilite</span> ou.",
-    "point1": "Monétize odyans ou epi fè lajan ak rekòmandasyon ou yo.",
-    "point2": "Fè kominote ou grandi lè ou atire yon odyans angaje.",
-    "point3": "Aksesib pou tout moun, san ou pa bezwen deja yon vedèt.",
-    "item1_title": "Monétize odyans ou",
-    "item1_desc": "Fè lajan ak rekòmandasyon ou yo",
-    "item2_title": "Fè kominote ou grandi",
-    "item2_desc": "Atire yon odyans angaje",
-    "item3_title": "Aksesib pou tout moun",
-    "item3_desc": "Ou pa bezwen yon selebrite",
-    "socials": {
-      "tiktok": "Live rankont, kontni dinamik ak gwo vizibilite",
-      "instagram": "Pwofil, stories ak koneksyon vizyèl",
-      "facebook": "Kominote, evènman ak entèraksyon"
-    }
+  "plans": {
+    "eyebrow": "Plan yo",
+    "title": "Gratis pou kòmanse, plis si ou vle",
+    "desc": "Yon plan gratis konplè pou esansyèl Kiro a, ak twa plan pou ale pi lwen. Pri ak òf ki parèt nan app la se yo ki konte.",
+    "free_name": "Gratis",
+    "free_desc": "Dekouvèt, match, chat ak jwèt brize-glas, ak kota chak jou.",
+    "standard_name": "Standard",
+    "standard_desc": "Plis Flames, mesaj ak tradiksyon chak jou, Super Flames ak defi premium.",
+    "premium_name": "Premium",
+    "premium_desc": "Wè kiyès ki renmen ou, filtè avanse, mòd enkognito ak speed dating.",
+    "max_name": "Max",
+    "max_desc": "San okenn limit : kota maksimòm, boost enkli, sipò priyoritè ak badj eksklizif.",
+    "popular": "Popilè"
+  },
+  "cta": {
+    "title": "Ou pare pou rankontre yon lòt jan ?",
+    "desc": "Beta a ouvè. Antre nan kominote a epi teste Kiro jodi a.",
+    "btn_telegram": "Antre nan Telegram nan",
+    "btn_beta": "Enstale beta a"
+  },
+  "footer": {
+    "tagline": "Rankont, kote ak kominote.",
+    "col_test": "Teste aplikasyon an",
+    "test_telegram": "Gwoup Telegram",
+    "test_ios": "iOS (TestFlight)",
+    "test_android": "Android (Google Play)",
+    "col_legal": "Legal",
+    "terms": "Kondisyon itilizasyon",
+    "privacy": "Politik konfidansyalite",
+    "help": "Sant èd",
+    "contact": "Kontak",
+    "col_social": "Rezo sosyal",
+    "rights": "Tout dwa rezève.",
+    "langs": "Disponib nan 10 lang"
+  },
+  "chatdemo": {
+    "eyebrow": "Yon ti apèsi",
+    "title": "Bon jan repons, san efò.",
+    "desc": "Sispann rakonte lavi w — viv moman an. Gade kijan yon defi transfòme yon ti pale òdinè an sediksyon.",
+    "msg1": "Aksyon oswa Verite? Pa gen dwa a erè pou premye chwa w la. 😏",
+    "msg2": "Verite. Mwen pa pè anyen. Mande m sa w vle.",
+    "msg3": "Pafè. Dekri m randevou ideyal ou, men SÈLMAN ak emoji. ⏳",
+    "msg4": "Defi aksepte. 🌇🍷🍝🎷🚶‍♀️🌙🤫",
+    "msg5": "Yon dine italyen nan solèy kouche, apre sa yon klib jazz? Oke, ou fèk make anpil pwen... 🔥"
+  },
+  "kiroplaces": {
+    "eyebrow": "Kote Kiro yo",
+    "title": "Premye randevou ki deja gen yon adrès",
+    "title_local": "Nan {{city}}, moun deja rankontre isit la",
+    "desc": "Kafe, restoran, festival, kote mitik: mete kote ou renmen yo sou pwofil ou epi jwenn moun ki deja frekante yo. Se sèlman non kote a ki parèt — jamè yon adrès prive, jamè yon pwen sou yon kat.",
+    "note": "Adrès rezidansyèl ak kote sansib yo refize otomatikman."
   }
 }

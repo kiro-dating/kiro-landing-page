@@ -1,0 +1,34 @@
+/* ── Les lieux Kiro : galerie circulaire pleine largeur ── */
+.kiroplaces-gallery {
+  position: relative;
+  /* Hauteur = carte (390) + libellé + descente de l'arc : rien n'est coupé */
+  height: 640px;
+  margin-top: 8px;
+}
+
+.s-kiroplaces .places-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 6px;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+}
+
+@media (max-width: 1000px) {
+  .kiroplaces-gallery {
+    height: 540px;
+  }
+}
+
+@media (max-width: 720px) {
+  .kiroplaces-gallery {
+    height: 340px;
+  }
+
+  .cg-label {
+    font-size: 0.82rem;
+    margin-top: 8px;
+  }
+}

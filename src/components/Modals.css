@@ -1,0 +1,262 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(23, 21, 21, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.modal-card {
+  position: relative;
+  scrollbar-width: none; /* barre de défilement masquée */
+  width: min(460px, 100%);
+  max-height: min(84vh, 640px);
+  overflow-y: auto;
+  padding: 32px 28px 28px;
+  text-align: center;
+  background: #fff;
+  border: 1px solid var(--card-border);
+  border-radius: 22px;
+  box-shadow: 0 30px 80px rgba(23, 21, 21, 0.25);
+}
+
+.modal-card::-webkit-scrollbar {
+  display: none;
+}
+
+.modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  color: var(--text-secondary);
+  background: var(--s-cream);
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.modal-close:hover {
+  color: var(--text-primary);
+  background: #efe6e0;
+}
+
+.modal-icon {
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  margin: 0 auto 16px;
+  color: var(--accent-red);
+  background: var(--s-rose);
+  border-radius: 20px;
+}
+
+.modal-title {
+  font-size: 1.45rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.modal-body {
+  margin: 10px auto 22px;
+  max-width: 360px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.modal-actions {
+  display: grid;
+  gap: 10px;
+}
+
+.modal-actions .btn {
+  width: 100%;
+}
+
+/* ── Sélecteur de langue : sobre et professionnel ── */
+.modal-icon-brand img {
+  width: 30px;
+  height: auto;
+}
+
+.lang-current {
+  margin-top: 4px;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+}
+
+.lang-divider {
+  height: 1px;
+  margin: 18px 0 8px;
+  background: var(--card-border);
+}
+
+.lang-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  text-align: left;
+}
+
+.lang-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  font: inherit;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 140ms ease;
+}
+
+.lang-item strong {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.lang-item small {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.lang-item:hover {
+  background: var(--s-cream);
+}
+
+.lang-item.active {
+  background: var(--s-rose);
+}
+
+.lang-item.active strong {
+  color: var(--accent-red);
+  font-weight: 700;
+}
+
+@media (max-width: 430px) {
+  .lang-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Boutons réseaux (couleurs officielles) ── */
+.btn.btn-telegram {
+  color: #fff;
+  background: var(--tg-blue);
+  box-shadow: 0 10px 26px rgba(42, 171, 238, 0.28);
+}
+
+.btn.btn-telegram:hover {
+  background: #1e96d6;
+}
+
+.btn.btn-whatsapp {
+  color: #fff;
+  background: var(--wa-green);
+  box-shadow: 0 10px 26px rgba(37, 211, 102, 0.28);
+}
+
+.btn.btn-whatsapp:hover {
+  background: #1fb958;
+}
+
+.btn-social-icon {
+  width: 21px;
+  height: 21px;
+}
+
+/* ── Guide « En savoir plus » (tester la bêta) ── */
+.beta-guide {
+  display: grid;
+  gap: 16px;
+  margin-top: 18px;
+  text-align: left;
+}
+
+.beta-block + .beta-block {
+  padding-top: 16px;
+  border-top: 1px solid var(--card-border);
+}
+
+.beta-block-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.beta-steps {
+  list-style: none;
+  counter-reset: step;
+  display: grid;
+  gap: 10px;
+}
+
+.beta-steps li {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding-left: 34px;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.beta-steps li::before {
+  counter-increment: step;
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 1px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--s-rose);
+  color: var(--accent-red);
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.testflight-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  border-radius: 6px;
+}
+
+.beta-android {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+/* Liens Telegram / WhatsApp soulignés en bleu */
+.beta-guide a {
+  color: #1d6ff2;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.beta-guide a:hover {
+  color: #1257c9;
+}

@@ -1,0 +1,36 @@
+/* CardSwap — conteneur et cartes (adapté du modèle react-bits).
+   Position pilotée par variables : --cs-x/--cs-y (décalage) et --cs-s (échelle),
+   surchargées par section ou par breakpoint. */
+.card-swap-container {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  transform: translate(var(--cs-x, 6%), var(--cs-y, 22%)) scale(var(--cs-s, 1));
+  transform-origin: bottom right;
+  perspective: 900px;
+  overflow: visible;
+}
+
+.card-swap-container .card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 18px;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+@media (max-width: 900px) {
+  .card-swap-container {
+    --cs-x: 10%;
+    --cs-s: 0.85;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-swap-container {
+    --cs-x: 6%;
+    --cs-s: 0.72;
+  }
+}

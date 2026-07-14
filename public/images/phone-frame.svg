@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     viewBox="0 0 950 1610" width="950" height="1610">
+  <!-- Kiro — téléphone vide détouré, format allongé (fond transparent) -->
+  <defs>
+    <filter id="phone-shadow" x="-18%" y="-10%" width="136%" height="126%">
+      <feDropShadow dx="0" dy="26" stdDeviation="34" flood-color="#2a2320" flood-opacity="0.20"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#phone-shadow)">
+    <rect x="75.5" y="405" width="9" height="60" rx="4.5" fill="#e3ded9"/>
+    <rect x="75.5" y="502" width="9" height="92" rx="4.5" fill="#e3ded9"/>
+    <rect x="75.5" y="618" width="9" height="92" rx="4.5" fill="#e3ded9"/>
+    <rect x="855.5" y="528" width="9" height="138" rx="4.5" fill="#e3ded9"/>
+    <rect x="80" y="50" width="780" height="1500" rx="112" ry="112" fill="#fdfcfb"/>
+    <rect x="81.5" y="51.5" width="777" height="1497" rx="110.5" ry="110.5" fill="none" stroke="#e7e1dc" stroke-width="3"/>
+  </g>
+  <rect x="100" y="70" width="740" height="1460" rx="94" ry="94" fill="#f6f4f1"/>
+  <rect x="385" y="92" width="170" height="52" rx="26" fill="#0a0a0c"/>
+
+  <g fill="none" stroke="#8d7bf0" stroke-linecap="round">
+    <path d="M 886 728 C 928 786 930 846 892 906" stroke-width="7.5"/>
+    <path d="M 912 766 C 940 808 941 852 916 890" stroke-width="6" opacity="0.85"/>
+    <path d="M 16 1378 C 30 1362 48 1356 64 1360" stroke-width="6.5"/>
+    <path d="M 12 1414 C 32 1394 60 1386 82 1392" stroke-width="7.5"/>
+  </g>
+</svg>

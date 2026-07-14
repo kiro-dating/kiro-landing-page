@@ -1,0 +1,114 @@
+{
+  "nav": {
+    "discover": "Descobrir",
+    "games": "Jogos",
+    "plans": "Planos",
+    "support": "Suporte",
+    "contact": "Contato",
+    "language": "Idioma"
+  },
+  "hero": {
+    "brand": "Kiro",
+    "tagline": "Pare de deslizar. Venha se encontrar.",
+    "secondary": "O app de relacionamento que quebra o gelo: jogos, lugares, eventos e comunidades para criar conexões de verdade.",
+    "cta_test": "Testar o Kiro",
+    "cta_more": "Saiba mais",
+    "scroll": "Descobrir",
+    "tagline_1": "Quebre o gelo,",
+    "tagline_2": "dê o primeiro passo"
+  },
+  "modals": {
+    "close": "Fechar",
+    "test_title": "Teste o Kiro agora mesmo",
+    "test_body": "Entre na comunidade: acesso à beta, conversas diretas com a equipe e os primeiros membros.",
+    "test_button": "Entrar no grupo do Telegram",
+    "beta_title": "Testar o Kiro é simples",
+    "lang_title": "Escolher um idioma",
+    "test_whatsapp": "Entrar no canal do WhatsApp",
+    "beta_ios_title": "No iPhone (iOS)",
+    "beta_ios_step1": "Baixe o <tf>TestFlight</tf>, o aplicativo oficial da Apple, na App Store.",
+    "beta_ios_step2": "Entre no grupo do <tg>Telegram</tg> ou no canal do <wa>WhatsApp</wa> e toque no link de convite.",
+    "beta_ios_step3": "Tudo pronto: você já pode testar o Kiro!",
+    "beta_android_title": "No Android",
+    "beta_android_desc": "Nenhum app extra para baixar: entre no grupo do <tg>Telegram</tg> ou no canal do <wa>WhatsApp</wa>, toque no link e o Google Play abre direto para instalar o app."
+  },
+  "concept": {
+    "eyebrow": "O conceito",
+    "title": "Kiro: a engenharia do encontro de verdade.",
+    "intro": "Os apps de namoro tradicionais estão quebrados: julgamentos superficiais, perfis vazios, conversas travadas. O Kiro vira esse jogo. A gente não ajuda só a dar match — acompanha você até a mesa do primeiro encontro.",
+    "quote": "O Kiro não coloca você em contato. O Kiro coloca você em cena.",
+    "point1_title": "Personalidade em primeiro lugar.",
+    "point1_desc": "Chega de perfis vazios. A afinidade nasce do nosso teste psicológico Big Five.",
+    "point2_title": "Lugares em comum.",
+    "point2_desc": "Reencontre com segurança quem frequenta os seus lugares favoritos (academia, café...).",
+    "point3_title": "O jogo quebra o gelo.",
+    "point3_desc": "Adeus aos “oi, tudo bem?”. Nossos minijogos criam atração sem pressão.",
+    "point4_title": "Da tela para a vida real.",
+    "point4_desc": "O Kiro sugere lugares, sincroniza agendas e planeja o seu encontro de verdade."
+  },
+  "games": {
+    "eyebrow": "Interação dinâmica",
+    "title": "Atração não se força. Se joga.",
+    "desc": "A síndrome da página em branco e os “oi, tudo bem?” ignorados ficaram no passado. O Kiro troca a angústia da primeira mensagem pela empolgação do jogo. Conheça nossas experiências interativas, feitas para transformar uma simples curiosidade em conexão de verdade.",
+    "game1_title": "Match 5: a faísca do que vocês têm em comum",
+    "game1_text": "5 perguntas certeiras para medir a compatibilidade de vocês em tempo real. Descubra na hora, em porcentagem, o que aproxima vocês. Responderam exatamente o oposto? Perfeito. O algoritmo vai lembrar disso com bom humor: os opostos costumam render as melhores histórias.",
+    "game2_title": "Verdade ou Desafio,\nzero filtro, 100% espontâneo",
+    "game2_text": "Por que ser comum se dá para ser inesquecível? Esse clássico reinventado é a arma secreta para começar uma conversa sem esforço. Pergunta engraçada, ousada ou profunda: é o atalho definitivo para prender a atenção e fazer o interesse disparar em segundos.",
+    "game3_title": "Adivinhe meu número: a arte de retomar o papo",
+    "game3_text": "A conversa esfriou? Não deixe o silêncio se instalar. Lance esse desafio mental rápido para esquentar o clima e aguçar a curiosidade. O objetivo é simples, o efeito é imediato: você desperta a cumplicidade, deixa o clima leve e coloca a diversão de volta no centro.",
+    "game4_title": "Perfect Date: o passaporte para a vida real",
+    "game4_text": "A prova final antes do encontro presencial. Você conhece mesmo a pessoa com quem está falando? Faça o teste. Se acertar pelo menos 70%, o virtual para por aqui: o Kiro assume e já propõe planejar o seu primeiro encontro de verdade."
+  },
+  "plans": {
+    "eyebrow": "Planos",
+    "title": "Grátis para começar, mais se você quiser",
+    "desc": "Um plano gratuito completo para viver o essencial do Kiro, e três planos para ir além. Valem os preços e ofertas exibidos no aplicativo.",
+    "free_name": "Grátis",
+    "free_desc": "Descoberta, matches, chat e jogos quebra-gelo, com cotas diárias.",
+    "standard_name": "Standard",
+    "standard_desc": "Mais Flames, mensagens e traduções por dia, Super Flames e desafios premium.",
+    "premium_name": "Premium",
+    "premium_desc": "Veja quem curtiu você, filtros avançados, modo incógnito e speed dating.",
+    "max_name": "Max",
+    "max_desc": "Sem nenhum limite: cotas máximas, boost incluído, suporte prioritário e selos exclusivos.",
+    "popular": "Popular"
+  },
+  "cta": {
+    "title": "Pronto para se encontrar de outro jeito?",
+    "desc": "A versão beta está aberta. Entre na comunidade e teste o Kiro hoje mesmo.",
+    "btn_telegram": "Entrar no Telegram",
+    "btn_beta": "Instalar a beta"
+  },
+  "footer": {
+    "tagline": "Encontros, lugares e comunidades.",
+    "col_test": "Testar o aplicativo",
+    "test_telegram": "Grupo do Telegram",
+    "test_ios": "iOS (TestFlight)",
+    "test_android": "Android (Google Play)",
+    "col_legal": "Legal",
+    "terms": "Termos de Uso",
+    "privacy": "Política de Privacidade",
+    "help": "Central de Ajuda",
+    "contact": "Contato",
+    "col_social": "Redes sociais",
+    "rights": "Todos os direitos reservados.",
+    "langs": "Disponível em 10 idiomas"
+  },
+  "chatdemo": {
+    "eyebrow": "Prévia ao vivo",
+    "title": "A arte da resposta certeira, sem esforço.",
+    "desc": "Pare de contar sua vida — viva o momento. Veja como um desafio transforma um papo comum em sedução.",
+    "msg1": "Verdade ou Desafio? Sem direito a erro na primeira escolha. 😏",
+    "msg2": "Verdade. Não tenho medo de nada. Pode perguntar.",
+    "msg3": "Perfeito. Descreva seu encontro ideal, mas SÓ com emojis. ⏳",
+    "msg4": "Desafio aceito. 🌇🍷🍝🎷🚶‍♀️🌙🤫",
+    "msg5": "Um jantar italiano ao pôr do sol e depois um clube de jazz? Ok, você acabou de marcar muitos pontos... 🔥"
+  },
+  "kiroplaces": {
+    "eyebrow": "Os lugares Kiro",
+    "title": "Primeiros encontros que já têm endereço",
+    "title_local": "Em {{city}}, as pessoas já se encontram aqui",
+    "desc": "Cafés, restaurantes, festivais, lugares icônicos: associe seus lugares favoritos ao seu perfil e encontre quem já vive neles. Só o nome do lugar aparece — nunca um endereço particular, nunca um ponto no mapa.",
+    "note": "Endereços residenciais e lugares sensíveis são recusados automaticamente."
+  }
+}

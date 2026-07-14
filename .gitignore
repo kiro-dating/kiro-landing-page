@@ -30,3 +30,7 @@ dist-ssr
 .env.*.local
 # But allow the example template
 !.env.example
+
+# Corbeille locale (fichiers déplacés au lieu d'être supprimés)
+_to_delete/
+**/_to_delete/

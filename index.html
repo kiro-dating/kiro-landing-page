@@ -2,25 +2,44 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/icon_kiro.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap"
+    />
+    <link rel="apple-touch-icon" href="/icon_kiro.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#070709" />
 
     <!-- Primary Meta -->
-    <title>Kiro — Trouve ton match</title>
-    <meta name="description" content="Fais partie des premiers à tester Kiro. Une nouvelle façon de rencontrer, matcher et discuter." />
+    <title>Kiro — Arrête de swiper. Viens rencontrer.</title>
+    <meta name="description" content="Kiro, l'app de rencontre qui casse la glace : jeux brise-glace, traduction instantanée (créole inclus), communautés et confidentialité d'abord. Réserve ta place." />
+    <link rel="canonical" href="%VITE_SITE_URL%/" />
 
     <!-- Open Graph (Facebook, WhatsApp, Discord…) -->
-    <meta property="og:title" content="Kiro — Trouve ton match" />
-    <meta property="og:description" content="Swipe. Match. Discute. Rejoins les premiers utilisateurs." />
-    <meta property="og:image" content="/profile_phone.png" />
+    <meta property="og:site_name" content="Kiro" />
+    <meta property="og:title" content="Kiro — Arrête de swiper. Viens rencontrer." />
+    <meta property="og:description" content="Jeux brise-glace, traduction instantanée et rencontres authentiques. Sois parmi les premiers à tester Kiro." />
+    <meta property="og:url" content="%VITE_SITE_URL%/" />
+    <meta property="og:image" content="%VITE_SITE_URL%/images/og-kiro.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="fr_FR" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:locale:alternate" content="ht_HT" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Kiro — Trouve ton match" />
-    <meta name="twitter:description" content="Swipe. Match. Discute. Rejoins les premiers utilisateurs." />
-    <meta name="twitter:image" content="/profile_phone.png" />
+    <meta name="twitter:title" content="Kiro — Arrête de swiper. Viens rencontrer." />
+    <meta name="twitter:description" content="Jeux brise-glace, traduction instantanée et rencontres authentiques. Sois parmi les premiers à tester Kiro." />
+    <meta name="twitter:image" content="%VITE_SITE_URL%/images/og-kiro.jpg" />
+
+    <!-- LCP : le téléphone n'existe que sur grand écran — préchargé seulement là -->
+    <link rel="preload" as="image" href="/images/phone-frame.svg" type="image/svg+xml" fetchpriority="high" media="(min-width: 901px)" />
+    <link rel="preload" as="image" href="/images/profiles/profile-01.webp" fetchpriority="high" media="(min-width: 901px)" />
   </head>
   <body>
     <div id="root"></div>

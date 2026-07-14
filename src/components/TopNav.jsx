@@ -1,74 +1,68 @@
-import React, { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { Globe, Sun, Moon } from "lucide-react";
-import "./TopNav.css";
+import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Globe } from 'lucide-react';
+import { LINKS } from '../config/links';
+import './TopNav.css';
 
-export const TopNav = () => {
-  const { i18n } = useTranslation();
-  const [isDark, setIsDark] = useState(true);
+export const TopNav = ({ onOpenLang }) => {
+  const { t, i18n } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    if (isDark) {
-      document.body.classList.remove("light-mode");
-    } else {
-      document.body.classList.add("light-mode");
-    }
-  }, [isDark]);
+    document.body.classList.toggle('nav-open', open);
+    return () => document.body.classList.remove('nav-open');
+  }, [open]);
 
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
-  };
+  useEffect(() => {
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        setScrolled(window.scrollY > 12);
+        ticking = false;
+      });
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
-  const toggleTheme = () => {
-    setIsDark(!isDark);
-  };
+  const closeMenu = () => setOpen(false);
 
   return (
-    <div className="top-nav-container">
-      <div className="logo-brand">
-        <img
-          src="/icon_kiro.png"
-          alt="Kiro"
-          style={{ width: "48px", height: "48px", objectFit: "contain" }}
-        />
-      </div>
-      <div className="top-nav">
-        {/* Theme Switcher */}
-        <div className="nav-group">
-          <button
-            className="nav-icon-btn"
-            onClick={toggleTheme}
-            aria-label="Toggle Theme"
-          >
-            {isDark ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
-        </div>
+    <header className={`top-nav ${scrolled ? 'scrolled' : ''}`}>
+      <div className="top-nav-inner">
+        <a className="nav-brand" href="#" aria-label="Kiro">
+          <img src="/icons/kiro-symbol.svg" alt="Kiro" width="36" height="42" />
+        </a>
 
-        <div className="nav-divider"></div>
+        <nav className="nav-center" aria-label="Navigation principale" onClick={closeMenu}>
+          <a href="#concept">{t('nav.discover')}</a>
+          <a href="#jeux">{t('nav.games')}</a>
+          <a href="#abonnements">{t('nav.plans')}</a>
+          <a href={LINKS.support} target="_blank" rel="noopener noreferrer">{t('nav.support')}</a>
+          <a href={`mailto:${LINKS.contactEmail}`}>{t('nav.contact')}</a>
+        </nav>
 
-        {/* Language Switcher */}
-        <div className="nav-group">
-          <Globe size={18} className="nav-icon" />
-          <button
-            className={`lang-btn ${i18n.language === "fr" ? "active" : ""}`}
-            onClick={() => changeLanguage("fr")}
-          >
-            FR
+        <div className="nav-right">
+          <button className="lang-toggle" onClick={onOpenLang} aria-label={t('nav.language')}>
+            <Globe size={17} />
+            {i18n.language.split('-')[0].toUpperCase()}
           </button>
           <button
-            className={`lang-btn ${i18n.language === "en" ? "active" : ""}`}
-            onClick={() => changeLanguage("en")}
+            className="nav-burger"
+            aria-label="Menu"
+            aria-expanded={open}
+            onClick={() => setOpen(!open)}
           >
-            EN
-          </button>
-          <button
-            className={`lang-btn ${i18n.language === "ht" ? "active" : ""}`}
-            onClick={() => changeLanguage("ht")}
-          >
-            HT
+            <span></span>
+            <span></span>
+            <span></span>
           </button>
         </div>
       </div>
-    </div>
+    </header>
   );
 };

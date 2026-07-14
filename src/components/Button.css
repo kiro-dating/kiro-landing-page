@@ -1,23 +1,56 @@
-.premium-button {
-  background: var(--accent-red);
-  color: white;
-  border: none;
-  border-radius: 9999px; /* Pill shape */
-  padding: 14px 28px;
-  font-size: 16px;
-  font-family: inherit;
-  font-weight: 500;
-  cursor: pointer;
-  box-shadow: 0 4px 14px rgba(255, 59, 48, 0.2);
-  transition: box-shadow 0.3s ease, background 0.3s ease;
+.btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  outline: none;
+  min-height: 50px;
+  padding: 13px 24px;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.1;
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    background-color 170ms ease,
+    border-color 170ms ease,
+    color 170ms ease,
+    box-shadow 200ms ease,
+    transform 200ms cubic-bezier(0.2, 0.8, 0.3, 1);
 }
 
-.premium-button:hover, .premium-button:focus-visible {
-  background: #ff5247;
-  box-shadow: 0 0 20px var(--accent-red-glow), 0 4px 14px rgba(255, 59, 48, 0.3);
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  color: #fff;
+  background: var(--accent-red);
+  box-shadow: 0 10px 26px var(--accent-red-glow);
+}
+
+.btn-primary:hover {
+  background: var(--accent-red-dark);
+}
+
+.btn-secondary {
+  color: var(--text-primary);
+  background: #fff;
+  border-color: var(--card-border);
+}
+
+.btn-secondary:hover {
+  border-color: #d9cdc7;
+  background: var(--s-cream);
+}
+
+.btn-dark {
+  color: #fff;
+  background: var(--text-primary);
+}
+
+.btn-dark:hover {
+  background: var(--accent-red-dark);
 }

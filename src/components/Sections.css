@@ -1,0 +1,851 @@
+/* ════════ Ambiances par section ════════ */
+.s-concept { background: var(--s-cream); }
+.s-games { background: var(--s-rose); }
+.s-places { background: var(--s-mint); }
+.s-events { background: var(--s-blue); }
+.s-translate { background: var(--s-gold); }
+.s-plans {
+  overflow: hidden;
+  background:
+    radial-gradient(640px 420px at 78% 42%, rgba(240, 28, 67, 0.16), transparent 68%),
+    #0b0b10;
+}
+.s-cta {
+  background:
+    radial-gradient(720px 340px at 50% 0%, rgba(224, 52, 43, 0.10), transparent 70%),
+    var(--s-rose);
+}
+
+/* ════════ Concept — split 2 colonnes, zéro scroll ════════ */
+.concept-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: 56px;
+  /* L'en-tête de gauche s'aligne sur le haut de la première carte de droite */
+  align-items: start;
+}
+
+.concept-story .section-title {
+  font-size: clamp(1.7rem, 2.9vw, 2.45rem);
+}
+
+.concept-intro {
+  margin-top: 18px;
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.concept-quote {
+  margin-top: 26px;
+  padding: 15px 20px;
+  border-left: 3px solid var(--accent-red);
+  border-radius: 0 14px 14px 0;
+  background: #fff;
+  box-shadow: var(--card-shadow);
+  color: var(--text-primary);
+  font-size: 1.04rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.concept-points {
+  list-style: none;
+  display: grid;
+  gap: 13px;
+  padding: 0;
+}
+
+.concept-points li {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 15px 18px;
+  background: #fff;
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  box-shadow: var(--card-shadow);
+}
+
+.concept-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  color: var(--accent-red);
+  background: var(--s-rose);
+}
+
+.concept-points strong {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--text-primary);
+  font-size: 0.98rem;
+}
+
+.concept-points li > div > span {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+/* Tient sur un écran : padding vertical réduit pour cette section */
+.s-concept.section {
+  padding: 64px 0;
+}
+
+@media (max-width: 900px) {
+  .concept-split {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+/* ════════ Jeux — pile de cartes au défilement ════════
+   Le « driver » donne la longueur de défilement ; le bloc épinglé
+   (en-tête + zone de cartes) est UN SEUL élément sticky : dès que la
+   dernière carte est posée, tout se libère et part ensemble. */
+.games-driver {
+  position: relative;
+}
+
+.games-pin {
+  position: sticky;
+  top: 76px;
+  padding-bottom: 8px;
+}
+
+.games-cards {
+  position: relative;
+  max-width: 900px;
+  margin: 24px auto 0;
+}
+
+.games-cards .game-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+/* Mobile : liste simple, sans épinglage */
+.games-list {
+  display: grid;
+  gap: 18px;
+  margin-top: 34px;
+}
+
+/* Titre sur une seule ligne */
+.s-games .section-title {
+  max-width: none;
+  font-size: clamp(1.55rem, 2.7vw, 2.35rem);
+}
+
+.game-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 36px;
+  align-items: center;
+  min-height: 400px;
+  padding: 48px;
+  border-radius: 28px;
+  box-shadow: 0 24px 60px rgba(35, 25, 20, 0.16);
+  transform-origin: top center;
+  will-change: transform;
+}
+
+.game-num {
+  display: inline-block;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  opacity: 0.55;
+}
+
+.game-card h3 {
+  font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  /* Respecte les retours à la ligne des titres (ex. carte 02) */
+  white-space: pre-line;
+}
+
+.game-card p {
+  margin-top: 14px;
+  font-size: 0.99rem;
+  line-height: 1.7;
+  opacity: 0.82;
+}
+
+/* Ambiances par carte */
+.gc-rose { background: #fdeae5; color: var(--text-primary); }
+.gc-ink { background: #201c1b; color: #f6f1ee; }
+.gc-mint { background: #e4efe7; color: var(--text-primary); }
+.gc-red { background: linear-gradient(135deg, var(--brand-red), #b3251d); color: #fff; }
+
+/* ── Illustrations ── */
+.gi {
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+}
+
+/* Match 5 : anneau de compatibilité + 5 questions */
+.compat-ring {
+  display: grid;
+  place-items: center;
+  width: 170px;
+  height: 170px;
+  border-radius: 999px;
+  background: conic-gradient(var(--brand-red) 0 87%, rgba(240, 28, 67, 0.15) 87% 100%);
+}
+
+.compat-ring span {
+  display: grid;
+  place-items: center;
+  width: 132px;
+  height: 132px;
+  border-radius: 999px;
+  background: #fff;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--brand-red);
+}
+
+.q-dots {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.q-dots i {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(240, 28, 67, 0.2);
+}
+
+.q-dots i.on { background: var(--brand-red); }
+
+/* Action ou Vérité : deux cartes inclinées, orbite et étincelles */
+.gi-tod {
+  position: relative;
+  display: flex;
+  gap: 20px;
+  pointer-events: none;
+}
+
+/* Fine orbite elliptique derrière les cartes */
+.tod-orbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 330px;
+  height: 190px;
+  border: 1.5px solid rgba(246, 241, 238, 0.12);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotate(-16deg);
+}
+
+.tod-card {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 118px;
+  height: 158px;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.42);
+}
+
+.tod-a {
+  z-index: 1;
+  background: linear-gradient(160deg, #f89b4b 0%, #f0764f 34%, var(--brand-red) 100%);
+  color: #fff;
+  transform: rotate(-8deg);
+}
+
+/* Halo circulaire + lueur autour de l'éclair */
+.tod-a::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 88px;
+  height: 88px;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.tod-a svg {
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.55));
+}
+
+.tod-shine {
+  position: absolute;
+  top: 26px;
+  right: 22px;
+  color: #fff;
+  font-size: 13px;
+  font-style: normal;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+}
+
+.tod-v {
+  background: linear-gradient(165deg, #fbf8f5, #efe7df);
+  color: #8d7f71;
+  transform: rotate(7deg) translateY(12px);
+}
+
+/* Étincelles et point autour de la composition */
+.tod-spark {
+  position: absolute;
+  color: #f0764f;
+  font-style: normal;
+  line-height: 1;
+  text-shadow: 0 0 10px rgba(240, 118, 79, 0.6);
+}
+
+.ts-1 { top: -4px; left: 6%; font-size: 15px; }
+.ts-2 { top: 12px; right: 4%; font-size: 20px; }
+.ts-3 { bottom: 2px; left: 16%; font-size: 12px; opacity: 0.85; }
+
+.tod-dot {
+  position: absolute;
+  right: 10%;
+  bottom: 18px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #f0764f;
+  box-shadow: 0 0 10px rgba(240, 118, 79, 0.7);
+}
+
+/* Devine mon numéro : tuiles chiffrées */
+.gi-guess { display: flex; gap: 12px; }
+
+.gi-guess span {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 78px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 10px 24px rgba(35, 25, 20, 0.1);
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.gi-guess .mystery {
+  background: var(--brand-red);
+  border-color: var(--brand-red);
+  color: #fff;
+  transform: translateY(-10px) rotate(5deg);
+}
+
+/* Perfect Date : calendrier + barre de 70 % */
+.gi-date { gap: 22px; }
+
+.date-cal {
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.date-bar {
+  position: relative;
+  width: 220px;
+  height: 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.date-bar i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 70%;
+  border-radius: 999px;
+  background: #fff;
+}
+
+.date-bar span {
+  position: absolute;
+  top: -32px;
+  left: 70%;
+  transform: translateX(-50%);
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 860px) {
+  .game-card {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    min-height: 0;
+    padding: 30px 24px;
+  }
+
+  .gi { min-height: 170px; }
+
+}
+
+/* ════════ Grilles de cartes ════════ */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 40px;
+}
+
+.cards-grid.cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.feature-card {
+  padding: 24px 22px;
+  min-height: 190px;
+  display: flex;
+  flex-direction: column;
+}
+
+.feature-card .icon-chip {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 16px;
+  color: var(--accent-red);
+  background: var(--s-rose);
+  border-radius: 13px;
+}
+
+.feature-card h3 {
+  font-size: 1.08rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.feature-card p {
+  margin-top: 7px;
+  color: var(--text-secondary);
+  font-size: 0.94rem;
+  line-height: 1.55;
+}
+
+/* ════════ Lieux ════════ */
+.places-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 48px;
+  align-items: center;
+}
+
+.place-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.place-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+}
+
+.place-card:nth-child(2) {
+  transform: translateY(14px);
+}
+
+.place-card:nth-child(3) {
+  transform: translateY(-6px);
+}
+
+.place-emoji {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  font-size: 1.4rem;
+  background: var(--s-mint);
+  border-radius: 13px;
+  flex: 0 0 auto;
+}
+
+.place-card strong {
+  display: block;
+  font-size: 0.98rem;
+  letter-spacing: -0.01em;
+}
+
+.place-card small {
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.places-note {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 22px;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+}
+
+.places-note svg {
+  color: #4e625b;
+  flex: 0 0 auto;
+}
+
+/* ════════ Événements ════════ */
+.events-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 40px;
+}
+
+.event-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.event-card .icon-chip {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  color: #38506e;
+  background: var(--s-blue);
+  border-radius: 13px;
+  flex: 0 0 auto;
+}
+
+/* ════════ Traduction ════════ */
+.translate-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 48px;
+  align-items: center;
+}
+
+.chat-demo {
+  display: grid;
+  gap: 12px;
+  max-width: 400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.chat-bubble {
+  max-width: 88%;
+  padding: 13px 17px;
+  font-size: 1rem;
+  line-height: 1.45;
+  border-radius: 20px;
+}
+
+.chat-bubble.in {
+  justify-self: start;
+  background: #fff;
+  border: 1px solid var(--card-border);
+  border-bottom-left-radius: 6px;
+  box-shadow: var(--card-shadow);
+}
+
+.chat-bubble.out {
+  justify-self: end;
+  color: #fff;
+  background: var(--accent-red);
+  border-bottom-right-radius: 6px;
+  box-shadow: 0 12px 26px var(--accent-red-glow);
+}
+
+.chat-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  justify-self: end;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+/* Indicateur « en train d'écrire » : trois points qui dansent */
+.chat-typing {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 62px;
+  min-height: 44px;
+  justify-content: center;
+}
+
+.chat-typing i {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.45;
+  animation: typing-bounce 1.1s ease-in-out infinite;
+}
+
+.chat-bubble.chat-typing.in i { color: var(--text-secondary); }
+.chat-bubble.chat-typing.out i { color: #fff; }
+
+.chat-typing i:nth-child(2) { animation-delay: 0.18s; }
+.chat-typing i:nth-child(3) { animation-delay: 0.36s; }
+
+@keyframes typing-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.45; }
+  30% { transform: translateY(-5px); opacity: 1; }
+}
+
+/* La fenêtre de chat garde une hauteur stable pendant l'animation */
+.chat-demo {
+  min-height: 430px;
+  align-content: end;
+}
+
+/* Section chat : hauteur naturelle, colonnes centrées.
+   La zone de conversation a une hauteur réservée (min-height ci-dessus) :
+   aucun décalage de mise en page pendant que les bulles apparaissent. */
+.s-chatlock .translate-grid {
+  align-items: center;
+}
+
+/* ════════ Abonnements — pile CardSwap (section sombre) ════════ */
+.plans-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: 52px;
+  align-items: center;
+}
+
+/* Texte clair sur fond sombre */
+.s-plans .section-title {
+  color: #fff;
+}
+
+.s-plans .section-desc {
+  color: rgba(255, 255, 255, 0.68);
+}
+
+/* Couleur signature de chaque plan */
+.tier-free     { --tier: #f01c43; --tier-soft: rgba(240, 28, 67, 0.30); }
+.tier-standard { --tier: #ffc53d; --tier-soft: rgba(255, 197, 61, 0.26); }
+.tier-premium  { --tier: #34d399; --tier-soft: rgba(52, 211, 153, 0.26); }
+.tier-max      { --tier: #a78bfa; --tier-soft: rgba(167, 139, 250, 0.30); }
+
+/* Rappel des 4 plans sous le texte */
+.plans-chips {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 24px;
+  padding: 0;
+}
+
+.plans-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.plans-chip svg {
+  color: var(--tier);
+}
+
+/* Zone de la pile : sans boîte — les cartes vivent dans la section,
+   aimantées au bord droit de l'écran */
+.plans-visual {
+  position: relative;
+  height: 540px;
+  margin-right: -24px; /* mobile : jusqu'au bord de l'écran */
+}
+
+@media (min-width: 1001px) {
+  /* La colonne s'étire jusqu'au bord droit du viewport… */
+  .plans-visual {
+    margin-right: calc(-1 * max(24px, (100vw - 1160px) / 2 + 24px));
+  }
+
+  /* …et la pile recule de la largeur des cartes arrière (3 × 72 px),
+     pour que tout l'éventail reste visible, collé au bord */
+  .plans-visual .card-swap-container {
+    --cs-x: -216px;
+  }
+}
+
+/* Écrans intermédiaires : éventail légèrement réduit pour ne pas mordre le texte */
+@media (min-width: 1001px) and (max-width: 1360px) {
+  .plans-visual .card-swap-container {
+    --cs-s: 0.8;
+  }
+}
+
+/* Cartes de plan (surclasse les .card génériques) */
+.plan-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 16px;
+  background:
+    radial-gradient(240px 170px at 88% -8%, var(--tier-soft), transparent 70%),
+    linear-gradient(165deg, #1e1e26, #101015);
+  box-shadow: 0 26px 52px rgba(0, 0, 0, 0.5);
+  color: #fff;
+}
+
+.plan-card-top {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 13px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.plan-card-top svg {
+  color: var(--tier);
+}
+
+.plan-pop {
+  margin-left: auto;
+  padding: 3px 11px;
+  border-radius: 999px;
+  background: var(--tier);
+  color: #14141a;
+  font-size: 0.68rem;
+  font-style: normal;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+}
+
+.plan-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  padding: 22px 20px;
+}
+
+.plan-card-body h3 {
+  font-size: 1.85rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+.plan-card-body p {
+  color: rgba(255, 255, 255, 0.74);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* Liseré signature en haut de chaque carte */
+.plan-card::before {
+  content: '';
+  height: 3px;
+  flex-shrink: 0;
+  background: linear-gradient(90deg, var(--tier), transparent 85%);
+}
+
+/* ════════ CTA final ════════ */
+.cta-final {
+  text-align: center;
+}
+
+.cta-final .section-title {
+  margin-inline: auto;
+}
+
+.cta-final .cta-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+/* ════════ Responsive ════════ */
+@media (max-width: 1000px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .plans-split {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .plans-visual {
+    height: 460px;
+  }
+
+  .translate-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+}
+
+@media (max-width: 640px) {
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-card {
+    min-height: 0;
+  }
+
+  /* Pile de plans plus compacte sur mobile */
+  .plans-visual {
+    height: 380px;
+  }
+
+  .place-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .place-card:nth-child(2),
+  .place-card:nth-child(3) {
+    transform: none;
+  }
+
+  .cta-final .cta-buttons .btn {
+    flex: 1 1 100%;
+  }
+}

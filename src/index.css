@@ -1,29 +1,54 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
+/* ── Thème clair unique — chaque section porte sa propre ambiance ── */
 :root {
-  --bg-color: #070709;
-  --text-primary: #ffffff;
-  --text-secondary: #9999a1;
-  --accent-red: #ff3b30;
-  --accent-red-glow: rgba(255, 59, 48, 0.4);
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --font-inter: 'Inter', sans-serif;
-}
+  --bg-color: #ffffff;
+  --text-primary: #171515;
+  --text-secondary: #655d5a;
+  --accent-red: #e0342b;
+  --accent-red-dark: #b3251d;
+  --accent-red-glow: rgba(224, 52, 43, 0.16);
+  --card-bg: #ffffff;
+  --card-border: #ece4e0;
+  --card-shadow: 0 10px 30px rgba(38, 26, 23, 0.07);
 
-body.light-mode {
-  --bg-color: #f7f7f9;
-  --text-primary: #121214;
-  --text-secondary: #666670;
-  --accent-red-glow: rgba(255, 59, 48, 0.15);
-  --glass-bg: rgba(0, 0, 0, 0.03);
-  --glass-border: rgba(0, 0, 0, 0.08);
+  /* Ambiances de sections (personnalisables) */
+  --s-cream: #faf6f2;
+  --s-rose: #fdf0ee;
+  --s-mint: #edf4ee;
+  --s-blue: #eef2f7;
+  --s-gold: #f8f2e7;
+  --s-ink: #171515;
+
+  --font-inter: 'Inter', sans-serif;
+  /* Police de la marque (logotype Kiro) — à recharger dans index.html si utilisée */
+  --font-brand: 'Comfortaa', 'Inter', sans-serif;
+
+  /* Couleurs de marque centralisées */
+  --brand-red: #f01c43;
+  --tg-blue: #2aabee;
+  --wa-green: #25d366;
+  color-scheme: light;
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* Barre de défilement masquée — le défilement reste actif */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 body {
@@ -37,58 +62,112 @@ body {
   overflow-x: hidden;
 }
 
-/* Base Utility Classes */
+img {
+  max-width: 100%;
+}
+
 .container {
-  max-width: 1200px;
+  max-width: 1160px;
   margin: 0 auto;
   padding: 0 24px;
 }
 
-.text-gradient {
-  background: linear-gradient(135deg, #ffffff 0%, #a4a4b5 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.text-secondary {
+  color: var(--text-secondary);
 }
 
-/* Ambient Glows handled in InteractiveBackground.css */
-
-/* Glassmorphism */
-.glass-panel {
-  background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+/* ── Sections ── */
+.section {
+  padding: 88px 0;
 }
 
-/* Autofill Overrides (Permanent Transparent Fix for Chrome/Safari) */
-input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, 
-input:-webkit-autofill:active,
-select:-webkit-autofill,
-select:-webkit-autofill:hover, 
-select:-webkit-autofill:focus, 
-select:-webkit-autofill:active {
-  /* Makes the inner box shadow truly transparent, so glass effect shows beneath */
-  -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
-  box-shadow: 0 0 0px 1000px transparent inset !important;
-  
-  /* Retains the text color properly */
-  -webkit-text-fill-color: var(--text-primary) !important;
-  color: var(--text-primary) !important;
-  caret-color: var(--text-primary) !important;
-
-  /* The magic trick: delays the browser from ever applying its default autofill background color */
-  transition: background-color 9999s ease-in-out 0s, color 9999s ease-in-out 0s !important;
-  
-  /* Fallback UI: If Chrome absolutely forces it, use the dark OS theme autofill color, avoiding harsh whites */
-  color-scheme: dark !important; 
+.section-inner {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 24px;
 }
 
-body.light-mode input:-webkit-autofill,
-body.light-mode select:-webkit-autofill {
-  color-scheme: light !important;
+.section-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  color: var(--accent-red-dark);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.section-eyebrow::before {
+  content: '';
+  width: 20px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent-red);
+}
+
+.section-title {
+  max-width: 640px;
+  font-size: clamp(1.7rem, 3.4vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+}
+
+.section-desc {
+  max-width: 620px;
+  margin-top: 14px;
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.section-head-center {
+  text-align: center;
+}
+
+.section-head-center .section-title,
+.section-head-center .section-desc {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── Cartes génériques ── */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 18px;
+  box-shadow: var(--card-shadow);
+}
+
+/* ── Ancrages sous le header sticky ── */
+main [id] {
+  scroll-margin-top: 84px;
+}
+
+/* ── Focus visible ── */
+:where(a, button, input):focus-visible {
+  outline: 2px solid var(--text-primary);
+  outline-offset: 3px;
+}
+
+/* ── Mouvement réduit ── */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding: 60px 0;
+  }
 }
