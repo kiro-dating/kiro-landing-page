@@ -570,8 +570,8 @@
   .tod-orbit { width: 220px; height: 124px; }
   .ts-1, .ts-3, .tod-dot { display: none; }
 
-  /* 03 — tuiles légèrement inclinées, « ? » assorti à la carte menthe */
-  .gi-guess { gap: 8px; }
+  /* 03 — tuiles centrées, légèrement inclinées, « ? » assorti à la carte menthe */
+  .gi-guess { gap: 8px; justify-content: center; }
   .gi-guess span { width: 46px; height: 56px; border-radius: 12px; font-size: 1.2rem; }
   .gi-guess span:nth-child(2) { transform: rotate(-5deg) translateY(3px); }
   .gi-guess .mystery { background: #1d8a70; transform: rotate(4deg); }

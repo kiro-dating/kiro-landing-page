@@ -200,17 +200,21 @@ const useStackEnabled = () => {
 };
 
 const GameCardContent = ({ i, gKey, t }) => {
-  /* Mobile : description repliée sur 3 lignes + bouton « Voir plus » */
+  /* Mobile : description repliée sur 3 lignes + bouton « Voir plus ».
+     Carte 03 : texte court → affiché en entier, sans bouton. */
   const [open, setOpen] = useState(false);
+  const fullText = i === 2;
   return (
     <>
-      <div className={`game-copy ${open ? 'is-open' : ''}`}>
+      <div className={`game-copy ${open || fullText ? 'is-open' : ''}`}>
         <span className="game-num">{String(i + 1).padStart(2, '0')}</span>
         <h3>{t(`games.${gKey}_title`)}</h3>
         <p>{t(`games.${gKey}_text`)}</p>
-        <button type="button" className="game-more" onClick={() => setOpen(!open)}>
-          {open ? t('games.less') : t('games.more')} <ChevronRight size={15} />
-        </button>
+        {!fullText && (
+          <button type="button" className="game-more" onClick={() => setOpen(!open)}>
+            {open ? t('games.less') : t('games.more')} <ChevronRight size={15} />
+          </button>
+        )}
       </div>
       <GameIllustration index={i} completedLabel={t('games.completed')} />
     </>
