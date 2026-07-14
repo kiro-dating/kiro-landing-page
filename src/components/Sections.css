@@ -1,6 +1,11 @@
 /* ════════ Ambiances par section ════════ */
 .s-concept { background: var(--s-cream); }
-.s-games { background: var(--s-rose); }
+.s-games {
+  background: var(--s-rose);
+  /* Scelle la section : une carte en mouvement ne peut JAMAIS déborder
+     sur la section suivante (clip ne casse pas le position: sticky) */
+  overflow: clip;
+}
 .s-places { background: var(--s-mint); }
 .s-events { background: var(--s-blue); }
 .s-translate { background: var(--s-gold); }
@@ -622,7 +627,9 @@
 /* La fenêtre de chat garde une hauteur stable pendant l'animation */
 .chat-demo {
   min-height: 430px;
-  align-content: end;
+  /* La conversation démarre EN HAUT de la zone (dans le champ de vision) :
+     la première bulle apparaît tout de suite, les suivantes s'empilent dessous */
+  align-content: start;
 }
 
 /* Section chat : hauteur naturelle, colonnes centrées.

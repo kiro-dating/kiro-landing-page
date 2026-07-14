@@ -171,13 +171,15 @@ const GameCard = ({ index, total, progress, yStart, className, children }) => {
   );
 };
 
-/* Vrai au-dessus de 640 px : en dessous, pas d'empilement animé (mobile sobre) */
+/* Pile animée seulement au-dessus de 640 px ET sans « mouvement réduit » :
+   sinon, liste simple — plus sobre et sans aucun risque de chevauchement */
 const useStackEnabled = () => {
+  const query = '(min-width: 641px) and (prefers-reduced-motion: no-preference)';
   const [on, setOn] = useState(
-    () => typeof window === 'undefined' || window.matchMedia('(min-width: 641px)').matches
+    () => typeof window === 'undefined' || window.matchMedia(query).matches
   );
   useEffect(() => {
-    const mq = window.matchMedia('(min-width: 641px)');
+    const mq = window.matchMedia(query);
     const onChange = (e) => setOn(e.matches);
     mq.addEventListener('change', onChange);
     return () => mq.removeEventListener('change', onChange);
@@ -224,9 +226,13 @@ const GamesStack = () => {
   const [pinHeight, setPinHeight] = useState(760);
   const [cardAreaH, setCardAreaH] = useState(500);
   const [yStart, setYStart] = useState(700);
+  /* La progression se termine quand le bas du driver atteint le bas du
+     bloc épinglé (76 px de nav + hauteur du bloc + petite marge) — et non
+     le bas de l'écran : sur les écrans peu hauts, la dernière carte est
+     ainsi TOUJOURS posée avant que le bloc ne soit relâché. */
   const { scrollYProgress } = useScroll({
     target: driverRef,
-    offset: ['start start', 'end end'],
+    offset: ['start start', `end ${pinHeight + 124}px`],
   });
 
   /* Mesures : hauteur de la plus grande carte (zone), du bloc épinglé,
