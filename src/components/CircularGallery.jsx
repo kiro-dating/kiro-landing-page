@@ -53,14 +53,17 @@ export default function CircularGallery({
     const measure = () => {
       W = container.clientWidth;
       H = container.clientHeight;
-      /* Courbure réduite sur petit écran : l'arc descend moins */
-      const bendCur = W < 720 ? bend * 0.6 : bend;
+      /* Courbure PROGRESSIVE : pleine à ≥ 1440 px, elle diminue à mesure
+         que l'écran rétrécit (≈ moitié sur iPad) et devient NULLE sous
+         680 px : sur téléphone, cartes droites, une photo à la fois */
+      const t = Math.min(1, Math.max(0, (W - 680) / 760));
+      const bendCur = bend * t;
       B = Math.max(1, H * bendCur * 0.14);
-      cardW = Math.min(300, Math.max(180, W * 0.26));
+      /* Téléphone : carte large et droite, les voisines dépassent aux bords */
+      cardW = W < 680 ? Math.min(320, W * 0.62) : Math.min(300, Math.max(190, W * 0.26));
       /* Carte + libellé + descente maximale de l'arc (= B) doivent tenir
-         dans le conteneur : plus aucune coupe en bas.
-         Cartes moins hautes sur mobile : le fil circule avec fluidité */
-      const ratio = W < 720 ? 1.12 : 1.3;
+         dans le conteneur : plus aucune coupe en bas */
+      const ratio = W < 680 ? 1.25 : 1.3;
       const cardH = Math.min(H * 0.78, cardW * ratio, H - B - 74);
       step = cardW + Math.max(28, W * 0.03);
       total = step * doubled.length;
