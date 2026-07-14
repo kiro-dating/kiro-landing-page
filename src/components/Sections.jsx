@@ -353,8 +353,32 @@ export const ChatDemo = () => {
 
     const timers = [];
     let dwellTimer = 0;
+
+    /* Le scroll doit être AU REPOS : un défilement en cours (molette, doigt,
+       ou navigation fluide vers « Abonnements ») ne déclenche jamais le verrou */
+    let lastScrollAt = 0;
+    const onAnyScroll = () => {
+      lastScrollAt = performance.now();
+    };
+    window.addEventListener('scroll', onAnyScroll, { passive: true });
+
+    /* Pendant le verrou : 3 gestes de l'utilisateur (molette / doigt)
+       suffisent à reprendre la main — l'animation continue sans bloquer */
+    let escapeCount = 0;
+    const onEscapeGesture = () => {
+      escapeCount += 1;
+      if (escapeCount >= 3) unlock();
+    };
     const unlock = () => {
       document.body.style.overflow = '';
+      window.removeEventListener('wheel', onEscapeGesture);
+      window.removeEventListener('touchmove', onEscapeGesture);
+    };
+    const lock = () => {
+      escapeCount = 0;
+      document.body.style.overflow = 'hidden';
+      window.addEventListener('wheel', onEscapeGesture, { passive: true });
+      window.addEventListener('touchmove', onEscapeGesture, { passive: true });
     };
     const alreadyPlayed = () => {
       try {
@@ -406,14 +430,33 @@ export const ChatDemo = () => {
          est rechargée en cours de route, le verrou ne reviendra plus) */
       markPlayed();
       el.scrollIntoView({ block: 'center', behavior: 'smooth' });
-      timers.push(
-        setTimeout(() => {
-          document.body.style.overflow = 'hidden';
-        }, 450)
-      );
+      timers.push(setTimeout(lock, 450));
       timers.push(setTimeout(() => play(0), 700));
       /* Filets de sécurité : déverrouille quoi qu'il arrive */
       timers.push(setTimeout(unlock, 12000));
+    };
+
+    /* La section est-elle réellement posée à l'écran, MAINTENANT ? */
+    const sectionOnScreen = () => {
+      const r = el.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const visible = Math.min(r.bottom, vh) - Math.max(r.top, 0);
+      return r.height > 0 && visible / r.height >= 0.55;
+    };
+
+    /* Après 1 s de présence, on vérifie une dernière fois AVANT d'agir :
+       - le défilement est au repos depuis ≥ 450 ms (personne en transit),
+       - la section est toujours bien à l'écran.
+       Sinon on réessaie tant qu'elle reste visible — sans jamais agir en vol. */
+    const tryStart = () => {
+      dwellTimer = 0;
+      if (playedRef.current) return;
+      const idle = performance.now() - lastScrollAt >= 450;
+      if (idle && sectionOnScreen()) {
+        start();
+        return;
+      }
+      dwellTimer = window.setTimeout(tryStart, 300);
     };
 
     const io = new IntersectionObserver(
@@ -421,7 +464,7 @@ export const ChatDemo = () => {
         if (playedRef.current) return;
         if (entries[0].isIntersecting) {
           /* Il faut RESTER 1 s sur la section : un passage rapide ne compte pas */
-          if (!dwellTimer) dwellTimer = window.setTimeout(start, DWELL_MS);
+          if (!dwellTimer) dwellTimer = window.setTimeout(tryStart, DWELL_MS);
         } else if (dwellTimer) {
           window.clearTimeout(dwellTimer);
           dwellTimer = 0;
@@ -442,6 +485,7 @@ export const ChatDemo = () => {
       if (dwellTimer) window.clearTimeout(dwellTimer);
       timers.forEach(clearTimeout);
       document.removeEventListener('visibilitychange', onHide);
+      window.removeEventListener('scroll', onAnyScroll);
       unlock();
     };
   }, []);
