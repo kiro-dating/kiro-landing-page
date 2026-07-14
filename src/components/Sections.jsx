@@ -152,12 +152,12 @@ const GameIllustration = ({ index }) => {
    Tout le bloc (en-tête + cartes) est UN SEUL élément épinglé : quand la
    dernière carte est posée, le défilement se libère et tout part ensemble
    — plus aucune carte ne glisse sous le paragraphe. */
-const STEP = 460; /* distance de défilement par carte */
+const STEP = 460; /* distance de défilement par carte (grand écran) */
 
-const GameCard = ({ index, total, progress, yStart, className, children }) => {
-  const travel = STEP * (total - 1);
-  const startP = ((index - 1) * STEP) / travel;
-  const dockP = (index * STEP) / travel;
+const GameCard = ({ index, total, progress, yStart, step, className, children }) => {
+  const travel = step * (total - 1);
+  const startP = ((index - 1) * step) / travel;
+  const dockP = (index * step) / travel;
   const y = useTransform(
     progress,
     index === 0 ? [0, 1] : [Math.max(0, startP), Math.min(1, dockP)],
@@ -171,10 +171,10 @@ const GameCard = ({ index, total, progress, yStart, className, children }) => {
   );
 };
 
-/* Pile animée seulement au-dessus de 640 px ET sans « mouvement réduit » :
-   sinon, liste simple — plus sobre et sans aucun risque de chevauchement */
+/* Pile animée sur TOUTES les tailles d'écran (les cartes sont compactées
+   sur mobile) — liste simple uniquement en « mouvement réduit » */
 const useStackEnabled = () => {
-  const query = '(min-width: 641px) and (prefers-reduced-motion: no-preference)';
+  const query = '(prefers-reduced-motion: no-preference)';
   const [on, setOn] = useState(
     () => typeof window === 'undefined' || window.matchMedia(query).matches
   );
@@ -187,16 +187,23 @@ const useStackEnabled = () => {
   return on;
 };
 
-const GameCardContent = ({ i, gKey, t }) => (
-  <>
-    <div className="game-copy">
-      <span className="game-num">{String(i + 1).padStart(2, '0')}</span>
-      <h3>{t(`games.${gKey}_title`)}</h3>
-      <p>{t(`games.${gKey}_text`)}</p>
-    </div>
-    <GameIllustration index={i} />
-  </>
-);
+const GameCardContent = ({ i, gKey, t }) => {
+  /* Mobile : description repliée sur 3 lignes + bouton « Voir plus » */
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <div className={`game-copy ${open ? 'is-open' : ''}`}>
+        <span className="game-num">{String(i + 1).padStart(2, '0')}</span>
+        <h3>{t(`games.${gKey}_title`)}</h3>
+        <p>{t(`games.${gKey}_text`)}</p>
+        <button type="button" className="game-more" onClick={() => setOpen(!open)}>
+          {open ? t('games.less') : t('games.more')}
+        </button>
+      </div>
+      <GameIllustration index={i} />
+    </>
+  );
+};
 
 /* Mobile : liste simple — aucun hook de scroll, aucune animation */
 const GamesList = () => {
@@ -226,6 +233,7 @@ const GamesStack = () => {
   const [pinHeight, setPinHeight] = useState(760);
   const [cardAreaH, setCardAreaH] = useState(500);
   const [yStart, setYStart] = useState(700);
+  const [stepLen, setStepLen] = useState(460);
   /* La progression se termine quand le bas du driver atteint le bas du
      bloc épinglé (76 px de nav + hauteur du bloc + petite marge) — et non
      le bas de l'écran : sur les écrans peu hauts, la dernière carte est
@@ -247,6 +255,8 @@ const GamesStack = () => {
       setCardAreaH(maxH + (cards.length - 1) * 24);
       setPinHeight(pinEl.offsetHeight);
       setYStart(Math.max(420, window.innerHeight));
+      /* Pas plus court sur mobile : l'empilement reste vif */
+      setStepLen(window.innerWidth < 641 ? 360 : STEP);
     };
     measure();
     const ro = new ResizeObserver(measure);
@@ -260,7 +270,7 @@ const GamesStack = () => {
   }, []);
 
   /* Longueur de défilement : 3 cartes × STEP + petite marge après la pose */
-  const driverHeight = pinHeight + STEP * (GAME_CARDS.length - 1) + 24;
+  const driverHeight = pinHeight + stepLen * (GAME_CARDS.length - 1) + 24;
 
   return (
     <section id="jeux" className="section s-games">
@@ -276,6 +286,7 @@ const GamesStack = () => {
                   total={GAME_CARDS.length}
                   progress={scrollYProgress}
                   yStart={yStart}
+                  step={stepLen}
                   className={g.className}
                 >
                   <GameCardContent i={i} gKey={g.key} t={t} />

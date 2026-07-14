@@ -135,6 +135,23 @@
   right: 0;
 }
 
+/* Bouton « Voir plus » — n'existe visuellement que sur mobile */
+.game-more {
+  display: none;
+  margin-top: 10px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  opacity: 0.85;
+  cursor: pointer;
+}
+
 /* Mobile : liste simple, sans épinglage */
 .games-list {
   display: grid;
@@ -402,7 +419,53 @@
   }
 
   .gi { min-height: 170px; }
+}
 
+/* ── Mobile : cartes compactes, tout tient dans l'écran ── */
+@media (max-width: 640px) {
+  .game-card {
+    gap: 12px;
+    padding: 20px 18px 16px;
+    border-radius: 20px;
+  }
+
+  .game-num { margin-bottom: 6px; font-size: 0.75rem; }
+
+  .game-card h3 { font-size: 1.12rem; line-height: 1.25; }
+
+  .game-card p {
+    margin-top: 8px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    /* Repliée sur 3 lignes ; « Voir plus » pour dérouler */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .game-copy.is-open p {
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+  }
+
+  .game-more { display: inline-block; }
+
+  /* Illustrations réduites : elles décorent, sans dominer */
+  .gi { min-height: 0; }
+  .compat-ring { width: 104px; height: 104px; }
+  .compat-ring span { width: 76px; height: 76px; font-size: 1.15rem; }
+  .q-dots { margin-top: 10px; }
+  .tod-card { width: 78px; height: 104px; border-radius: 14px; }
+  .tod-card svg { width: 24px; height: 24px; }
+  .tod-a::before { width: 56px; height: 56px; }
+  .tod-orbit { width: 210px; height: 120px; }
+  .gi-guess { gap: 8px; }
+  .gi-guess span { width: 42px; height: 52px; border-radius: 10px; font-size: 1.15rem; }
+  .date-cal { width: 64px; height: 64px; border-radius: 16px; }
+  .date-cal svg { width: 22px; height: 22px; }
+  .gi-date { gap: 12px; }
 }
 
 /* ════════ Grilles de cartes ════════ */
