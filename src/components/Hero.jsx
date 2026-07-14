@@ -28,10 +28,10 @@ const FREEZE_DURATION_MS = 6000;
    pas de téléphone animé, pas d'animations d'entrée — le héros est instantané. */
 const useIsDesktop = () => {
   const [isDesktop, setIsDesktop] = useState(
-    () => typeof window === 'undefined' || window.matchMedia('(min-width: 901px)').matches
+    () => typeof window === 'undefined' || window.matchMedia('(min-width: 768px)').matches
   );
   useEffect(() => {
-    const mq = window.matchMedia('(min-width: 901px)');
+    const mq = window.matchMedia('(min-width: 768px)');
     const onChange = (e) => setIsDesktop(e.matches);
     mq.addEventListener('change', onChange);
     return () => mq.removeEventListener('change', onChange);
