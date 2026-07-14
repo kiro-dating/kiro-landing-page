@@ -573,8 +573,9 @@
   .ts-2 { top: auto; bottom: 10px; right: auto; left: 7%; }
   .ts-1, .ts-3, .tod-dot { display: none; }
 
-  /* 03 — tuiles centrées, légèrement inclinées, « ? » assorti à la carte menthe */
-  .gi-guess { gap: 8px; justify-content: center; }
+  /* 03 — carte un peu plus haute, tuiles centrées avec de l'air autour */
+  .gc-mint { padding-top: 26px; padding-bottom: 28px; }
+  .gi-guess { gap: 8px; justify-content: center; margin: 14px 0 8px; }
   .gi-guess span { width: 46px; height: 56px; border-radius: 12px; font-size: 1.2rem; }
   .gi-guess span:nth-child(2) { transform: rotate(-5deg) translateY(3px); }
   .gi-guess .mystery { background: #1d8a70; transform: rotate(4deg); }
