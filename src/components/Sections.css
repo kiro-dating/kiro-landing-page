@@ -498,6 +498,8 @@
     gap: 12px;
     padding: 20px 18px 16px;
     border-radius: 20px;
+    /* Le passeport glissé dans le coin est proprement rogné par la carte */
+    overflow: hidden;
   }
 
   .game-num { margin-bottom: 6px; font-size: 0.75rem; }
@@ -574,12 +576,45 @@
   .gi-guess span:nth-child(2) { transform: rotate(-5deg) translateY(3px); }
   .gi-guess .mystery { background: #1d8a70; transform: rotate(4deg); }
 
-  /* 04 — passeport + rangée compacte */
-  .date-passport { width: 124px; height: 124px; }
-  .dp-book { width: 72px; height: 92px; }
-  .date-cal { width: 46px; height: 46px; border-radius: 12px; }
+  /* 04 — carte basse : la progression monte à gauche, le passeport
+     pivoté file dans le coin droit (maquette annotée) */
+  .gi-date {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .date-row {
+    flex: 1;
+    min-width: 0;
+    max-width: none;
+    order: 1;
+  }
+
+  .date-passport {
+    order: 2;
+    flex-shrink: 0;
+    width: 92px;
+    height: 92px;
+    margin: -10px -12px -14px 0; /* glissé vers le coin bas droit */
+  }
+
+  .dp-book {
+    width: 54px;
+    height: 70px;
+    border-radius: 9px 12px 12px 9px;
+    transform: rotate(16deg); /* passeport pivoté */
+  }
+
+  .dp-emblem { width: 32px; height: 32px; }
+  .dp-plane { bottom: 20px; left: 0; }
+  .dp-spark { top: 6px; right: 4px; font-size: 13px; }
+
+  .date-cal { width: 44px; height: 44px; border-radius: 12px; }
   .date-cal svg { width: 20px; height: 20px; }
-  .gi-date { gap: 12px; }
+  .date-bar { height: 10px; }
+  .date-meta b { font-size: 1rem; }
 }
 
 /* ════════ Grilles de cartes ════════ */
