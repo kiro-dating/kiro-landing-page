@@ -564,13 +564,13 @@
   .q-dots { margin: 0 0 10px; }
 
   /* 02 — cartes inclinées, étincelles réduites */
-  /* Le duo de cartes passe à droite : plus rien sous « Voir plus » */
-  .gi-tod { justify-content: flex-end; padding-right: 6px; }
+  /* Le duo de cartes passe à droite et remonte au niveau du bouton */
+  .gi-tod { justify-content: flex-end; padding-right: 6px; margin-top: -38px; }
   .tod-card { width: 80px; height: 106px; border-radius: 14px; }
   .tod-card svg { width: 24px; height: 24px; }
   .tod-a::before { width: 58px; height: 58px; }
   .tod-orbit { width: 220px; height: 124px; left: auto; right: -36px; transform: translateY(-50%) rotate(-16deg); }
-  .ts-2 { right: auto; left: 10%; }
+  .ts-2 { top: auto; bottom: 10px; right: auto; left: 7%; }
   .ts-1, .ts-3, .tod-dot { display: none; }
 
   /* 03 — tuiles centrées, légèrement inclinées, « ? » assorti à la carte menthe */
