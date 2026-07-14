@@ -194,19 +194,21 @@
     font-size: 1.02rem;
   }
 
-  /* Boutons côte à côte, plus compacts */
+  /* Boutons empilés : rouge au-dessus, blanc en dessous (même largeur) */
   .hero-ctas {
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     flex-wrap: nowrap;
-    gap: 10px;
+    gap: 12px;
     margin-top: 26px;
   }
 
   .hero-ctas .btn {
-    flex: 1 1 0;
-    min-width: 0;
-    padding: 12px 14px;
-    font-size: 0.92rem;
+    flex: none;
+    width: min(290px, 80vw);
+    justify-content: center;
+    padding: 13px 18px;
+    font-size: 0.98rem;
   }
 
   /* Aucune animation permanente sur mobile */
