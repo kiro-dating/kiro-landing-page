@@ -28,6 +28,35 @@
   line-height: 1.6;
 }
 
+.footer-brand-link {
+  margin-top: 14px;
+}
+
+.footer-brand-link a {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 38px;
+  color: #cfc8c5;
+  font-size: 0.96rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+
+.footer-brand-link a:hover {
+  color: #fff;
+}
+
+.footer-brand-link svg {
+  color: #8d8481;
+  transition: color 160ms ease;
+}
+
+.footer-brand-link a:hover svg {
+  color: var(--accent-red);
+}
+
 .footer-langs {
   margin-top: 14px;
   color: #7c7370;
@@ -116,6 +145,10 @@
 
   .footer-brand p {
     margin-inline: auto;
+  }
+
+  .footer-brand-link a {
+    justify-content: center;
   }
 
   .footer-col a {

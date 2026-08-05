@@ -3,6 +3,7 @@
     "discover": "Entdecken",
     "games": "Spiele",
     "plans": "Abos",
+    "blog": "Blog",
     "support": "Support",
     "contact": "Kontakt",
     "language": "Sprache"
@@ -95,6 +96,7 @@
     "contact": "Kontakt",
     "col_social": "Soziale Netzwerke",
     "rights": "Alle Rechte vorbehalten.",
+    "blog": "Blog",
     "langs": "In 10 Sprachen verfügbar"
   },
   "chatdemo": {

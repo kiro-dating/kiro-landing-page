@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Send, Apple, Play, FileText, ShieldCheck, LifeBuoy, Mail } from 'lucide-react';
+import { Send, Apple, Play, FileText, ShieldCheck, LifeBuoy, Mail, Newspaper } from 'lucide-react';
 import { LINKS, SITE_URL } from '../config/links';
 import './Footer.css';
 
@@ -41,6 +41,10 @@ export const Footer = () => {
         <div className="footer-brand">
           <img src="/icons/kiro-symbol.svg" alt="Kiro" width="40" height="46" loading="lazy" />
           <p>{t('footer.tagline')}</p>
+          {/* Lien vers le blog : maillage interne depuis toutes les pages du site */}
+          <p className="footer-brand-link">
+            <a href="/blog/"><Newspaper size={16} /> {t('footer.blog')}</a>
+          </p>
           <p className="footer-langs">{t('footer.langs')}</p>
         </div>
 

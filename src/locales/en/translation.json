@@ -3,6 +3,7 @@
     "discover": "Discover",
     "games": "Games",
     "plans": "Plans",
+    "blog": "Blog",
     "support": "Support",
     "contact": "Contact",
     "language": "Language"
@@ -95,6 +96,7 @@
     "contact": "Contact",
     "col_social": "Social media",
     "rights": "All rights reserved.",
+    "blog": "Blog",
     "langs": "Available in 10 languages"
   },
   "chatdemo": {

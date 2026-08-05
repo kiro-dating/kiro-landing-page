@@ -42,6 +42,9 @@ export const TopNav = ({ onOpenLang }) => {
           <a href="#concept">{t('nav.discover')}</a>
           <a href="#jeux">{t('nav.games')}</a>
           <a href="#abonnements">{t('nav.plans')}</a>
+          {/* Blog : page statique servie hors de l'application React —
+              lien absolu volontaire, pas une ancre de la page d'accueil */}
+          <a href="/blog/">{t('nav.blog')}</a>
           <a href={LINKS.support} target="_blank" rel="noopener noreferrer">{t('nav.support')}</a>
           <a href={`mailto:${LINKS.contactEmail}`}>{t('nav.contact')}</a>
         </nav>
