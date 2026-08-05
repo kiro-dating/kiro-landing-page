@@ -1,5 +1,75 @@
+import fs from 'node:fs'
+import path from 'node:path'
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
+
+/**
+ * Sert les pages statiques du blog pendant `npm run dev`.
+ *
+ * En développement, Vite ne sert que l'application React : les fichiers
+ * produits par `scripts/build-blog.mjs` vivent dans `dist/` et ne sont donc
+ * visibles qu'avec `npm run preview`. Ce middleware comble le trou pour que
+ * `/blog/...` fonctionne aussi sur le serveur de dev.
+ *
+ * Uniquement actif en `serve` : la construction de production n'est pas
+ * touchée, et le blog reste servi par les fichiers statiques en ligne.
+ *
+ * Après avoir modifié un article, relancer `npm run blog:build` puis
+ * rafraîchir — il n'y a pas de rechargement à chaud sur ces pages.
+ */
+const blogDevServer = (distDir) => {
+  const OWNED = [
+    /^\/blog(\/|$)/,
+    /^\/en\/blog(\/|$)/,
+    /^\/blog-assets\//,
+    /^\/sitemap[\w-]*\.xml$/,
+    /^\/robots\.txt$/,
+  ]
+  const TYPES = {
+    '.html': 'text/html',
+    '.css': 'text/css',
+    '.js': 'text/javascript',
+    '.json': 'application/json',
+    '.xml': 'application/xml',
+    '.txt': 'text/plain',
+  }
+
+  return {
+    name: 'kiro-blog-dev-server',
+    apply: 'serve',
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        const url = decodeURIComponent((req.url || '').split('?')[0])
+        if (!OWNED.some((re) => re.test(url))) return next()
+
+        let file = path.join(distDir, url)
+        if (fs.existsSync(file) && fs.statSync(file).isDirectory()) {
+          file = path.join(file, 'index.html')
+        }
+
+        /* `startsWith` bloque toute remontée hors de dist/ via « .. » */
+        if (!file.startsWith(distDir) || !fs.existsSync(file)) {
+          res.statusCode = 404
+          res.setHeader('content-type', 'text/html; charset=utf-8')
+          res.end(
+            '<!doctype html><meta charset="utf-8"><title>Blog non généré</title>' +
+              '<style>body{font-family:system-ui;max-width:34rem;margin:15vh auto;padding:0 1.5rem;line-height:1.6;color:#171515}' +
+              'code{background:#faf6f2;border:1px solid #ece4e0;border-radius:6px;padding:2px 6px}</style>' +
+              '<h1>Cette page du blog n’est pas générée</h1>' +
+              '<p>Le serveur de développement sert les pages du blog depuis <code>dist/</code>. ' +
+              'Génère-les une fois :</p>' +
+              '<pre><code>npm run build:site &amp;&amp; npm run blog:build</code></pre>' +
+              '<p>Ensuite, un simple <code>npm run blog:build</code> suffit après chaque modification de contenu.</p>',
+          )
+          return
+        }
+
+        res.setHeader('content-type', `${TYPES[path.extname(file)] || 'application/octet-stream'}; charset=utf-8`)
+        res.end(fs.readFileSync(file))
+      })
+    },
+  }
+}
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
@@ -14,8 +84,16 @@ export default defineConfig(({ mode }) => {
       react(),
       {
         name: 'kiro-site-url-default',
-        transformIndexHtml: (html) => html.replaceAll('%VITE_SITE_URL%', siteUrl),
+        /* `order: 'pre'` — la substitution passe AVANT le remplacement des
+           variables d'environnement de Vite. Sans ça, Vite voit un jeton
+           %VITE_SITE_URL% qu'il ne connaît pas et affiche un avertissement à
+           chaque occurrence, alors que le remplacement fonctionne très bien. */
+        transformIndexHtml: {
+          order: 'pre',
+          handler: (html) => html.replaceAll('%VITE_SITE_URL%', siteUrl),
+        },
       },
+      blogDevServer(path.resolve(process.cwd(), 'dist')),
     ],
     test: {
       environment: 'node',

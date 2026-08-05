@@ -1,0 +1,29 @@
+{
+  "_doc": [
+    "Auteurs du blog. La clé (ex. « equipe-kiro ») est ce qui va dans le champ",
+    "`author` du frontmatter d'un article. Le générateur refuse un auteur inconnu.",
+    "",
+    "`type` : « Organization » pour une entité éditoriale, « Person » pour une",
+    "personne réelle (valeur par défaut). Ce champ alimente le JSON-LD.",
+    "",
+    "E-E-A-T : sur les sujets sensibles (santé relationnelle, sécurité, arnaques),",
+    "privilégier une personne nommée avec `jobTitle` et `bio` renseignés, et citer",
+    "les spécialistes consultés directement dans le corps de l'article.",
+    "",
+    "`avatar` : chemin dans public/ (ex. /images/blog/auteurs/x.webp), carré, 160px.",
+    "Laisser à null tant que l'image n'existe pas — un avatar cassé est pire que rien."
+  ],
+
+  "equipe-kiro": {
+    "name": { "fr": "L’équipe Kiro", "en": "The Kiro team" },
+    "slug": "equipe-kiro",
+    "type": "Organization",
+    "jobTitle": null,
+    "avatar": null,
+    "url": "/",
+    "bio": {
+      "fr": "L’équipe éditoriale de Kiro, basée à Montréal. On écrit sur les rencontres telles qu’elles se vivent vraiment au Québec et dans les communautés qu’on sert — sans recette miracle, et en consultant les personnes concernées.",
+      "en": "Kiro’s editorial team, based in Montreal. We write about dating as it is actually lived in Quebec and in the communities we serve — no magic formulas, and always in conversation with the people involved."
+    }
+  }
+}

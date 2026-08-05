@@ -1,0 +1,169 @@
+{
+  "_doc": [
+    "Taxonomie du blog Kiro.",
+    "",
+    "CATÉGORIES — une seule par article, obligatoire. Elles suivent le parcours",
+    "du célibataire plutôt que des mots-clés bruts : c'est ce qui donne au blog",
+    "une cohérence sémantique durable (modèle eHarmony) et un maillage naturel.",
+    "L'ordre du tableau est l'ordre d'affichage dans la navigation.",
+    "",
+    "TAGS — transversaux, plusieurs par article. Ils captent la longue traîne",
+    "sans casser le silo des catégories.",
+    "",
+    "Ajouter une catégorie ou un tag = ajouter une entrée ici. Le générateur",
+    "refuse un article dont la catégorie n'est pas déclarée, et avertit pour un",
+    "tag non déclaré. Ne JAMAIS renommer une clé (`key`) déjà publiée : elle",
+    "détermine l'URL. Pour changer le libellé affiché, modifier `label` seul.",
+    "",
+    "`slug` peut différer par langue ; `key` est l'identifiant interne stable."
+  ],
+
+  "categories": [
+    {
+      "key": "diaspora",
+      "slug": { "fr": "diaspora-et-communautes", "en": "diaspora-and-communities" },
+      "label": { "fr": "Diaspora & communautés", "en": "Diaspora & communities" },
+      "description": {
+        "fr": "Rencontres haïtiennes, afro-caribéennes, africaines et interculturelles au Québec : guides, codes culturels et conseils écrits avec les communautés concernées.",
+        "en": "Haitian, Afro-Caribbean, African and intercultural dating in Quebec: guides, cultural codes and advice written with the communities involved."
+      }
+    },
+    {
+      "key": "nouveaux-arrivants",
+      "slug": { "fr": "nouveaux-arrivants", "en": "newcomers" },
+      "label": { "fr": "Nouveaux arrivants", "en": "Newcomers" },
+      "description": {
+        "fr": "Refaire sa vie sociale et amoureuse après avoir immigré au Québec : codes de séduction, lexique québécois, solitude, réseaux et premiers pas.",
+        "en": "Rebuilding your social and romantic life after moving to Quebec: dating codes, local vocabulary, loneliness, networks and first steps."
+      }
+    },
+    {
+      "key": "montreal-et-regions",
+      "slug": { "fr": "montreal-et-regions", "en": "montreal-and-regions" },
+      "label": { "fr": "Montréal & régions", "en": "Montreal & regions" },
+      "description": {
+        "fr": "Où rencontrer des célibataires à Montréal, à Québec, à Laval, à Gatineau et partout au Québec — quartier par quartier, saison par saison.",
+        "en": "Where to meet singles in Montreal, Quebec City, Laval, Gatineau and across Quebec — neighbourhood by neighbourhood, season by season."
+      }
+    },
+    {
+      "key": "premier-rendez-vous",
+      "slug": { "fr": "premier-rendez-vous", "en": "first-dates" },
+      "label": { "fr": "Premier rendez-vous", "en": "First dates" },
+      "description": {
+        "fr": "Idées de dates testées, budget, saison, sécurité, tenue, qui paie : tout ce qui se joue entre le premier message et le deuxième rendez-vous.",
+        "en": "Tested date ideas, budget, season, safety, outfit, who pays: everything that happens between the first message and the second date."
+      }
+    },
+    {
+      "key": "conversation-et-profil",
+      "slug": { "fr": "conversation-et-profil", "en": "conversation-and-profile" },
+      "label": { "fr": "Conversation & profil", "en": "Conversation & profile" },
+      "description": {
+        "fr": "Premiers messages, brise-glace, photos, bio, relances et ghosting. La partie du dating où Kiro a le plus à dire.",
+        "en": "First messages, icebreakers, photos, bio, follow-ups and ghosting. The part of dating Kiro knows best."
+      }
+    },
+    {
+      "key": "relation-serieuse",
+      "slug": { "fr": "relation-serieuse", "en": "serious-relationships" },
+      "label": { "fr": "Relation sérieuse", "en": "Serious relationships" },
+      "description": {
+        "fr": "Intentions claires, exclusivité, non-négociables, fatigue des applications et relations qui durent au-delà du troisième rendez-vous.",
+        "en": "Clear intentions, exclusivity, non-negotiables, dating burnout and relationships that last beyond the third date."
+      }
+    },
+    {
+      "key": "foi-et-valeurs",
+      "slug": { "fr": "foi-et-valeurs", "en": "faith-and-values" },
+      "label": { "fr": "Foi & valeurs", "en": "Faith & values" },
+      "description": {
+        "fr": "Rencontres chrétiennes au Québec, vie d'église, limites, valeurs partagées et couples aux convictions différentes.",
+        "en": "Christian dating in Quebec, church life, boundaries, shared values and couples with different convictions."
+      }
+    },
+    {
+      "key": "securite",
+      "slug": { "fr": "securite", "en": "safety" },
+      "label": { "fr": "Sécurité", "en": "Safety" },
+      "description": {
+        "fr": "Arnaques sentimentales, faux profils, signaux d'alerte, vie privée et checklist du premier rendez-vous. Des réponses concrètes, sans alarmisme.",
+        "en": "Romance scams, fake profiles, red flags, privacy and the first-date safety checklist. Concrete answers, no scaremongering."
+      }
+    },
+    {
+      "key": "comparatifs",
+      "slug": { "fr": "comparatifs", "en": "app-comparisons" },
+      "label": { "fr": "Comparatifs d’apps", "en": "App comparisons" },
+      "description": {
+        "fr": "Applications de rencontre au Québec et au Canada : ce qu'elles font vraiment, pour qui, à quel prix. Kiro est juge et partie — et le dit.",
+        "en": "Dating apps in Quebec and Canada: what they actually do, for whom, at what price. Kiro is both judge and player — and says so."
+      }
+    },
+    {
+      "key": "vie-de-couple",
+      "slug": { "fr": "vie-de-couple", "en": "relationships" },
+      "label": { "fr": "Vie de couple", "en": "Relationships" },
+      "description": {
+        "fr": "Communication, disputes, familles, distance, ruptures et reconstruction : ce qui vient après la rencontre.",
+        "en": "Communication, arguments, families, distance, breakups and rebuilding: what comes after the match."
+      }
+    },
+    {
+      "key": "coulisses",
+      "slug": { "fr": "coulisses-kiro", "en": "inside-kiro" },
+      "label": { "fr": "Coulisses de Kiro", "en": "Inside Kiro" },
+      "description": {
+        "fr": "Nouveautés du produit, choix de conception, données d'usage et histoires d'utilisateurs. Ce qu'on construit, et pourquoi.",
+        "en": "Product news, design decisions, usage data and user stories. What we build, and why."
+      }
+    }
+  ],
+
+  "tags": [
+    { "key": "haiti", "label": { "fr": "Haïti & créole", "en": "Haiti & Creole" } },
+    { "key": "montreal", "label": { "fr": "Montréal", "en": "Montreal" } },
+    { "key": "ville-de-quebec", "label": { "fr": "Ville de Québec", "en": "Quebec City" } },
+    { "key": "laval-rive-nord", "label": { "fr": "Laval & Rive-Nord", "en": "Laval & North Shore" } },
+    { "key": "rive-sud", "label": { "fr": "Rive-Sud", "en": "South Shore" } },
+    { "key": "gatineau-outaouais", "label": { "fr": "Gatineau & Outaouais", "en": "Gatineau & Outaouais" } },
+    { "key": "sherbrooke-estrie", "label": { "fr": "Sherbrooke & Estrie", "en": "Sherbrooke & Estrie" } },
+    { "key": "canada", "label": { "fr": "Canada", "en": "Canada" } },
+    { "key": "immigration", "label": { "fr": "Immigration", "en": "Immigration" } },
+    { "key": "etudiants", "label": { "fr": "Étudiants", "en": "Students" } },
+    { "key": "bilinguisme", "label": { "fr": "Bilinguisme", "en": "Bilingualism" } },
+    { "key": "culture-quebecoise", "label": { "fr": "Culture québécoise", "en": "Quebec culture" } },
+    { "key": "afro-caribeen", "label": { "fr": "Afro-caribéen", "en": "Afro-Caribbean" } },
+    { "key": "couple-mixte", "label": { "fr": "Couple mixte", "en": "Mixed couples" } },
+    { "key": "famille", "label": { "fr": "Famille", "en": "Family" } },
+    { "key": "eglise", "label": { "fr": "Église", "en": "Church" } },
+    { "key": "premier-message", "label": { "fr": "Premier message", "en": "First message" } },
+    { "key": "brise-glace", "label": { "fr": "Brise-glace", "en": "Icebreakers" } },
+    { "key": "photos-de-profil", "label": { "fr": "Photos de profil", "en": "Profile photos" } },
+    { "key": "ghosting", "label": { "fr": "Ghosting", "en": "Ghosting" } },
+    { "key": "idees-de-date", "label": { "fr": "Idées de date", "en": "Date ideas" } },
+    { "key": "petit-budget", "label": { "fr": "Petit budget", "en": "Low budget" } },
+    { "key": "hiver", "label": { "fr": "Hiver", "en": "Winter" } },
+    { "key": "ete", "label": { "fr": "Été", "en": "Summer" } },
+    { "key": "saint-valentin", "label": { "fr": "Saint-Valentin", "en": "Valentine’s Day" } },
+    { "key": "temps-des-fetes", "label": { "fr": "Temps des fêtes", "en": "Holiday season" } },
+    { "key": "sans-alcool", "label": { "fr": "Sans alcool", "en": "Alcohol-free" } },
+    { "key": "arnaques", "label": { "fr": "Arnaques", "en": "Scams" } },
+    { "key": "vie-privee", "label": { "fr": "Vie privée", "en": "Privacy" } },
+    { "key": "red-flags", "label": { "fr": "Signaux d’alerte", "en": "Red flags" } },
+    { "key": "burnout-dating", "label": { "fr": "Fatigue des apps", "en": "Dating burnout" } },
+    { "key": "slow-dating", "label": { "fr": "Slow dating", "en": "Slow dating" } },
+    { "key": "apres-40-ans", "label": { "fr": "Après 40 ans", "en": "Over 40" } },
+    { "key": "parent-solo", "label": { "fr": "Parent solo", "en": "Single parents" } },
+    { "key": "apres-une-rupture", "label": { "fr": "Après une rupture", "en": "After a breakup" } },
+    { "key": "tinder", "label": { "fr": "Tinder", "en": "Tinder" } },
+    { "key": "bumble", "label": { "fr": "Bumble", "en": "Bumble" } },
+    { "key": "hinge", "label": { "fr": "Hinge", "en": "Hinge" } },
+    { "key": "gratuit", "label": { "fr": "Gratuit", "en": "Free" } },
+    { "key": "sans-swipe", "label": { "fr": "Sans swipe", "en": "Swipe-free" } },
+    { "key": "jeux", "label": { "fr": "Jeux Kiro", "en": "Kiro games" } },
+    { "key": "traduction", "label": { "fr": "Traduction", "en": "Translation" } },
+    { "key": "produit", "label": { "fr": "Produit", "en": "Product" } },
+    { "key": "donnees", "label": { "fr": "Données & études", "en": "Data & studies" } }
+  ]
+}
