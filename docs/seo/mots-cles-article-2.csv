@@ -1,0 +1,25 @@
+mot_cle,langue,intention,zone_geo,ce_qui_ranke_aujourdhui,concurrence_apparente,pertinence_kiro,page_cible,priorite,notes,present_dans_article_2
+rencontre antillaise Canada,fr,commerciale,Canada,"Plateformes 100% francaises (97tibo, meetissimo, noirsdesirs), aucune ciblant le Canada",faible sur le geo,tres forte,article 2,1,Seul terme FR avec une intention dating prouvee. Aucun acteur canadien positionne.,oui
+rencontre antillaise Quebec,fr,commerciale,Quebec,"Idem, le mot Quebec est ignore par Google faute de page credible",faible,tres forte,article 2,1,Le vide geographique est total.,oui
+rencontre caribeenne Canada,fr,commerciale,Canada,Rien de pertinent : dating generique + page Wikipedia d un lieu-dit,quasi nulle,forte,article 2,1,"Vide concurrentiel mais intention majoritairement culturelle, pas relationnelle.",oui
+rencontrer des celibataires caribeens au Canada,fr,commerciale,Canada,Rien de cible,faible,forte,article 2 (H2),2,,oui
+application de rencontre caribeenne,fr,commerciale,-,"Rien en francais, debordement anglais",faible,forte,article 2 (section),2,,oui
+rencontre diaspora caribeenne,fr,informationnelle,Canada,"Contenu associatif et culturel, zero dating",faible,forte,article 2,2,,oui
+trouver l amour dans la diaspora,fr,informationnelle,-,Rien de structure,quasi nulle,forte,article 2 (angle),2,,partiel
+rencontrer quelqu un qui partage ma culture,fr,informationnelle,-,Rien de structure,quasi nulle,tres forte,article 2 (angle) puis article seconde generation,2,Formule la frustration reelle la plus citee.,oui
+rencontre afro-caribeenne,fr,commerciale,-,"Afrosmeet, Afrodiff (marche France/Afrique)",moyenne,moyenne,article 2 (mention),3,,partiel
+celibataires haitiens Canada,fr,commerciale,Canada,Rien de cible,faible,forte,futur article haitien,2,A reserver pour ne pas cannibaliser.,n/a - reserve
+application de rencontre haitienne,fr,commerciale,-,"App stores, boo.world, hullo.dating (contenu auto-genere faible)",faible,tres forte,futur article haitien,2,Contenu concurrent facile a depasser.,n/a - reserve
+celibataires haitiens Montreal,fr,commerciale+locale,Montreal,Dating generique QC + Encyclopedie du MEM,faible a moyenne,forte,futur article Montreal,2,,n/a - reserve
+ou rencontrer des Haitiens a Montreal,fr,informationnelle+locale,Montreal,Rien de direct,faible,tres forte,futur article Montreal,2,,n/a - reserve
+rencontre haitienne Montreal,fr,informationnelle (PAS commerciale),Montreal,"Maison d Haiti, Bureau de la communaute haitienne, Ville de Montreal",forte (institutionnels),faible,aucune,5,PIEGE : « rencontre » est lu comme reunion communautaire. Ne pas cibler.,n/a - reserve
+rencontre haitienne Canada,fr,informationnelle (PAS commerciale),Canada,"Presse diaspora, relations diplomatiques, JIDH","moyenne, mauvaise intention",faible,aucune,5,Meme piege.,n/a - reserve
+communaute haitienne Montreal rencontre,fr,informationnelle+locale,Montreal,100% institutionnel,forte,tres faible,aucune,5,Ne pas cibler.,n/a - reserve
+rencontres interculturelles Canada,fr,informationnelle institutionnelle,Quebec,100% Semaine quebecoise des rencontres interculturelles (gouvernement),"forte, imbattable",nulle,aucune,5,Ne jamais cibler.,n/a - reserve
+couple interculturel Quebec,fr,informationnelle,Quebec,"Psychologues, formations, organismes de jumelage",moyenne,moyenne,futur article dedie,3,,n/a - reserve
+rencontre chretienne haitienne,fr,commerciale+informationnelle,-,"Sites chretiens francais, zero angle haitien ou quebecois",quasi nulle sur le croisement,forte,futur article chretien,2,,n/a - reserve
+Caribbean dating Canada,en,commerciale,Canada,"CaribbeanCupid (page geo Canada), Caribbean Singles Meet, CaribbeanMatches",moyenne a forte,moyenne,version EN,3,,n/a - reserve
+Caribbean singles Canada,en,commerciale,Canada,Idem,moyenne a forte,moyenne,version EN,3,,n/a - reserve
+Haitian dating Canada,en,commerciale,Canada,"Rankontre, haitidating.com, aucun ancrage Canada",faible sur le geo,forte,futur article EN,2,Angle mort de Rankontre : le Canada francophone.,n/a - reserve
+Haitian singles Toronto,en,commerciale+locale,Toronto,Rien de cible,faible,forte,futur article Toronto,3,,n/a - reserve
+West Indian dating Canada,en,hors-sujet,Canada,"Dating sud-asiatique (Shaadi, gofordesi)","forte, hors-sujet",nulle,aucune,-,A NE JAMAIS cibler : Google lit « Indian ».,n/a - reserve

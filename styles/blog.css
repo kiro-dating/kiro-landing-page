@@ -748,6 +748,10 @@ img {
   padding: 0 24px;
 }
 
+.post-cover picture {
+  display: block;
+}
+
 .post-cover img {
   display: block;
   width: 100%;
@@ -1125,6 +1129,130 @@ img {
   color: #fff;
   background: var(--text-primary);
   border-color: var(--text-primary);
+}
+
+/* Le nom de l'auteur mène à sa page. Il ne doit pas pour autant ressembler à
+   un lien de navigation : on garde la couleur de la signature et on se
+   contente d'un soulignement discret. */
+.post-author a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.post-author a:hover {
+  border-bottom-color: var(--accent-red);
+  color: var(--accent-red);
+}
+
+/* ── Légende d'illustration ─────────────────────────────────────────────── */
+
+.post-cover-caption {
+  max-width: 760px;
+  margin: 14px auto 0;
+  padding: 0 4px;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  line-height: 1.55;
+  text-align: center;
+}
+
+.post-cover-credit {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.78rem;
+  opacity: 0.85;
+}
+
+.post-cover-credit a {
+  color: inherit;
+}
+
+/* ── Encadré auteur ─────────────────────────────────────────────────────── */
+
+.post-author-box {
+  margin-top: 34px;
+  padding: 26px 26px 24px;
+  background: var(--s-cream);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+}
+
+.post-author-box-title {
+  margin: 0 0 16px;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.post-author-box-body {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+.post-author-box-avatar {
+  flex: none;
+  width: 72px;
+  height: 72px;
+  border-radius: 999px;
+  object-fit: cover;
+}
+
+.post-author-box-name {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.post-author-box-role {
+  margin: 3px 0 0;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.post-author-box-bio {
+  margin: 12px 0 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.62;
+}
+
+.post-author-box-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 14px 0 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.post-author-box-links a {
+  /* Le rouge vif ne passe pas le contraste AA sur le fond crème à cette taille
+     (4,15:1). La déclinaison foncée le porte à plus de 6:1 sans changer
+     l'identité. */
+  color: var(--accent-red-dark);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+
+.post-author-box-links a:hover {
+  border-bottom-color: currentColor;
+}
+
+@media (max-width: 560px) {
+  .post-author-box {
+    padding: 22px 20px;
+  }
+
+  .post-author-box-body {
+    flex-direction: column;
+    gap: 14px;
+  }
 }
 
 /* ── Appel à l'action ───────────────────────────────────────────────────── */

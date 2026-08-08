@@ -71,6 +71,9 @@ tags:
 
 # Brouillon : l'article est ignoré par le générateur (aucune page, aucun
 # sitemap, aucun RSS). Retirer cette ligne pour publier.
+# `template: true` : ce fichier est de la documentation, pas un brouillon.
+# Il est ignoré même en mode relecture (BLOG_PREVIEW_DRAFTS=1). À retirer sur la copie.
+template: true
 draft: true
 
 # Mise en avant : l'article apparaît en grande carte en haut du blog.

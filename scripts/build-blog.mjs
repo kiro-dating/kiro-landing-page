@@ -36,7 +36,9 @@ import {
 } from './blog/content.mjs';
 import { articlePage, indexPage, listingPage, searchPage, urls } from './blog/templates.mjs';
 import { robots, rss, searchIndex, sitemap, sitemapIndex } from './blog/feeds.mjs';
+import { assertNoBrokenInternalLinks } from './blog/links.mjs';
 import {
+  abs,
   articleNode,
   blogNode,
   breadcrumbNode,
@@ -47,6 +49,29 @@ import {
   websiteNode,
 } from './blog/seo.mjs';
 import { isoDay, paginate, shortHash, slugify, unique } from './blog/utils.mjs';
+
+/* ── Relecture locale des brouillons ────────────────────────────────────── */
+
+/**
+ * `BLOG_PREVIEW_DRAFTS=1 npm run blog:build` génère AUSSI les pages des
+ * brouillons, pour pouvoir les relire dans un navigateur avant publication.
+ *
+ * Trois garanties, dans cet ordre :
+ *   1. le mode est refusé sur Vercel et en production — un brouillon ne peut
+ *      pas partir en ligne par une variable d'environnement oubliée ;
+ *   2. les brouillons sont chargés dans un tableau SÉPARÉ. Ils n'entrent donc
+ *      dans aucun index, aucune catégorie, aucun tag, aucune page auteur,
+ *      aucun article relié, aucun flux RSS, aucun index de recherche — non par
+ *      filtrage, mais parce qu'ils ne sont pas dans les données ;
+ *   3. chaque page produite est `noindex`, et n'est jamais ajoutée au sitemap.
+ */
+const PREVIEW = process.env.BLOG_PREVIEW_DRAFTS === '1';
+
+if (PREVIEW && (process.env.VERCEL || process.env.NODE_ENV === 'production')) {
+  throw new Error(
+    'BLOG_PREVIEW_DRAFTS est un mode de relecture locale et ne peut pas servir en production.',
+  );
+}
 
 /* ── Journalisation ─────────────────────────────────────────────────────── */
 
@@ -124,9 +149,16 @@ const main = () => {
 
   /** Articles décorés, par langue. */
   const byLang = {};
+  /** Brouillons décorés, par langue — vides hors mode relecture. */
+  const draftsByLang = {};
   for (const lang of LANG_CODES) {
     const raw = loadPosts(lang, { taxonomy, authors, warn });
     byLang[lang] = raw.map((post) => decorate(post, { taxonomy, authors }));
+    draftsByLang[lang] = PREVIEW
+      ? loadPosts(lang, { taxonomy, authors, warn, only: 'drafts' }).map((post) =>
+          decorate(post, { taxonomy, authors }),
+        )
+      : [];
   }
 
   /**
@@ -185,12 +217,17 @@ const main = () => {
     const categories = taxonomy.categories.filter((c) => usedCategoryKeys.has(c.key));
 
     /* — Index paginé —
-       Les articles mis en avant (`featured: true`) remontent en tête de la
-       première page ; l'ordre chronologique est conservé pour tout le reste.
-       On ne réordonne QUE l'affichage : le RSS et le sitemap gardent l'ordre
-       de publication réel. */
-    const featured = posts.filter((p) => p.featured);
-    const listing = [...featured, ...posts.filter((p) => !p.featured)];
+       Par défaut, la une est simplement l'article le plus récent : `posts` est
+       déjà trié par date décroissante, donc aucune intervention n'est
+       nécessaire quand un nouvel article paraît.
+       `featured: true` sert à ÉPINGLER un article en tête malgré la
+       chronologie. Un seul épinglage est honoré, le plus récent : sans cette
+       limite, un vieil article dont on aurait oublié de retirer le drapeau
+       resterait indéfiniment à la une devant des articles plus frais.
+       On ne réordonne QUE l'affichage : le RSS et le sitemap conservent
+       l'ordre de publication réel. */
+    const pinned = posts.filter((p) => p.featured).slice(0, 1);
+    const listing = [...pinned, ...posts.filter((p) => p !== pinned[0])];
     const pages = paginate(listing, PER_PAGE);
     pages.forEach((pagePosts, i) => {
       const page = i + 1;
@@ -265,8 +302,43 @@ const main = () => {
           priority: post.featured ? '0.8' : '0.7',
           lastmod: isoDay(post.updatedAt),
           alternates,
+          /* Illustration déclarée avec la page : l'image est rattachée à son
+             article plutôt qu'indexée comme un fichier isolé. */
+          images: post.cover
+            ? [
+                {
+                  loc: post.cover,
+                  title: post.coverTitle || post.title,
+                  caption: post.coverCaption || post.coverAlt,
+                },
+              ]
+            : [],
         });
       }
+    }
+
+    /* — Brouillons (relecture locale seulement) —
+       Rendus comme des articles, mais jamais suivis : pas de sitemap, pas de
+       RSS, pas d'index de recherche, pas d'article relié pointant vers eux. */
+    for (const post of draftsByLang[lang]) {
+      const html = articlePage({
+        lang,
+        post,
+        related: [],
+        assets,
+        alternates: [],
+        otherLangUrl: null,
+        schema: graph([organizationNode(), websiteNode(lang), articleNode(post), faqNode(post)]),
+      });
+      writePage(post.url, html);
+      /* URL locale complète : un brouillon n'est listé nulle part (c'est la
+         garantie qu'il ne fuite pas), donc la seule façon de l'ouvrir est de
+         connaître son adresse. Autant la donner, cliquable, dans le terminal. */
+      log(
+        `⚠ brouillon : http://localhost:5173${post.url}  (noindex, hors sitemap, hors index)${
+          post.isScheduled && !post.isDraft ? ' — publication programmée' : ''
+        }`,
+      );
     }
 
     /* — Catégories — */
@@ -378,7 +450,7 @@ const main = () => {
         kind: 'author',
         title: `${author.name} — ${t.blogTitle}`,
         heading: t.articlesBy(author.name),
-        description: author.bio?.[lang] || '',
+        description: author.bio || '',
         path: url,
         posts: authorPosts.slice(0, PER_PAGE * 3),
         page: 1,
@@ -392,8 +464,9 @@ const main = () => {
           {
             '@type': author.type === 'Organization' ? 'Organization' : 'Person',
             name: author.name,
-            ...(author.jobTitle ? { jobTitle: author.jobTitle } : {}),
-            ...(author.bio?.[lang] ? { description: author.bio[lang] } : {}),
+            ...(author.url ? { url: abs(author.url) } : {}),
+            ...(author.jobTitleSchema ? { jobTitle: author.jobTitleSchema } : {}),
+            ...(author.bio ? { description: author.bio } : {}),
           },
           collectionNode({ lang, path: url, name: author.name, description: '', posts: authorPosts }),
           breadcrumbNode([
@@ -425,6 +498,10 @@ const main = () => {
     write(u.rss(), rss({ lang, posts, path: u.rss() }));
   }
 
+  /* — Garde-fou : aucun lien interne mort — */
+  assertNoBrokenInternalLinks(byLang, allUrls);
+  if (PREVIEW) assertNoBrokenInternalLinks(draftsByLang, allUrls);
+
   /* — Sitemaps + robots — */
   const today = isoDay(new Date());
   write('/sitemap-pages.xml', sitemap(sitemapEntries.pages));
@@ -438,6 +515,10 @@ const main = () => {
     `\n  ✓ ${filesWritten} fichiers écrits dans dist/ — ${total} article(s), ${sitemapEntries.blog.length} URL(s) au sitemap\n`,
   );
   process.stdout.write(`  ✓ domaine : ${SITE_URL}\n`);
+  if (PREVIEW) {
+    const n = LANG_CODES.reduce((sum, lang) => sum + draftsByLang[lang].length, 0);
+    process.stdout.write(`  ⚠ mode relecture : ${n} brouillon(s) rendu(s), en noindex et hors sitemap\n`);
+  }
   if (warnings.length > 0) {
     process.stdout.write(`\n  ⚠ ${warnings.length} avertissement(s) :\n`);
     warnings.forEach((w) => process.stdout.write(`    · ${w}\n`));

@@ -8,6 +8,7 @@
     "build": "vite build && node scripts/build-blog.mjs",
     "build:site": "vite build",
     "blog:build": "node scripts/build-blog.mjs",
+    "blog:preview": "BLOG_PREVIEW_DRAFTS=1 node scripts/build-blog.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",

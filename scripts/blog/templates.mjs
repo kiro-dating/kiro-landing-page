@@ -170,7 +170,7 @@ const card = (post, lang, { featured = false } = {}) => {
   const u = urls(lang);
   return `<article class="post-card${featured ? ' post-card-featured' : ''}">
         <a class="post-card-media" href="${post.url}" tabindex="-1" aria-hidden="true">
-          ${featured && post.featured ? `<span class="post-card-badge">${escapeHtml(t.featured)}</span>` : ''}
+          ${featured ? `<span class="post-card-badge">${escapeHtml(t.featured)}</span>` : ''}
           ${
             post.cover
               ? `<img src="${escapeHtml(post.cover)}" alt="" loading="lazy" decoding="async" width="1200" height="630" />`
@@ -442,6 +442,29 @@ export const articlePage = ({ lang, post, related, assets, schema, alternates, o
               .join('')}
           </section>`;
 
+  /* Encadré auteur : une seule source de vérité (content/blog/authors.json),
+     reprise telle quelle ici et dans le JSON-LD. Rien n'est écrit en dur. */
+  const author = post.author;
+  const authorBox = `<aside class="post-author-box">
+          <h2 class="post-author-box-title">${escapeHtml(t.aboutAuthor)}</h2>
+          <div class="post-author-box-body">
+            ${author.avatar ? `<img class="post-author-box-avatar" src="${escapeHtml(author.avatar)}" alt="" width="72" height="72" loading="lazy" decoding="async" />` : ''}
+            <div>
+              <p class="post-author-box-name">${escapeHtml(author.name)}</p>
+              ${author.jobTitle ? `<p class="post-author-box-role">${escapeHtml(author.jobTitle)}</p>` : ''}
+              ${author.bio ? `<p class="post-author-box-bio">${escapeHtml(author.bio)}</p>` : ''}
+              <p class="post-author-box-links">
+                <a href="${u.author(author.slug || author.key)}">${escapeHtml(t.authorAllPosts(author.name))}</a>
+                ${
+                  author.url && /^https?:\/\//i.test(author.url)
+                    ? `<a href="${escapeHtml(author.url)}" rel="author noopener noreferrer" target="_blank">${escapeHtml(author.urlLabel || t.authorWebsite)}</a>`
+                    : ''
+                }
+              </p>
+            </div>
+          </div>
+        </aside>`;
+
   const shareUrl = abs(post.url);
   const share = `<div class="post-share" data-share-url="${escapeHtml(shareUrl)}" data-share-title="${escapeHtml(post.title)}" data-share-native-label="${escapeHtml(t.share)}">
           <span class="post-share-label">${escapeHtml(t.share)}</span>
@@ -472,7 +495,7 @@ export const articlePage = ({ lang, post, related, assets, schema, alternates, o
             <div class="post-byline">
               ${post.author.avatar ? `<img class="post-avatar" src="${escapeHtml(post.author.avatar)}" alt="" width="40" height="40" loading="lazy" />` : ''}
               <div>
-                <p class="post-author">${escapeHtml(t.by)} ${escapeHtml(post.author.name)}${post.author.jobTitle ? ` <span class="post-author-role">— ${escapeHtml(post.author.jobTitle)}</span>` : ''}</p>
+                <p class="post-author">${escapeHtml(t.by)} <a href="${u.author(post.author.slug || post.author.key)}" rel="author">${escapeHtml(post.author.name)}</a>${post.author.jobTitle ? ` <span class="post-author-role">— ${escapeHtml(post.author.jobTitle)}</span>` : ''}</p>
                 <p class="post-dates">
                   <time datetime="${post.publishedIso}">${escapeHtml(t.publishedOn)} ${escapeHtml(post.publishedLabel)}</time>
                   ${post.wasUpdated ? `<span aria-hidden="true">•</span> <time datetime="${post.updatedIso}">${escapeHtml(t.updatedOn)} ${escapeHtml(post.updatedLabel)}</time>` : ''}
@@ -486,7 +509,19 @@ export const articlePage = ({ lang, post, related, assets, schema, alternates, o
         ${
           post.cover
             ? `<figure class="post-cover">
-          <img src="${escapeHtml(post.cover)}" alt="${escapeHtml(post.coverAlt)}" width="1200" height="630" fetchpriority="high" decoding="async" />
+          <picture>
+            ${post.coverVector ? `<source srcset="${escapeHtml(post.coverVector)}" type="image/svg+xml" />` : ''}
+            <img src="${escapeHtml(post.cover)}"${post.coverSrcset ? ` srcset="${escapeHtml(post.coverSrcset)}" sizes="(max-width: 1160px) 100vw, 1112px"` : ''} alt="${escapeHtml(post.coverAlt)}"${post.coverTitle ? ` title="${escapeHtml(post.coverTitle)}"` : ''} width="1200" height="630" fetchpriority="high" decoding="async" />
+          </picture>
+          ${
+            post.coverCaption || post.coverCredit
+              ? `<figcaption class="post-cover-caption">${post.coverCaption ? escapeHtml(post.coverCaption) : ''}${
+                  post.coverCredit
+                    ? `<span class="post-cover-credit">${escapeHtml(post.coverCredit)}</span>`
+                    : ''
+                }</figcaption>`
+              : ''
+          }
         </figure>`
             : ''
         }
@@ -506,6 +541,7 @@ ${post.html}
                 : ''
             }
             ${share}
+            ${authorBox}
           </div>
         </div>
 

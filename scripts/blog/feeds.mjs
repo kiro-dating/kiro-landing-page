@@ -10,7 +10,24 @@ import { BRAND, LANGS, SITE_URL, UI } from './config.mjs';
 import { escapeXml, stripHtml, truncate } from './utils.mjs';
 import { abs } from './seo.mjs';
 
-const urlNode = ({ loc, lastmod, changefreq, priority, alternates = [] }) => `  <url>
+/**
+ * Extension « image » du protocole sitemap.
+ * Déclarer l'illustration d'un article aide les moteurs à l'associer à sa page
+ * plutôt qu'à la traiter comme un fichier isolé. Sans effet si `images` est vide.
+ */
+const imageNodes = (images) =>
+  images
+    .map(
+      ({ loc, title, caption }) => `
+    <image:image>
+      <image:loc>${escapeXml(abs(loc))}</image:loc>${title ? `\n      <image:title>${escapeXml(title)}</image:title>` : ''}${
+        caption ? `\n      <image:caption>${escapeXml(caption)}</image:caption>` : ''
+      }
+    </image:image>`,
+    )
+    .join('');
+
+const urlNode = ({ loc, lastmod, changefreq, priority, alternates = [], images = [] }) => `  <url>
     <loc>${escapeXml(abs(loc))}</loc>${lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : ''}${
       changefreq ? `\n    <changefreq>${changefreq}</changefreq>` : ''
     }${priority ? `\n    <priority>${priority}</priority>` : ''}
@@ -19,12 +36,14 @@ ${alternates
     ({ lang, path }) =>
       `    <xhtml:link rel="alternate" hreflang="${LANGS[lang].locale}" href="${escapeXml(abs(path))}" />`,
   )
-  .join('\n')}${alternates.length ? '\n' : ''}  </url>`;
+  .join('\n')}${alternates.length ? '\n' : ''}${imageNodes(images)}
+  </url>`;
 
 /** Sitemap d'un ensemble d'URLs, avec les alternates hreflang. */
 export const sitemap = (entries) => `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${entries.map(urlNode).join('\n')}
 </urlset>
 `;

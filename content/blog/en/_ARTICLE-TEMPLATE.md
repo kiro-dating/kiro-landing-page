@@ -42,6 +42,9 @@ tags:
 
 # ── OPTIONAL ───────────────────────────────────────────────────────────────
 
+# `template: true`: this file is documentation, not a draft. It is skipped even
+# in preview mode (BLOG_PREVIEW_DRAFTS=1). Remove it on your copy.
+template: true
 draft: true
 featured: false
 # readingTime: 8

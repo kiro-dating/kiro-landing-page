@@ -373,3 +373,82 @@ l'article. Le comportement est identique sur la landing page React
 (`Footer.jsx`), donc le blog reste cohérent avec le site. Ce n'est pas un échec
 WCAG A/AA, mais si le pied de page est retravaillé un jour, c'est l'occasion de
 corriger les deux au même endroit.
+
+---
+
+## 14. Ajouts du 8 août 2026 (article 2)
+
+### Nouveaux champs de frontmatter, tous facultatifs
+
+| Champ | Rôle |
+| --- | --- |
+| `coverVector` | SVG de l'illustration. Quand il existe, c'est lui que le navigateur affiche via `<picture>` — net à toute densité d'écran. Le raster `cover` reste la source de l'Open Graph (les réseaux sociaux refusent le SVG) et le repli. |
+| `coverSrcset` | Jeu de rasters pour ce repli, du plus petit au plus grand. **Chaque taille doit être rasterisée depuis le vectoriel**, jamais agrandie depuis une taille inférieure. |
+| `coverTitle` | Attribut `title` de l'image, repris dans le sitemap images. |
+| `coverCaption` | Légende visible sous l'illustration. |
+| `coverCredit` | Crédit visible sous la légende. Obligatoire dès qu'une image vient d'un tiers. |
+| `template` | `true` sur un fichier de documentation. Il est alors ignoré partout, **y compris en mode relecture**. Sans ça, les modèles produiraient une page `/blog/mon-slug-seo/`. |
+
+### La une
+
+Par défaut, la une est **l'article le plus récent** : aucune intervention n'est
+nécessaire quand un nouvel article paraît. `featured: true` sert à épingler un
+article en tête malgré la chronologie, et **un seul épinglage est honoré, le
+plus récent** — sans cette limite, un vieil article dont on aurait oublié de
+retirer le drapeau resterait indéfiniment devant des articles plus frais.
+
+Le badge « À la une » suit la carte de tête, pas le drapeau.
+
+### Relecture locale d'un brouillon
+
+```bash
+npm run blog:preview   # BLOG_PREVIEW_DRAFTS=1 node scripts/build-blog.mjs
+```
+
+Génère aussi les pages des articles `draft: true` ou datés dans le futur, et
+affiche leur URL locale complète dans le terminal. Trois garanties :
+
+1. le mode **échoue** si `VERCEL` ou `NODE_ENV=production` sont présents ;
+2. les brouillons sont chargés dans un **tableau séparé** — ils n'entrent donc
+   dans aucun index, catégorie, tag, page auteur, article relié, flux RSS ou
+   index de recherche, non par filtrage mais parce qu'ils ne sont pas dans les
+   données ;
+3. chaque page produite est `noindex` quoi qu'en dise son frontmatter, et
+   n'est jamais ajoutée au sitemap.
+
+`draft: true` bloque la publication **quelle que soit la date**. Vérifié sur les
+trois cas : date passée, date du jour, date future.
+
+### Garde-fou anti-lien-mort
+
+`scripts/blog/links.mjs` fait **échouer le build** dès qu'un lien d'article
+pointe vers une page de blog qui n'est pas générée. Une référence à un article
+à venir doit donc rester du texte simple ; elle est suivie dans
+`docs/seo/registre-contenus.csv` et activée le jour de la publication de la
+cible. Couvert par 11 tests (`npm test`).
+
+### Fiche auteur
+
+Une seule source de vérité : `content/blog/authors.json`. Un auteur peut porter
+`jobTitle` (affiché) et `jobTitleSchema` (JSON-LD, plus court), `url`,
+`urlLabel`, `bio` et `avatar`. La signature en tête d'article renvoie à la page
+auteur, et un encadré en fin d'article reprend nom, titre, biographie, lien vers
+tous ses articles et lien externe en `rel="author"`.
+
+### Sitemap images
+
+`<urlset>` porte l'espace de noms `image:` et chaque article déclare son
+illustration (`<image:loc>`, `<image:title>`, `<image:caption>`). Sans effet si
+un article n'a pas de couverture.
+
+### Génération des illustrations
+
+`scripts/covers/banniere-diaspora-caribeenne.mjs` produit la bannière de
+l'article 2 à partir des textes officiels qui définissent chaque drapeau
+(constitution ou loi), sources citées en commentaire. La constante `SELECTION`
+suffit à décliner la même grammaire visuelle pour un autre article. Ce script
+ne fait pas partie du build.
+
+`scripts/media/importer-photos.mjs` vérifie auteur et licence auprès de l'API de
+Wikimedia Commons **avant** de télécharger une photographie, et refuse le
+fichier si l'un des deux ne correspond plus à ce qui était attendu.

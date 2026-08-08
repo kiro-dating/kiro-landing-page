@@ -144,13 +144,21 @@ const requireField = (value, field, file) => {
 };
 
 /**
- * Charge tous les articles publiables d'une langue.
+ * Charge les articles d'une langue.
  *
- * Les brouillons (`draft: true`) et les articles datés dans le futur sont
- * ignorés silencieusement : ils restent versionnés dans le dépôt mais
- * n'apparaissent ni dans le HTML, ni dans le sitemap, ni dans le RSS.
+ * Par défaut, seuls les articles publiables sont retournés. Les brouillons
+ * (`draft: true`) et les articles datés dans le futur sont ignorés
+ * silencieusement : ils restent versionnés dans le dépôt mais n'apparaissent
+ * ni dans le HTML, ni dans le sitemap, ni dans le RSS.
+ *
+ * `only: 'drafts'` inverse le filtre et ne retourne QUE ces articles-là, en les
+ * marquant `noindex`. C'est le mode de relecture locale — voir la constante
+ * PREVIEW dans scripts/build-blog.mjs. Les deux ensembles sont strictement
+ * disjoints : un brouillon ne peut jamais se retrouver dans une liste, un
+ * sitemap ou un flux, puisqu'il n'est même pas dans le même tableau.
  */
-export const loadPosts = (langCode, { taxonomy, authors, warn = () => {} }) => {
+export const loadPosts = (langCode, { taxonomy, authors, warn = () => {}, only = 'published' }) => {
+  const wantDrafts = only === 'drafts';
   const lang = LANGS[langCode];
   const dir = path.join(PATHS.content, lang.dir);
   if (!fs.existsSync(dir)) return [];
@@ -168,7 +176,12 @@ export const loadPosts = (langCode, { taxonomy, authors, warn = () => {} }) => {
     const { data, content } = matter(raw);
     const rel = path.relative(PATHS.root, filePath);
 
-    if (data.draft === true) continue;
+    /* Les modèles d'article sont de la documentation : jamais rendus, même en
+       relecture. Sans ça, le mode relecture produirait « /blog/mon-slug-seo/ ». */
+    if (data.template === true) continue;
+
+    const isDraft = data.draft === true;
+    if (isDraft && !wantDrafts) continue;
 
     const title = requireField(data.title, 'title', rel);
     const slug = slugify(data.slug || path.basename(file, '.md'));
@@ -178,7 +191,11 @@ export const loadPosts = (langCode, { taxonomy, authors, warn = () => {} }) => {
 
     const publishedAt = toDate(requireField(data.publishedAt, 'publishedAt', rel));
     if (!publishedAt) throw new ContentError(`date « publishedAt » invalide — ${rel}`);
-    if (publishedAt.getTime() > now) continue; // publication programmée
+    /* Publication programmée : invisible tant que la date n'est pas atteinte.
+       C'est le second verrou, indépendant de `draft`. */
+    const isScheduled = publishedAt.getTime() > now;
+    if (isScheduled && !wantDrafts) continue;
+    if (wantDrafts && !isDraft && !isScheduled) continue;
 
     const updatedAt = toDate(data.updatedAt) || publishedAt;
 
@@ -234,12 +251,33 @@ export const loadPosts = (langCode, { taxonomy, authors, warn = () => {} }) => {
       updatedAt,
       cover: data.cover || null,
       coverAlt: String(data.coverAlt || data.title || '').trim(),
+      /* `coverTitle` alimente l'attribut title de l'image et le sitemap images ;
+         `coverCaption` produit la légende visible sous l'illustration.
+         Les deux sont facultatifs — sans eux, le rendu est celui d'avant. */
+      /* `coverVector` : version vectorielle de l'illustration. Quand elle
+         existe, c'est ELLE que le navigateur affiche, via <picture> — net à
+         n'importe quelle densité d'écran, sans peser plus lourd. Le raster
+         `cover` reste la source de l'Open Graph (les réseaux sociaux
+         n'acceptent pas le SVG) et le repli des navigateurs anciens.
+         `coverSrcset` : jeu de rasters pour ce repli, du plus petit au plus
+         grand. Chaque taille doit être rasterisée DEPUIS le vectoriel — jamais
+         agrandie depuis une taille inférieure. */
+      coverVector: data.coverVector ? String(data.coverVector).trim() : null,
+      coverSrcset: data.coverSrcset ? String(data.coverSrcset).trim() : null,
+      coverTitle: data.coverTitle ? String(data.coverTitle).trim() : null,
+      coverCaption: data.coverCaption ? String(data.coverCaption).trim() : null,
+      coverCredit: data.coverCredit ? String(data.coverCredit).trim() : null,
       featured: data.featured === true,
       faq,
       /** Clé partagée entre les versions FR et EN d'un même article → hreflang. */
       translationKey: data.translationKey ? String(data.translationKey).trim() : null,
       related: (data.related || []).map((s) => slugify(s)),
-      noindex: data.noindex === true,
+      /* Un brouillon relu en local est TOUJOURS noindex, quoi qu'en dise son
+         frontmatter. C'est non négociable : la page ne doit jamais pouvoir
+         être indexée si elle sort du poste de travail par accident. */
+      noindex: data.noindex === true || isDraft || isScheduled,
+      isDraft,
+      isScheduled,
       canonicalOverride: data.canonical ? String(data.canonical) : null,
     });
   }
@@ -271,6 +309,9 @@ export const decorate = (post, { taxonomy, authors }) => {
       key: post.authorKey,
       name: localized(author.name),
       jobTitle: localized(author.jobTitle) || null,
+      /* Titre court pour le JSON-LD ; à défaut, celui affiché. */
+      jobTitleSchema: localized(author.jobTitleSchema) || localized(author.jobTitle) || null,
+      bio: localized(author.bio) || null,
     },
     publishedIso: post.publishedAt.toISOString(),
     updatedIso: post.updatedAt.toISOString(),

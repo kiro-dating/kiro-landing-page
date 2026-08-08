@@ -8,7 +8,7 @@ publishedAt: '2026-08-04'
 updatedAt: '2026-08-04'
 category: 'conversation-et-profil'
 author: 'equipe-kiro'
-featured: true
+featured: false
 translationKey: 'premier-rendez-vous-app'
 cover: '/images/blog/decrocher-premier-rendez-vous-application-rencontre.webp'
 coverAlt: 'Une suite de bulles de conversation qui s’arrêtent net, puis une dernière bulle qui aboutit à un rendez-vous fixé.'
@@ -88,6 +88,8 @@ Un bon profil n'est pas un profil de personne photogénique, c'est un profil **l
 - **Une intention claire.** Dire ce que tu cherches ne fait pas fuir les bonnes personnes. Ça fait fuir les mauvaises.
 
 Un profil précis obtient souvent moins de likes qu'un profil consensuel, et c'est une bonne nouvelle : cinquante matchs avec des gens qui n'ont rien à te dire ne valent pas trois matchs avec des gens qui ont lu ta bio et décidé que ça les intéressait. La bascule est difficile parce que le nombre de matchs est la seule chose que l'application te montre — mais la métrique qui compte, c'est le nombre de conversations qui vont quelque part.
+
+Cette question de ce qu'on cherche vraiment se pose avec encore plus d'acuité quand on souhaite rencontrer quelqu'un qui comprend certaines dimensions de sa culture, de sa langue ou de son parcours. C'est une réalité que vivent beaucoup de personnes issues des diasporas au Canada, et les applications généralistes y répondent mal. On en parle en détail dans [Rencontres caribéennes et antillaises au Canada](/blog/rencontres-caribeennes-antillaises-canada/).
 
 ### Ce que les profils « trop parfaits » nous apprennent malgré eux
 
