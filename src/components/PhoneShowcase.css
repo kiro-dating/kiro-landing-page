@@ -3,8 +3,23 @@
   display: grid;
   place-items: center;
   /* Largeur FLUIDE du téléphone : tout (cadre, boutons, espacements)
-     est calculé à partir de cette variable → il s'adapte à chaque écran */
-  --phw: clamp(264px, 30vw, 460px);
+     est calculé à partir de cette variable → il s'adapte à chaque écran.
+
+     Deux contraintes, on garde la plus petite :
+     1. LARGEUR — clamp(…vw…) : la part horizontale accordée au visuel ;
+        plafonnée pour que le téléphone reste maîtrisé sur très grand écran.
+     2. HAUTEUR — le cadre fait 950 × 1610 (ratio ≈ 1.695) et il est incliné
+        de 6°, donc sa boîte réelle mesure ≈ 1.79 × --phw en hauteur. En
+        partant de la hauteur utile du héros (100svh moins l'en-tête et les
+        marges de .hero-grid ≈ 168px) et en n'en accordant qu'environ la
+        moitié à la largeur du téléphone, le mockup reste intégralement
+        visible dans le premier écran, sans découpe ni débordement.
+     C'est cette seconde contrainte qui manquait : le téléphone ne dépendait
+     que de la largeur, d'où sa taille disproportionnée sur 13"/14".
+     --phw-max-h est partagé par tous les points de rupture : chacun garde sa
+     propre intention de largeur, la règle de hauteur reste écrite une fois. */
+  --phw-max-h: calc((100svh - 168px) * 0.53);
+  --phw: min(clamp(232px, 23.5vw, 372px), var(--phw-max-h));
 }
 
 /* Conteneur incliné : le téléphone ET les photos tournent ensemble,
@@ -20,6 +35,15 @@
   height: auto;
   user-select: none;
   pointer-events: none;
+  /* Ombre portée du téléphone. Elle vivait dans le SVG, où le viewBox la
+     tranchait net (cf. commentaire dans phone-frame.svg). Posée ici, elle
+     épouse la silhouette détourée, reste homogène sur tout le contour et
+     n'est bornée par aucun canevas : plus aucun angle sombre parasite.
+     Deux couches : un contact court et net, puis une diffusion large et douce.
+     Les rayons suivent --phw pour rester proportionnels à chaque échelle. */
+  filter:
+    drop-shadow(0 calc(var(--phw) * 0.006) calc(var(--phw) * 0.016) rgba(42, 35, 32, 0.10))
+    drop-shadow(0 calc(var(--phw) * 0.027) calc(var(--phw) * 0.072) rgba(42, 35, 32, 0.18));
 }
 
 /* Zone de l'écran occupée par la pile de photos (au-dessus des boutons) */
@@ -30,6 +54,34 @@
   transform: translateX(-50%);
   width: 70%;
   height: 64%;
+  /* Clip la pile de photos à l'écran : plus aucune carte ne déborde du cadre */
+  overflow: hidden;
+  border-radius: calc(var(--phw) * 0.05);
+  /* Marge intérieure : la pile s'éventaille légèrement (cartes du dessous
+     pivotées) et doit tenir ENTIÈREMENT dans l'écran. Sans cette marge,
+     l'éventail atteignait le bord et le clip le sectionnait sur une droite —
+     d'où le liseré sombre à droite et l'angle net en bas. Avec elle, plus
+     rien ne touche la découpe : le clip redevient un simple garde-fou.
+     box-sizing: border-box est global, la zone d'écran ne bouge donc pas. */
+  padding: calc(var(--phw) * 0.028);
+}
+
+/* Cartes de la pile — surcharges limitées au téléphone du héros.
+   La règle .card globale (Stack.css) est partagée avec CardSwap : on ne la
+   touche pas, on la précise seulement ici. */
+.phone-screen-stack .card {
+  /* Rayon proportionnel à --phw plutôt que 1rem fixe : à petite échelle,
+     16px arrondissait trop la photo par rapport à l'écran du téléphone. */
+  border-radius: calc(var(--phw) * 0.042);
+  box-shadow:
+    /* Liseré blanc : ce qui dépasse d'une carte enfouie se lit comme le bord
+       d'une photo posée dessous, et non comme une bande sombre aléatoire
+       (la tranche visible ne fait que quelques pixels : le contenu de la
+       photo n'y est pas lisible, son bord si). */
+    0 0 0 calc(var(--phw) * 0.006) #fff,
+    /* Ombre courte et douce : elle sépare les couches de la pile sans jamais
+       déborder assez loin pour être tranchée par le clip de l'écran. */
+    0 calc(var(--phw) * 0.006) calc(var(--phw) * 0.018) rgba(30, 22, 18, 0.18);
 }
 
 /* ── Rangée de boutons flottants, superposée au bas du téléphone ── */
@@ -153,7 +205,7 @@
 /* iPad portrait : téléphone raisonnable dans sa colonne */
 @media (max-width: 1000px) {
   .phone-showcase {
-    --phw: clamp(240px, 34vw, 330px);
+    --phw: min(clamp(240px, 34vw, 330px), var(--phw-max-h));
   }
 }
 
@@ -161,6 +213,8 @@
    téléphone une vraie présence pour remplir la hauteur disponible */
 @media (min-width: 768px) and (max-width: 1000px) and (orientation: portrait) {
   .phone-showcase {
-    --phw: clamp(280px, 40vw, 370px);
+    /* Le viewport portrait est haut : --phw-max-h n'est pas contraignant ici,
+       il n'agit qu'en filet de sécurité sur un portrait anormalement court. */
+    --phw: min(clamp(280px, 40vw, 370px), var(--phw-max-h));
   }
 }

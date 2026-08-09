@@ -1,13 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
      viewBox="0 0 950 1610" width="950" height="1610">
-  <!-- Kiro — téléphone vide détouré, format allongé (fond transparent) -->
-  <defs>
-    <filter id="phone-shadow" x="-18%" y="-10%" width="136%" height="126%">
-      <feDropShadow dx="0" dy="26" stdDeviation="34" flood-color="#2a2320" flood-opacity="0.20"/>
-    </filter>
-  </defs>
-
-  <g filter="url(#phone-shadow)">
+  <!-- Kiro — téléphone vide détouré, format allongé (fond transparent).
+       L'ombre portée N'EST PAS dans ce SVG : elle était produite ici par un
+       feDropShadow (dy 26, stdDeviation 34) qui portait jusqu'à ~1678 alors que
+       le viewBox s'arrête à 1610 — le canevas la tranchait donc net en bas, et
+       l'inclinaison de 6° transformait cette coupe droite en faux angle sombre.
+       Elle est désormais posée en CSS (filter: drop-shadow sur .phone-frame),
+       où elle suit la silhouette réelle et n'est bornée par aucun canevas.
+       Le viewBox et la géométrie restent inchangés : le ratio 950/1610 dont
+       dépend le dimensionnement de la variable phw n'est pas modifié. -->
+  <g>
     <rect x="75.5" y="405" width="9" height="60" rx="4.5" fill="#e3ded9"/>
     <rect x="75.5" y="502" width="9" height="92" rx="4.5" fill="#e3ded9"/>
     <rect x="75.5" y="618" width="9" height="92" rx="4.5" fill="#e3ded9"/>

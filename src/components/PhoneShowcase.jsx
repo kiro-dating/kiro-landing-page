@@ -115,6 +115,13 @@ export const PhoneShowcase = () => {
             sendToBackOnClick={false}
             cards={STACK_CARDS}
             autoplay={false}
+            /* Pivot au centre plutôt qu'en bas à droite : l'éventail s'ouvre
+               symétriquement en deux coins opposés et tient dans l'écran, au
+               lieu de partir vers la droite et d'être sectionné par le clip.
+               scaleStep légèrement réduit pour laisser dépasser les cartes du
+               dessous de quelques pixels seulement. */
+            scaleStep={0.05}
+            stackOrigin="50% 50%"
           />
         </div>
       </div>

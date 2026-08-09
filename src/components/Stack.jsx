@@ -53,6 +53,12 @@ export default function Stack({
   mobileClickOnly = false,
   mobileBreakpoint = 768,
   apiRef = null,
+  /* Géométrie de l'éventail. Les valeurs par défaut reproduisent exactement le
+     comportement d'origine ; seul l'appelant qui les surcharge voit un
+     changement. scaleStep = réduction d'échelle par carte enfouie,
+     stackOrigin = pivot commun des rotations et des mises à l'échelle. */
+  scaleStep = 0.06,
+  stackOrigin = '90% 90%',
 }) {
   const [isMobile, setIsMobile] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -151,8 +157,8 @@ export default function Stack({
               onClick={() => shouldEnableClick && sendToBack(card.id)}
               animate={{
                 rotateZ: (stack.length - index - 1) * 4 + randomRotate,
-                scale: 1 + index * 0.06 - stack.length * 0.06,
-                transformOrigin: '90% 90%',
+                scale: 1 + index * scaleStep - stack.length * scaleStep,
+                transformOrigin: stackOrigin,
               }}
               initial={false}
               transition={{

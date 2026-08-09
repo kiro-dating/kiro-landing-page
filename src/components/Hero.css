@@ -323,3 +323,14 @@
     font-size: clamp(1.2rem, 5.5vw, 1.8rem);
   }
 }
+
+/* ── Écrans portables (14"/15") : tailles de texte réduites un peu ── */
+@media (min-width: 901px) and (max-width: 1800px) {
+  .hero-wordmark {
+    width: min(178px, 46vw);
+  }
+
+  .hero-copy h1 {
+    font-size: clamp(2.1rem, 4.2vw, 3.1rem);
+  }
+}
