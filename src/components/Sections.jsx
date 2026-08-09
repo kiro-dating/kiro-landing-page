@@ -2,9 +2,9 @@ import React, { useRef, useState, useEffect } from 'react';
 import { m, useScroll, useTransform, useInView } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
-  Brain, CalendarCheck, MessageCircle,
-  Gamepad2, HelpCircle, Zap, Calendar,
-  MapPin, ShieldCheck, Music, PartyPopper, Compass,
+  CalendarCheck, MessageCircle,
+  HelpCircle, Zap, Calendar,
+  ShieldCheck, Music, PartyPopper, Compass,
   Send, Play, ArrowRight,
   Leaf, Flame, Crown, Gem,
   ChevronRight, Plane, Heart,
@@ -27,64 +27,11 @@ const stagger = {
   show: { transition: { staggerChildren: 0.09 } },
 };
 
-const rise = {
-  hidden: { opacity: 0, y: 26 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] } },
-};
-
-/* ── 2. Concept ── */
-const conceptStagger = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.16, delayChildren: 0.35 } },
-};
-
-export const Concept = () => {
-  const { t } = useTranslation();
-  const points = [
-    { n: 1, icon: <Brain size={22} /> },
-    { n: 2, icon: <MapPin size={22} /> },
-    { n: 3, icon: <Gamepad2 size={22} /> },
-    { n: 4, icon: <CalendarCheck size={22} /> },
-  ];
-  return (
-    <section id="concept" className="section s-concept">
-      <div className="section-inner concept-split">
-        {/* Colonne gauche : l'histoire (apparaît en premier) */}
-        <m.div
-          className="concept-story"
-          initial={{ opacity: 0, y: 22 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.35 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <p className="section-eyebrow">{t('concept.eyebrow')}</p>
-          <h2 className="section-title">{t('concept.title')}</h2>
-          <p className="concept-intro">{t('concept.intro')}</p>
-          <blockquote className="concept-quote">{t('concept.quote')}</blockquote>
-        </m.div>
-
-        {/* Colonne droite : les 4 piliers (apparition décalée, un par un) */}
-        <m.ul
-          className="concept-points"
-          variants={conceptStagger}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.25 }}
-        >
-          {points.map(({ n, icon }) => (
-            <m.li key={n} variants={rise}>
-              <span className="concept-icon" aria-hidden="true">{icon}</span>
-              <div>
-                <strong>{t(`concept.point${n}_title`)}</strong>
-                <span>{t(`concept.point${n}_desc`)}</span>
-              </div>
-            </m.li>
-          ))}
-        </m.ul>
-      </div>
-    </section>
-  );
-};
+/* ── 2. Concept ──
+   La section « Le concept » vit maintenant dans son propre composant :
+   ce n'est plus une liste de piliers mais un parcours en quatre
+   chapitres, avec sa propre mécanique de navigation. */
+export { Concept } from './ConceptStory';
 
 /* ── 3. Jeux — pile de cartes empilées au défilement ── */
 const GAME_CARDS = [

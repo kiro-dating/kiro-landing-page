@@ -1,0 +1,668 @@
+/* ════════ Le Concept — table des matières interactive ════════
+   Palette Kiro uniquement : crème, charbon, corail. Aucune carte
+   blanche autour du texte : les chapitres reposent directement sur le
+   fond de section, seules les mises en scène sont des objets posés. */
+
+.s-concept.section {
+  padding: clamp(60px, 6.4vw, 92px) 0;
+}
+
+.cs-head {
+  max-width: 720px;
+}
+
+.cs-title {
+  font-size: clamp(1.65rem, 2.9vw, 2.4rem);
+}
+
+.cs-intro {
+  margin-top: 16px;
+  max-width: 62ch;
+  color: var(--text-secondary);
+  font-size: clamp(0.98rem, 1.05vw, 1.05rem);
+  line-height: 1.7;
+}
+
+/* ── Deux zones : la table des matières puis la scène ── */
+.cs-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 31%) minmax(0, 1fr);
+  gap: clamp(30px, 4.4vw, 64px);
+  align-items: start;
+  margin-top: clamp(34px, 4vw, 54px);
+}
+
+/* ════════ Table des matières ════════ */
+.cs-nav {
+  display: flex;
+  flex-direction: column;
+  /* Le trait décoratif entre deux entrées donne le rythme de la liste */
+  gap: clamp(2px, 0.6vw, 6px);
+}
+
+.cs-step {
+  position: relative;
+  display: grid;
+  /* Pistes calées à gauche : l'icône reste collée au libellé et l'espace
+     restant part à droite, tout en gardant une cible cliquable pleine. */
+  grid-template-columns: auto auto auto auto;
+  justify-content: start;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: clamp(9px, 1vw, 12px) 4px;
+  border: 0;
+  background: none;
+  color: var(--text-secondary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  /* --cs-shift est piloté par le décalage de proximité (JS) */
+  transform: translateX(var(--cs-shift, 0px));
+  transition: color 200ms ease;
+}
+
+/* Trait de séparation à mi-longueur, comme un repère de sommaire */
+.cs-step + .cs-step::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 4px;
+  width: 22px;
+  height: 1px;
+  background: var(--card-border);
+}
+
+.cs-rule {
+  width: 30px;
+  height: 2px;
+  border-radius: 2px;
+  background: #d9cec8;
+  transition:
+    width 380ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 220ms ease;
+}
+
+.cs-step-num {
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  color: #b3a49d;
+  transition: color 200ms ease;
+}
+
+.cs-step-label {
+  font-size: clamp(0.98rem, 1.15vw, 1.12rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  transition: font-weight 120ms ease;
+}
+
+/* L'icône ne sert que de repère secondaire : elle n'apparaît que sur
+   l'entrée active, jamais comme quatre pictogrammes alignés. */
+.cs-step-icon {
+  margin-left: -4px;
+  opacity: 0;
+  color: var(--accent-red);
+  transform: translateX(-6px);
+  transition: opacity 240ms ease, transform 240ms ease;
+}
+
+.cs-step:hover {
+  color: var(--text-primary);
+}
+
+.cs-step:hover .cs-rule {
+  width: 44px;
+  background: #c2b3ac;
+}
+
+/* État actif : le trait s'allonge, le numéro et le libellé passent en
+   corail, l'icône se révèle. Quatre marqueurs distincts en plus de la
+   couleur — l'état reste lisible sans la percevoir. */
+.cs-step.is-active {
+  color: var(--text-primary);
+}
+
+.cs-step.is-active .cs-rule {
+  width: 68px;
+  background: var(--accent-red);
+}
+
+.cs-step.is-active .cs-step-num {
+  color: var(--accent-red);
+}
+
+.cs-step.is-active .cs-step-label {
+  font-weight: 800;
+}
+
+.cs-step.is-active .cs-step-icon {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.cs-step:focus-visible {
+  outline: 2px solid var(--text-primary);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+/* ════════ Scène ════════
+   min-height réservée : le changement de chapitre ne fait jamais
+   sauter la mise en page, quel que soit le chapitre le plus haut. */
+/* La hauteur réservée est calée sur la mise en scène, qui est l'élément
+   le plus haut du panneau à chaque palier. Mesuré dans les 7 langues :
+   les quatre chapitres font exactement la même hauteur, le passage de
+   l'un à l'autre ne déplace donc rien. */
+.cs-scene {
+  min-height: 268px;
+}
+
+.cs-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 300px);
+  gap: clamp(22px, 3vw, 44px);
+  align-items: center;
+}
+
+.cs-panel:focus-visible {
+  outline: 2px solid var(--text-primary);
+  outline-offset: 8px;
+  border-radius: 12px;
+}
+
+.cs-panel-count {
+  color: #b3a49d;
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+}
+
+.cs-panel-count span {
+  color: var(--accent-red);
+}
+
+.cs-panel-title {
+  margin-top: 12px;
+  max-width: 15ch;
+  color: var(--text-primary);
+  font-size: clamp(1.5rem, 2.5vw, 2.1rem);
+  font-weight: 800;
+  line-height: 1.14;
+  letter-spacing: -0.025em;
+}
+
+.cs-panel-desc {
+  margin-top: 14px;
+  max-width: 44ch;
+  color: var(--text-secondary);
+  font-size: clamp(0.96rem, 1.05vw, 1.04rem);
+  line-height: 1.68;
+}
+
+/* ════════ Mises en scène ════════ */
+.cs-fig {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: clamp(212px, 21vw, 268px);
+}
+
+/* ── 01 · Affinité Big Five ── */
+.cs-radar-wrap {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+}
+
+.cs-fig-1 .cs-radar {
+  width: clamp(190px, 19vw, 244px);
+  height: auto;
+  overflow: visible;
+}
+
+.cs-radar-web {
+  fill: none;
+  stroke: #e6dbd5;
+  stroke-width: 1;
+}
+
+.cs-radar-b {
+  fill: rgba(23, 21, 21, 0.07);
+  stroke: rgba(23, 21, 21, 0.28);
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+}
+
+.cs-radar-a {
+  fill: rgba(224, 52, 43, 0.12);
+  stroke: var(--accent-red);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.cs-radar-dot {
+  fill: #fff;
+  stroke: #d9cec8;
+  stroke-width: 1.4;
+}
+
+/* Chiffre d'affinité posé en légende SUR le graphe plutôt qu'à côté :
+   il se rattache visuellement au radar au lieu de flotter. */
+.cs-affinity {
+  position: absolute;
+  right: -14%;
+  bottom: 4%;
+  line-height: 1.15;
+  display: grid;
+  gap: 1px;
+  padding: 9px 14px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: var(--card-shadow);
+}
+
+.cs-affinity-value {
+  color: var(--accent-red);
+  font-size: 1.32rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.cs-affinity-value i {
+  font-style: normal;
+  font-size: 0.78em;
+}
+
+.cs-affinity-tag {
+  color: var(--text-secondary);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+/* ── 02 · Lieux partagés ── */
+.cs-fig-2 {
+  gap: 14px;
+  grid-template-rows: 1fr auto;
+}
+
+.cs-map {
+  position: relative;
+  width: min(100%, 268px);
+  height: clamp(140px, 14vw, 176px);
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+}
+
+.cs-map-road {
+  position: absolute;
+  background: #f1e8e3;
+}
+
+.cs-road-1 { left: 0; right: 0; top: 38%; height: 7px; }
+.cs-road-2 { top: 0; bottom: 0; left: 30%; width: 7px; }
+.cs-road-3 { left: 0; right: 0; bottom: 20%; height: 4px; }
+
+.cs-pin {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  color: #c9bab3;
+}
+
+.cs-pin-a { top: 17%; left: 55%; }
+.cs-pin-b { bottom: 15%; left: 14%; }
+
+.cs-pin-live {
+  top: 44%;
+  left: 60%;
+  color: var(--accent-red);
+}
+
+.cs-pin-halo {
+  position: absolute;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  background: var(--accent-red-glow);
+  animation: cs-halo 2.6s ease-out infinite;
+}
+
+@keyframes cs-halo {
+  0% { transform: scale(0.55); opacity: 0.9; }
+  70% { transform: scale(1.25); opacity: 0; }
+  100% { transform: scale(1.25); opacity: 0; }
+}
+
+.cs-chips {
+  display: flex;
+  gap: 9px;
+}
+
+.cs-chip {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: #fff;
+  color: var(--text-secondary);
+  box-shadow: var(--card-shadow);
+}
+
+.cs-chip.is-on {
+  background: var(--accent-red);
+  color: #fff;
+  box-shadow: 0 10px 22px var(--accent-red-glow);
+}
+
+/* ── 03 · Brise-glace ── */
+.cs-fig-3 {
+  gap: 16px;
+  grid-template-rows: auto auto;
+}
+
+.cs-ask {
+  display: grid;
+  gap: 9px;
+  width: min(100%, 244px);
+  padding: 18px 20px;
+  border-radius: 20px 20px 20px 6px;
+  background: #fff;
+  box-shadow: var(--card-shadow);
+}
+
+.cs-ask-dots {
+  display: flex;
+  gap: 5px;
+}
+
+.cs-ask-dots i {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--accent-red);
+  opacity: 0.35;
+  animation: cs-dot 1.5s ease-in-out infinite;
+}
+
+.cs-ask-dots i:nth-child(2) { animation-delay: 0.18s; }
+.cs-ask-dots i:nth-child(3) { animation-delay: 0.36s; }
+
+@keyframes cs-dot {
+  0%, 100% { opacity: 0.28; }
+  50% { opacity: 1; }
+}
+
+.cs-ask-line {
+  height: 8px;
+  border-radius: 999px;
+  background: #f0e6e1;
+}
+
+.cs-ask-line.cs-short { width: 58%; }
+
+.cs-opts {
+  display: flex;
+  gap: 12px;
+}
+
+.cs-opt {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: var(--card-shadow);
+}
+
+.cs-opt-a { color: var(--accent-red); background: var(--s-rose); }
+.cs-opt-b { color: var(--text-primary); }
+
+.cs-spark {
+  position: absolute;
+  color: var(--accent-red);
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
+
+.cs-spark-1 { top: 12%; right: 16%; }
+.cs-spark-2 { bottom: 22%; left: 12%; font-size: 0.62rem; opacity: 0.5; }
+
+/* ── 04 · Le vrai rendez-vous ── */
+.cs-fig-4 {
+  gap: 15px;
+  grid-template-rows: auto auto;
+}
+
+.cs-place {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: min(100%, 252px);
+  padding: 11px 14px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: var(--card-shadow);
+}
+
+.cs-place-pin {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border-radius: 9px;
+  background: var(--s-rose);
+  color: var(--accent-red);
+}
+
+.cs-place-line {
+  height: 7px;
+  flex: 1;
+  border-radius: 999px;
+  background: #f0e6e1;
+}
+
+/* Deux disponibilités superposées ; la colonne commune s'allume */
+.cs-tracks {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: var(--card-shadow);
+}
+
+.cs-track {
+  display: flex;
+  gap: 6px;
+}
+
+.cs-track i {
+  width: 26px;
+  height: 15px;
+  border-radius: 5px;
+  background: #f3ebe7;
+}
+
+.cs-track i.is-free { background: #e2d7d1; }
+
+.cs-track i.is-match {
+  background: var(--accent-red);
+}
+
+.cs-match-beam {
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: calc(14px + 3 * 32px - 3px);
+  width: 32px;
+  border-radius: 9px;
+  background: var(--accent-red-glow);
+}
+
+.cs-booked {
+  position: absolute;
+  right: 2px;
+  top: 8px;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: var(--accent-red);
+  color: #fff;
+  box-shadow: 0 12px 24px var(--accent-red-glow);
+}
+
+.cs-booked-tick {
+  position: absolute;
+  right: 4px;
+  bottom: 5px;
+}
+
+/* ════════ Signature ════════
+   Conclusion du parcours : pas une boîte, une phrase posée. */
+.cs-signature {
+  max-width: 26ch;
+  margin-top: clamp(34px, 4.2vw, 58px);
+  padding-top: clamp(20px, 2.4vw, 30px);
+  border-top: 2px solid var(--accent-red);
+  color: var(--text-primary);
+  font-size: clamp(1.15rem, 1.9vw, 1.6rem);
+  font-weight: 800;
+  line-height: 1.28;
+  letter-spacing: -0.022em;
+  text-wrap: balance;
+}
+
+/* ════════ Portables 13-14" : on resserre sans changer la structure ════════ */
+@media (min-width: 901px) and (max-width: 1440px) {
+  .cs-stage {
+    grid-template-columns: minmax(0, 33%) minmax(0, 1fr);
+  }
+
+  .cs-scene {
+    min-height: 210px;
+  }
+
+  .cs-panel {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 258px);
+  }
+
+  .cs-fig {
+    height: 210px;
+  }
+}
+
+/* ════════ Tablette et mobile : sommaire horizontal, scène dessous ════════ */
+@media (max-width: 900px) {
+  .cs-stage {
+    grid-template-columns: 1fr;
+    gap: 26px;
+    margin-top: 30px;
+  }
+
+  .cs-nav {
+    flex-direction: row;
+    gap: 8px;
+    /* Barre défilante : la structure reste une liste d'étapes, jamais
+       quatre onglets encadrés */
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    margin-inline: -24px;
+    padding-inline: 24px;
+  }
+
+  .cs-nav::-webkit-scrollbar { display: none; }
+
+  .cs-step {
+    grid-template-columns: auto auto;
+    grid-template-areas: 'num label';
+    gap: 8px;
+    width: auto;
+    flex: 0 0 auto;
+    padding: 8px 0 12px;
+    scroll-snap-align: center;
+    border-bottom: 2px solid var(--card-border);
+    transform: none;
+  }
+
+  .cs-step + .cs-step {
+    margin-left: 18px;
+  }
+
+  .cs-step + .cs-step::before { display: none; }
+
+  .cs-step-num { grid-area: num; }
+  .cs-step-label { grid-area: label; white-space: nowrap; }
+
+  /* Le trait devient le soulignement de l'étape */
+  .cs-rule {
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 0;
+    height: 2px;
+  }
+
+  .cs-step:hover .cs-rule { width: 0; }
+  .cs-step.is-active .cs-rule { width: 100%; }
+  .cs-step-icon { display: none; }
+
+  .cs-scene {
+    /* Le texte se replie : on réserve la hauteur du chapitre le plus long
+       mesuré sur les 7 langues, pour que taper une étape ne fasse pas
+       remonter la suite de la page. */
+    min-height: 366px;
+  }
+
+  .cs-panel {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .cs-panel-title { max-width: none; }
+
+  .cs-fig {
+    height: 210px;
+    justify-items: center;
+  }
+
+  .cs-signature {
+    max-width: 30ch;
+    margin-top: 34px;
+  }
+}
+
+@media (max-width: 560px) {
+  .cs-panel-title { font-size: 1.42rem; }
+  .cs-fig { height: 194px; }
+  .cs-signature { max-width: none; font-size: 1.12rem; }
+}
+
+/* ════════ Mouvement réduit ════════
+   La règle globale de index.css neutralise déjà durées et transitions ;
+   on coupe en plus les boucles décoratives, qui n'apportent rien ici. */
+@media (prefers-reduced-motion: reduce) {
+  .cs-pin-halo,
+  .cs-ask-dots i {
+    animation: none;
+  }
+
+  .cs-pin-halo { opacity: 0.5; transform: scale(1); }
+  .cs-ask-dots i { opacity: 0.6; }
+}
