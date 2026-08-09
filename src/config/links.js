@@ -11,9 +11,14 @@ const env = import.meta.env;
 /* Domaine officiel du site (aussi utilisé par index.html pour les metas) */
 export const SITE_URL = env.VITE_SITE_URL || 'https://kirodating.com';
 
-/* Centre d'aide : hébergé aujourd'hui sous kirosocial.com/aide —
-   surcharger VITE_HELP_BASE le jour où il déménage */
-const HELP_BASE = env.VITE_HELP_BASE || 'https://kirosocial.com/aide';
+/* Centre d'aide officiel de Kiro. Source unique : toutes les surfaces
+   Support / Aide / Légal en dérivent.
+
+   ATTENTION — ne jamais repointer vers kirosocial.com : Kiro Social est un
+   AUTRE projet, son ancien centre d'aide (kirosocial.com/aide) ne répond plus
+   (404 DEPLOYMENT_NOT_FOUND) et ne fait plus partie du parcours Kiro.
+   Le contrôle src/utils/__tests__/links.test.js échoue si cela se reproduit. */
+const HELP_BASE = (env.VITE_HELP_BASE || 'https://aide.kirodating.com').replace(/\/+$/, '');
 
 export const LINKS = {
   // Help Center
