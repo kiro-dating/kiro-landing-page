@@ -34,7 +34,7 @@ import {
   loadTaxonomy,
   relatedPosts,
 } from './blog/content.mjs';
-import { articlePage, indexPage, listingPage, searchPage, urls } from './blog/templates.mjs';
+import { archivePage, articlePage, authorsPage, indexPage, listingPage, searchPage, urls } from './blog/templates.mjs';
 import { robots, rss, searchIndex, sitemap, sitemapIndex } from './blog/feeds.mjs';
 import { assertNoBrokenInternalLinks } from './blog/links.mjs';
 import {
@@ -79,6 +79,76 @@ const warnings = [];
 const warn = (message) => warnings.push(message);
 const log = (message) => process.stdout.write(`  ${message}\n`);
 
+/**
+ * Regroupe les articles par année puis par mois, du plus récent au plus ancien.
+ * Sert à la fois aux pages d'archives, à la barre de navigation et à la colonne
+ * latérale. Une période sans article n'apparaît jamais : la structure est
+ * dérivée des articles eux-mêmes, donc aucune page vide ne peut être produite.
+ */
+const archiveTree = (posts, lang) => {
+  const t = UI[lang];
+  const years = new Map();
+  for (const post of posts) {
+    const y = post.publishedAt.getUTCFullYear();
+    const m = post.publishedAt.getUTCMonth() + 1;
+    if (!years.has(y)) years.set(y, new Map());
+    const months = years.get(y);
+    months.set(m, (months.get(m) || 0) + 1);
+  }
+  return [...years.entries()]
+    .sort((a, b) => b[0] - a[0])
+    .map(([year, months]) => ({
+      year,
+      count: [...months.values()].reduce((n, c) => n + c, 0),
+      months: [...months.entries()]
+        .sort((a, b) => b[0] - a[0])
+        .map(([month, count]) => ({ month, count, label: t.months[month - 1] })),
+    }));
+};
+
+/**
+ * Sujets à explorer, dérivés des tags portés par des articles publiés.
+ *
+ * On ne code aucune liste en dur : les libellés viennent de `taxonomy.json` et
+ * un sujet n'apparaît que si sa page de tag est réellement générée. Le jour où
+ * un tag n'est plus employé, il disparaît de la colonne tout seul.
+ */
+const topicChips = (posts, taxonomy, lang, limit = 10) => {
+  const counts = new Map();
+  for (const post of posts) {
+    for (const key of post.tags) counts.set(key, (counts.get(key) || 0) + 1);
+  }
+  return [...counts.entries()]
+    .map(([key, count]) => {
+      const tag = taxonomy.tags.find((x) => x.key === key);
+      return { key, count, label: tag?.label?.[lang] || key };
+    })
+    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label, lang))
+    .slice(0, limit);
+};
+
+/** Fiches d'auteurs enrichies : nombre d'articles et catégories dominantes. */
+const authorCards = (posts, authors, lang) =>
+  unique(posts.map((p) => p.authorKey)).map((key) => {
+    const written = posts.filter((p) => p.authorKey === key);
+    const decorated = written[0].author;
+    const counts = new Map();
+    for (const p of written) counts.set(p.categoryLabel, (counts.get(p.categoryLabel) || 0) + 1);
+    return {
+      key,
+      slug: slugify(authors[key]?.slug || key),
+      name: decorated.name,
+      jobTitle: decorated.jobTitle,
+      bio: decorated.bio,
+      avatar: authors[key]?.avatar || null,
+      url: authors[key]?.url || null,
+      urlLabel: authors[key]?.urlLabel || null,
+      count: written.length,
+      topCategories: [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 2).map(([label]) => label),
+      posts: written,
+    };
+  }).sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, lang));
+
 /** Date de mise à jour la plus récente d'un ensemble d'articles (lastmod du sitemap). */
 const newestUpdate = (posts) =>
   posts.length === 0 ? new Date() : new Date(Math.max(...posts.map((p) => p.updatedAt.getTime())));
@@ -87,7 +157,25 @@ const newestUpdate = (posts) =>
 
 let filesWritten = 0;
 
+/* Garde-fou : plus aucune page du blog ne doit envoyer vers le centre d'aide
+   de Kiro Social. C'est un AUTRE projet, son ancien centre d'aide a été retiré
+   et renvoie 404 — le blog y a envoyé les lecteurs pendant un temps. Contrôlé
+   au moment de l'écriture plutôt qu'en relisant dist/, parce que dist/ n'est
+   pas purgé entre deux builds et contiendrait de vieilles pages. */
+const assertNoLegacyHelpCenter = (relativePath, contents) => {
+  if (!relativePath.endsWith('.html')) return;
+  const match = contents.match(/https?:\/\/[^"'\s]*kirosocial\.com\/aide[^"'\s]*/);
+  if (match) {
+    throw new Error(
+      `centre d'aide obsolète dans « ${relativePath} » : ${match[0]}\n`
+        + "  Kiro Social est un autre projet et son centre d'aide ne répond plus.\n"
+        + '  Utilise HELP.* de scripts/blog/config.mjs (https://aide.kirodating.com).',
+    );
+  }
+};
+
 const write = (relativePath, contents) => {
+  assertNoLegacyHelpCenter(relativePath, contents);
   const target = path.join(PATHS.dist, relativePath.replace(/^\/+/, ''));
   fs.mkdirSync(path.dirname(target), { recursive: true });
   fs.writeFileSync(target, contents);
@@ -212,6 +300,12 @@ const main = () => {
 
     log(`${conf.locale} — ${posts.length} article(s)`);
 
+    /* Archives et fiches auteurs : dérivées des articles publiés, donc jamais
+       en avance sur le contenu réel. */
+    const archives = archiveTree(posts, lang);
+    const authorList = authorCards(posts, authors, lang);
+    const topics = topicChips(posts, taxonomy, lang);
+
     /* Catégories effectivement utilisées : on ne publie pas de page vide. */
     const usedCategoryKeys = new Set(posts.map((p) => p.categoryKey));
     const categories = taxonomy.categories.filter((c) => usedCategoryKeys.has(c.key));
@@ -234,6 +328,9 @@ const main = () => {
       const url = u.index(page);
       const html = indexPage({
         lang,
+        archives,
+        topics,
+        indexUrl: u.searchIndex(),
         posts: pagePosts,
         page,
         totalPages: pages.length,
@@ -480,6 +577,117 @@ const main = () => {
       track('blog', { loc: url, changefreq: 'monthly', priority: '0.3', lastmod: isoDay(newestUpdate(authorPosts)) });
     }
 
+    /* — Archives par année et par mois —
+       Générées uniquement pour les périodes qui contiennent des articles :
+       aucune page vide n'est possible, la structure vient du contenu. */
+    for (const year of archives) {
+      const yearPosts = posts.filter((p) => p.publishedAt.getUTCFullYear() === year.year);
+      const yearPages = paginate(yearPosts, PER_PAGE);
+      const monthLinks = `<nav class="archive-siblings" aria-label="${t.archives}">${year.months
+        .map((m) => `<a href="${u.month(year.year, m.month)}">${m.label} <span>${m.count}</span></a>`)
+        .join('')}</nav>`;
+
+      yearPages.forEach((pagePosts, i) => {
+        const pageNo = i + 1;
+        const url = u.year(year.year, pageNo);
+        writePage(
+          url,
+          archivePage({
+            lang,
+            heading: t.archiveYear(year.year),
+            title: `${t.archiveYear(year.year)} | ${t.blogTitle}`,
+            description: t.archiveYearMeta(year.year),
+            path: url,
+            posts: pagePosts,
+            page: pageNo,
+            totalPages: yearPages.length,
+            hrefFor: (n) => u.year(year.year, n),
+            categories,
+            archives,
+            assets,
+            activeArchive: String(year.year),
+            siblings: monthLinks,
+            schema: graph([
+              organizationNode(),
+              websiteNode(lang),
+              collectionNode({ lang, path: url, name: t.archiveYear(year.year), description: '', posts: pagePosts }),
+              breadcrumbNode([
+                { name: t.home, path: '/' },
+                { name: t.blog, path: u.index() },
+                { name: String(year.year), path: u.year(year.year) },
+              ]),
+            ]),
+          }),
+        );
+        track('blog', { loc: url, changefreq: 'monthly', priority: '0.4', lastmod: isoDay(newestUpdate(pagePosts)) });
+      });
+
+      for (const month of year.months) {
+        const monthPosts = yearPosts.filter((p) => p.publishedAt.getUTCMonth() + 1 === month.month);
+        const monthPages = paginate(monthPosts, PER_PAGE);
+        monthPages.forEach((pagePosts, i) => {
+          const pageNo = i + 1;
+          const url = u.month(year.year, month.month, pageNo);
+          writePage(
+            url,
+            archivePage({
+              lang,
+              heading: t.archiveMonth(month.label, year.year),
+              title: `${t.archiveMonth(month.label, year.year)} | ${t.blogTitle}`,
+              description: t.archiveMonthMeta(month.label, year.year),
+              path: url,
+              posts: pagePosts,
+              page: pageNo,
+              totalPages: monthPages.length,
+              hrefFor: (n) => u.month(year.year, month.month, n),
+              categories,
+              archives,
+              assets,
+              activeArchive: `${year.year}-${month.month}`,
+              siblings: `<p class="archive-parent"><a href="${u.year(year.year)}">${t.archiveYear(year.year)}</a></p>`,
+              schema: graph([
+                organizationNode(),
+                websiteNode(lang),
+                collectionNode({ lang, path: url, name: t.archiveMonth(month.label, year.year), description: '', posts: pagePosts }),
+                breadcrumbNode([
+                  { name: t.home, path: '/' },
+                  { name: t.blog, path: u.index() },
+                  { name: String(year.year), path: u.year(year.year) },
+                  { name: month.label, path: u.month(year.year, month.month) },
+                ]),
+              ]),
+            }),
+          );
+          track('blog', { loc: url, changefreq: 'monthly', priority: '0.3', lastmod: isoDay(newestUpdate(pagePosts)) });
+        });
+      }
+    }
+
+    /* — Index des auteurs — */
+    if (authorList.length > 0) {
+      const url = u.authors();
+      writePage(
+        url,
+        authorsPage({
+          lang,
+          authors: authorList,
+          categories,
+          assets,
+          alternates: staticAlternates((code) => urls(code).authors()),
+          schema: graph([
+            organizationNode(),
+            websiteNode(lang),
+            breadcrumbNode([
+              { name: t.home, path: '/' },
+              { name: t.blog, path: u.index() },
+              { name: t.authors, path: url },
+            ]),
+          ]),
+        }),
+      );
+      track('blog', { loc: url, changefreq: 'monthly', priority: '0.4', lastmod: isoDay(newestUpdate(posts)) });
+    }
+
     /* — Recherche (noindex : outil, pas contenu) — */
     writePage(
       u.search(),
@@ -487,6 +695,12 @@ const main = () => {
         lang,
         categories,
         assets,
+        archives,
+        topics,
+        recent: posts.slice(0, 6),
+        /* Suggestions : les tags les plus employés, donc toujours en phase avec
+           le contenu réel. Aucune requête inventée. */
+        suggestions: unique(posts.flatMap((p) => p.tagLabels.map((x) => x.label))).slice(0, 6),
         indexUrl: u.searchIndex(),
         alternates: staticAlternates((code) => urls(code).search()),
         schema: graph([organizationNode(), websiteNode(lang)]),

@@ -32,6 +32,31 @@ export const PATHS = {
 /** Domaine officiel, sans barre oblique finale. */
 export const SITE_URL = (process.env.VITE_SITE_URL || 'https://kirodating.com').replace(/\/+$/, '');
 
+/**
+ * Centre d'aide officiel de Kiro.
+ *
+ * Le générateur du blog est un script Node : il ne peut pas importer
+ * `src/config/links.js`, qui dépend de `import.meta.env` (Vite). Les deux
+ * runtimes lisent donc la MÊME variable d'environnement `VITE_HELP_BASE` et
+ * appliquent la même valeur par défaut — un seul réglage suffit à déplacer le
+ * centre d'aide partout.
+ *
+ * ATTENTION — ne jamais repointer vers kirosocial.com : c'est un autre projet
+ * et son ancien centre d'aide ne répond plus.
+ */
+const HELP_BASE = (process.env.VITE_HELP_BASE || 'https://aide.kirodating.com').replace(/\/+$/, '');
+
+/** Pages du centre d'aide réellement publiées sous ce domaine (vérifiées). */
+export const HELP = {
+  base: `${HELP_BASE}/`,
+  support: `${HELP_BASE}/support.html`,
+  terms: `${HELP_BASE}/conditions-utilisation.html`,
+  privacy: `${HELP_BASE}/politique-confidentialite.html`,
+};
+
+/** Adresse de contact affichée dans le pied de page du blog. */
+export const CONTACT_EMAIL = process.env.VITE_CONTACT_EMAIL || 'contact@kirosocial.com';
+
 /** Nom de la marque, utilisé dans les <title> et le JSON-LD. */
 export const BRAND = 'Kiro';
 
@@ -70,6 +95,7 @@ export const LANGS = {
       author: 'auteur',
       page: 'page',
       search: 'recherche',
+      authors: 'auteurs',
     },
   },
   en: {
@@ -85,6 +111,7 @@ export const LANGS = {
       author: 'author',
       page: 'page',
       search: 'search',
+      authors: 'authors',
     },
   },
 };
@@ -98,10 +125,10 @@ export const UI = {
     home: 'Accueil',
     blogTitle: 'Le blog Kiro',
     blogTagline:
-      'Rencontres, relations et vie de couple au Québec — sans filtre, sans recette magique.',
-    metaTitleIndex: 'Blog Kiro — conseils rencontres, relations et vie de couple au Québec',
+      'Du match à la vraie rencontre : profil, conversation, premiers rendez-vous — sans filtre, sans recette magique.',
+    metaTitleIndex: 'Blog Kiro — conversation, profil et premiers rendez-vous',
     metaDescIndex:
-      'Conseils de rencontres, guides locaux et réponses honnêtes pour les célibataires du Québec, du Canada et de la diaspora. Écrit par l’équipe Kiro.',
+      'Conseils de rencontres écrits sans recette magique : profil, premier message, conversation, organisation d’un premier rendez-vous, sécurité, et guides pour les communautés du Québec et du Canada.',
     readingTime: (m) => `${m} min de lecture`,
     publishedOn: 'Publié le',
     updatedOn: 'Mis à jour le',
@@ -145,15 +172,53 @@ export const UI = {
     articlesIn: (n) => `Articles classés dans « ${n} »`,
     articlesTagged: (n) => `Articles sur le sujet « ${n} »`,
     articlesBy: (n) => `Articles de ${n}`,
+    /* ── Redesign éditorial ─────────────────────────────────────────────── */
+    featuredEyebrow: 'À la une',
+    latest: 'Derniers articles',
+    browse: 'Parcourir',
+    filters: 'Filtrer',
+    filtersClose: 'Fermer les filtres',
+    moreOptions: 'Plus d’options',
+    archives: 'Archives',
+    archivesAll: 'Toutes les archives',
+    archivesTitle: 'Archives du blog',
+    archiveYear: (y) => `Articles publiés en ${y}`,
+    archiveMonth: (m, y) => `Articles publiés en ${m} ${y}`,
+    archiveYearMeta: (y) => `Tous les articles du blog Kiro publiés en ${y} : conseils rencontres, conversation, profil et premiers rendez-vous.`,
+    archiveMonthMeta: (m, y) => `Les articles du blog Kiro publiés en ${m} ${y}.`,
+    exploreTopics: 'Explorer par sujet',
+    authors: 'Les auteurs',
+    authorsTitle: 'Les auteurs du blog',
+    authorsMeta: 'Qui écrit sur le blog Kiro : parcours, rôle et articles publiés.',
+    allAuthors: 'Tous les auteurs',
+    articleCount: (n) => (n === 1 ? '1 article' : `${n} articles`),
+    writesAbout: 'Écrit surtout sur',
+    openSearch: 'Ouvrir la recherche',
+    closeSearch: 'Fermer la recherche',
+    searchIntro: 'Cherche un sujet, une ville, une question — ou parcours ce qui suit.',
+    suggestions: 'Suggestions de recherche',
+    popularTopics: 'Sujets fréquents',
+    recentArticles: 'Articles récents',
+    previousArticle: 'Article précédent',
+    nextArticle: 'Article suivant',
+    inCategory: 'Dans la même catégorie',
+    resources: 'Ressources',
+    months: [
+      'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+      'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre',
+    ],
+    footerPitch:
+      'Kiro aide à passer du match à une vraie rencontre : profil, conversation, jeux brise-glace et planification de date.',
   },
   en: {
     blog: 'Blog',
     home: 'Home',
     blogTitle: 'The Kiro blog',
-    blogTagline: 'Dating, relationships and real talk for singles in Quebec and Canada.',
-    metaTitleIndex: 'Kiro Blog — dating advice for Quebec and Canada',
+    blogTagline:
+      'From match to real date: profile, conversation, first dates — no filters, no magic formulas.',
+    metaTitleIndex: 'Kiro Blog — conversation, profiles and first dates',
     metaDescIndex:
-      'Dating advice, local guides and honest answers for singles across Quebec, Canada and the diaspora. Written by the Kiro team.',
+      'Dating advice written without magic formulas: profiles, first messages, conversation, planning a first date, safety, and guides for communities across Quebec and Canada.',
     readingTime: (m) => `${m} min read`,
     publishedOn: 'Published on',
     updatedOn: 'Updated on',
@@ -197,6 +262,43 @@ export const UI = {
     articlesIn: (n) => `Articles in “${n}”`,
     articlesTagged: (n) => `Articles tagged “${n}”`,
     articlesBy: (n) => `Articles by ${n}`,
+    /* ── Editorial redesign ─────────────────────────────────────────────── */
+    featuredEyebrow: 'Featured',
+    latest: 'Latest articles',
+    browse: 'Browse',
+    filters: 'Filter',
+    filtersClose: 'Close filters',
+    moreOptions: 'More options',
+    archives: 'Archives',
+    archivesAll: 'All archives',
+    archivesTitle: 'Blog archives',
+    archiveYear: (y) => `Articles published in ${y}`,
+    archiveMonth: (m, y) => `Articles published in ${m} ${y}`,
+    archiveYearMeta: (y) => `Every Kiro blog article published in ${y}: dating advice, conversation, profiles and first dates.`,
+    archiveMonthMeta: (m, y) => `Kiro blog articles published in ${m} ${y}.`,
+    exploreTopics: 'Explore by topic',
+    authors: 'The authors',
+    authorsTitle: 'Blog authors',
+    authorsMeta: 'Who writes on the Kiro blog: background, role and published articles.',
+    allAuthors: 'All authors',
+    articleCount: (n) => (n === 1 ? '1 article' : `${n} articles`),
+    writesAbout: 'Mostly writes about',
+    openSearch: 'Open search',
+    closeSearch: 'Close search',
+    searchIntro: 'Look for a topic, a city, a question — or browse below.',
+    suggestions: 'Search suggestions',
+    popularTopics: 'Common topics',
+    recentArticles: 'Recent articles',
+    previousArticle: 'Previous article',
+    nextArticle: 'Next article',
+    inCategory: 'In the same category',
+    resources: 'Resources',
+    months: [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December',
+    ],
+    footerPitch:
+      'Kiro helps you go from a match to a real date: profile, conversation, icebreaker games and date planning.',
   },
 };
 

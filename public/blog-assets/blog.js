@@ -12,6 +12,42 @@
 (function () {
   'use strict';
 
+  /* ── Menus dépliants : fermeture au clic extérieur et à Échap ──────────── */
+
+  /* Les menus du blog sont des <details> natifs : ils fonctionnent déjà sans
+     JavaScript, au clavier comme à la souris. Ce bloc n'ajoute que le confort
+     attendu d'un menu — se refermer quand on clique ailleurs ou qu'on appuie
+     sur Échap — et rend le focus au bouton, comme le veut la pratique ARIA. */
+  var menus = document.querySelectorAll('details.more-menu, details.nav-menu, details.search-toggle');
+
+  if (menus.length > 0) {
+    document.addEventListener('click', function (event) {
+      for (var i = 0; i < menus.length; i += 1) {
+        if (menus[i].open && !menus[i].contains(event.target)) menus[i].open = false;
+      }
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key !== 'Escape') return;
+      for (var i = 0; i < menus.length; i += 1) {
+        if (!menus[i].open) continue;
+        menus[i].open = false;
+        var summary = menus[i].querySelector('summary');
+        if (summary) summary.focus();
+      }
+    });
+
+    /* La recherche dépliable donne le focus au champ dès l'ouverture. */
+    for (var m = 0; m < menus.length; m += 1) {
+      if (!menus[m].classList.contains('search-toggle')) continue;
+      menus[m].addEventListener('toggle', function () {
+        if (!this.open) return;
+        var field = this.querySelector('input[type="search"]');
+        if (field) field.focus();
+      });
+    }
+  }
+
   /* ── Partage : copier le lien ─────────────────────────────────────────── */
 
   var shareBlock = document.querySelector('.post-share');
@@ -117,7 +153,11 @@
       .replace(/"/g, '&quot;');
   }
 
+  var fallback = document.querySelector('[data-search-fallback]');
+
   function render(list) {
+    /* Le bloc de repli n'a de sens que tant qu'aucune recherche n'est lancée. */
+    if (fallback) fallback.hidden = true;
     if (list.length === 0) {
       results.innerHTML = '';
       status.textContent = strings.none;
@@ -150,6 +190,7 @@
     if (words.length === 0) {
       results.innerHTML = '';
       status.textContent = strings.prompt;
+      if (fallback) fallback.hidden = false;
       return;
     }
     load()

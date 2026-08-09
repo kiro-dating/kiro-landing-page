@@ -10,7 +10,7 @@
  * que le blog soit visuellement indistinguable du reste du site.
  */
 
-import { BRAND, LANGS, PER_PAGE, SITE_URL, UI } from './config.mjs';
+import { BRAND, CONTACT_EMAIL, HELP, LANGS, PER_PAGE, SITE_URL, UI } from './config.mjs';
 import { escapeHtml, joinUrl } from './utils.mjs';
 import { abs, head, jsonLd } from './seo.mjs';
 
@@ -26,6 +26,14 @@ export const urls = (lang) => {
     tag: (slug, page = 1) =>
       page <= 1 ? joinUrl(base, segments.tag, slug) : joinUrl(base, segments.tag, slug, segments.page, page),
     author: (slug) => joinUrl(base, segments.author, slug),
+    authors: () => joinUrl(base, segments.authors),
+    /* Archives : /blog/2026/ et /blog/2026/08/. Le mois est toujours sur deux
+       chiffres pour que les URLs se trient naturellement. */
+    year: (y, page = 1) => (page <= 1 ? joinUrl(base, y) : joinUrl(base, y, segments.page, page)),
+    month: (y, m, page = 1) =>
+      page <= 1
+        ? joinUrl(base, y, String(m).padStart(2, '0'))
+        : joinUrl(base, y, String(m).padStart(2, '0'), segments.page, page),
     search: () => joinUrl(base, segments.search),
     rss: () => `${joinUrl(base)}rss.xml`,
     searchIndex: () => `${joinUrl(base)}search-index.json`,
@@ -97,7 +105,14 @@ const header = (lang, options = {}) => {
     </header>`;
 };
 
-const footer = (lang, { otherLangUrl }) => {
+/**
+ * Pied de page.
+ *
+ * La colonne « Blog » liste des catégories RÉELLEMENT générées : on ne peut pas
+ * y écrire une liste en dur, sinon un lien mort apparaîtrait le jour où une
+ * catégorie se vide. `categories` vient donc du build.
+ */
+const footer = (lang, { otherLangUrl, categories = [] }) => {
   const t = UI[lang];
   const u = urls(lang);
   const year = new Date().getUTCFullYear();
@@ -110,31 +125,36 @@ const footer = (lang, { otherLangUrl }) => {
       <div class="footer-grid">
         <div class="footer-brand">
           <img src="/icons/kiro-symbol.svg" alt="${BRAND}" width="40" height="46" loading="lazy" />
-          <p>${escapeHtml(t.blogTagline)}</p>
+          <p>${escapeHtml(t.footerPitch)}</p>
         </div>
         <div class="footer-col">
           <h4>${escapeHtml(t.blog)}</h4>
           <ul>
             <li><a href="${u.index()}">${escapeHtml(t.allArticles)}</a></li>
+            ${categories
+              .map((c) => `<li><a href="${u.category(c.slug[lang])}">${escapeHtml(c.label[lang])}</a></li>`)
+              .join('\n            ')}
+            <li><a href="${u.authors()}">${escapeHtml(t.allAuthors)}</a></li>
             <li><a href="${u.search()}">${escapeHtml(t.search)}</a></li>
             <li><a href="${u.rss()}">RSS</a></li>
             ${otherLangUrl ? `<li><a href="${otherLangUrl}" hreflang="${LANGS[lang === 'fr' ? 'en' : 'fr'].locale}">${escapeHtml(t.otherLang)}</a></li>` : ''}
           </ul>
         </div>
         <div class="footer-col">
-          <h4>${lang === 'fr' ? 'Kiro' : 'Kiro'}</h4>
+          <h4>Kiro</h4>
           <ul>
-            <li><a href="/">${lang === 'fr' ? 'Accueil' : 'Home'}</a></li>
+            <li><a href="/#concept">${lang === 'fr' ? 'Découvrir' : 'Discover'}</a></li>
+            <li><a href="/#jeux">${lang === 'fr' ? 'Les jeux' : 'Games'}</a></li>
             <li><a href="/#abonnements">${lang === 'fr' ? 'Abonnements' : 'Plans'}</a></li>
-            <li><a href="https://kirosocial.com/aide/support.html" target="_blank" rel="noopener noreferrer">${escapeHtml(legal.help)}</a></li>
-            <li><a href="mailto:contact@kirosocial.com">${escapeHtml(legal.contact)}</a></li>
+            <li><a href="${HELP.support}" target="_blank" rel="noopener noreferrer">${escapeHtml(legal.help)}</a></li>
+            <li><a href="mailto:${CONTACT_EMAIL}">${escapeHtml(legal.contact)}</a></li>
           </ul>
         </div>
         <div class="footer-col">
           <h4>${lang === 'fr' ? 'Légal' : 'Legal'}</h4>
           <ul>
-            <li><a href="https://kirosocial.com/aide/conditions-utilisation.html" target="_blank" rel="noopener noreferrer">${escapeHtml(legal.terms)}</a></li>
-            <li><a href="https://kirosocial.com/aide/politique-confidentialite.html" target="_blank" rel="noopener noreferrer">${escapeHtml(legal.privacy)}</a></li>
+            <li><a href="${HELP.terms}" target="_blank" rel="noopener noreferrer">${escapeHtml(legal.terms)}</a></li>
+            <li><a href="${HELP.privacy}" target="_blank" rel="noopener noreferrer">${escapeHtml(legal.privacy)}</a></li>
           </ul>
         </div>
       </div>
@@ -250,7 +270,7 @@ const categoryNav = (lang, categories, activeSlug = null) => {
  * Document HTML complet.
  * `assets` = { css, js } — chemins versionnés produits par le build.
  */
-export const layout = ({ lang, seo, schema, body, assets, bodyClass = '', otherLangUrl = null, isBlogIndex = false }) => {
+export const layout = ({ lang, seo, schema, body, assets, bodyClass = '', otherLangUrl = null, isBlogIndex = false, categories = [] }) => {
   const conf = LANGS[lang];
   return `<!doctype html>
 <html lang="${conf.locale}">
@@ -273,21 +293,218 @@ export const layout = ({ lang, seo, schema, body, assets, bodyClass = '', otherL
     <main id="contenu">
 ${body}
     </main>
-    ${footer(lang, { otherLangUrl })}
+    ${footer(lang, { otherLangUrl, categories })}
     <script src="${assets.js}" defer></script>
   </body>
 </html>
 `;
 };
 
+/* ── Fragments du redesign éditorial ────────────────────────────────────── */
+
+/** Date courte « 8 août 2026 » → utilisée dans les listes compactes. */
+const shortDate = (post) => post.publishedLabel;
+
+/**
+ * Barre de navigation secondaire : catégories, puis repères temporels, puis un
+ * menu « … » discret qui contient tout le reste (années, mois, auteurs).
+ * Le menu est un <details> natif : accessible au clavier, sans JavaScript.
+ */
+const browseBar = (lang, { categories, activeCategorySlug = null, archives = [], activeArchive = null }) => {
+  const t = UI[lang];
+  const u = urls(lang);
+  /* Trois repères temporels au maximum dans la barre ; le reste va dans « … ». */
+  const recentMonths = archives.flatMap((y) => y.months.map((m) => ({ ...m, year: y.year }))).slice(0, 3);
+
+  return `<nav class="browse-bar" aria-label="${escapeHtml(t.browse)}">
+        <div class="browse-scroll">
+          <a href="${u.index()}"${activeCategorySlug === null && !activeArchive ? ' class="chip is-active" aria-current="page"' : ' class="chip"'}>${escapeHtml(t.allArticles)}</a>
+          ${categories
+            .map(
+              (c) =>
+                `<a href="${u.category(c.slug[lang])}" class="chip${c.slug[lang] === activeCategorySlug ? ' is-active' : ''}"${c.slug[lang] === activeCategorySlug ? ' aria-current="page"' : ''}>${escapeHtml(c.label[lang])}</a>`,
+            )
+            .join('')}
+          ${
+            recentMonths.length > 0
+              ? `<span class="browse-sep" aria-hidden="true"></span>${recentMonths
+                  .map(
+                    (m) =>
+                      `<a href="${u.month(m.year, m.month)}" class="chip chip-date${activeArchive === `${m.year}-${m.month}` ? ' is-active' : ''}">${escapeHtml(m.label)} ${m.year}</a>`,
+                  )
+                  .join('')}`
+              : ''
+          }
+        </div>
+        ${archivesMenu(lang, archives)}
+      </nav>`;
+};
+
+/** Le menu « … » : archives complètes et auteurs, sans alourdir la barre. */
+const archivesMenu = (lang, archives) => {
+  const t = UI[lang];
+  const u = urls(lang);
+  if (archives.length === 0) return '';
+  return `<details class="more-menu">
+          <summary aria-label="${escapeHtml(t.moreOptions)}" title="${escapeHtml(t.moreOptions)}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="19" cy="12" r="1.9"/></svg>
+          </summary>
+          <div class="more-menu-panel">
+            <p class="more-menu-title">${escapeHtml(t.archives)}</p>
+            ${archives
+              .map(
+                (y) => `<a class="more-menu-year" href="${u.year(y.year)}">${y.year} <span>${escapeHtml(t.articleCount(y.count))}</span></a>
+            <div class="more-menu-months">${y.months
+              .map((m) => `<a href="${u.month(y.year, m.month)}">${escapeHtml(m.label)}</a>`)
+              .join('')}</div>`,
+              )
+              .join('')}
+            <p class="more-menu-title">${escapeHtml(t.authors)}</p>
+            <a class="more-menu-link" href="${u.authors()}">${escapeHtml(t.allAuthors)}</a>
+            <a class="more-menu-link" href="${u.search()}">${escapeHtml(t.searchTitle)}</a>
+          </div>
+        </details>`;
+};
+
+/** Recherche dépliable : une loupe qui ouvre le champ. <details> natif. */
+const searchToggle = (lang, indexUrl) => {
+  const t = UI[lang];
+  return `<details class="search-toggle">
+          <summary aria-label="${escapeHtml(t.openSearch)}">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <span>${escapeHtml(t.search)}</span>
+          </summary>
+          <form class="blog-search blog-search-inline" role="search" data-search-index="${indexUrl}" novalidate>
+            <label class="sr-only" for="q-inline">${escapeHtml(t.searchTitle)}</label>
+            <input id="q-inline" name="q" type="search" autocomplete="off" placeholder="${escapeHtml(t.searchPlaceholder)}" />
+            <button type="submit">${escapeHtml(t.search)}</button>
+          </form>
+          <p class="blog-search-status" data-search-status role="status"></p>
+        </details>`;
+};
+
+/** Bloc éditorial de tête : image large à gauche, texte à droite. */
+const featuredBlock = (post, lang) => {
+  const t = UI[lang];
+  const u = urls(lang);
+  return `<article class="lead-post">
+        <a class="lead-post-media" href="${post.url}" tabindex="-1" aria-hidden="true">
+          ${
+            post.cover
+              ? `<picture>${post.coverVector ? `<source srcset="${escapeHtml(post.coverVector)}" type="image/svg+xml" />` : ''}<img src="${escapeHtml(post.cover)}" alt="" width="1200" height="630" fetchpriority="high" decoding="async" /></picture>`
+              : '<span class="post-card-placeholder"></span>'
+          }
+          <span class="lead-post-badge">${escapeHtml(t.featuredEyebrow)}</span>
+        </a>
+        <div class="lead-post-body">
+          <a class="post-card-cat" href="${u.category(post.categorySlug)}">${escapeHtml(post.categoryLabel)}</a>
+          <h2 class="lead-post-title"><a href="${post.url}">${escapeHtml(post.title)}</a></h2>
+          <p class="lead-post-excerpt">${escapeHtml(post.excerpt)}</p>
+          <p class="lead-post-meta">
+            <a href="${u.author(post.author.slug || post.author.key)}">${escapeHtml(post.author.name)}</a>
+            <span aria-hidden="true">•</span><time datetime="${post.publishedIso}">${escapeHtml(shortDate(post))}</time>
+            <span aria-hidden="true">•</span><span>${escapeHtml(post.readingLabel)}</span>
+          </p>
+        </div>
+      </article>`;
+};
+
+/** Carte horizontale : vignette à gauche, texte à droite. Casse le rythme. */
+const rowCard = (post, lang) => {
+  const u = urls(lang);
+  return `<article class="row-card">
+        <a class="row-card-media" href="${post.url}" tabindex="-1" aria-hidden="true">
+          ${post.cover ? `<img src="${escapeHtml(post.cover)}" alt="" width="1200" height="630" loading="lazy" decoding="async" />` : '<span class="post-card-placeholder"></span>'}
+        </a>
+        <div class="row-card-body">
+          <a class="post-card-cat" href="${u.category(post.categorySlug)}">${escapeHtml(post.categoryLabel)}</a>
+          <h3 class="row-card-title"><a href="${post.url}">${escapeHtml(post.title)}</a></h3>
+          <p class="row-card-excerpt">${escapeHtml(post.excerpt)}</p>
+          <p class="post-card-meta"><time datetime="${post.publishedIso}">${escapeHtml(shortDate(post))}</time><span aria-hidden="true">•</span><span>${escapeHtml(post.readingLabel)}</span></p>
+        </div>
+      </article>`;
+};
+
+/** Élément de liste compacte pour la colonne latérale. */
+const railItem = (post) => `<li class="rail-item">
+          <a class="rail-item-media" href="${post.url}" tabindex="-1" aria-hidden="true">
+            ${post.cover ? `<img src="${escapeHtml(post.cover)}" alt="" width="1200" height="630" loading="lazy" decoding="async" />` : '<span class="post-card-placeholder"></span>'}
+          </a>
+          <div>
+            <time class="rail-item-date" datetime="${post.publishedIso}">${escapeHtml(shortDate(post))}</time>
+            <a class="rail-item-title" href="${post.url}">${escapeHtml(post.title)}</a>
+          </div>
+        </li>`;
+
+/** Colonne latérale : récents, archives, auteurs. Toujours utile, même à deux articles. */
+const rail = (lang, { recent = [], archives = [], topics = [] }) => {
+  const t = UI[lang];
+  const u = urls(lang);
+  return `<aside class="blog-rail">
+        ${
+          recent.length > 0
+            ? `<section class="rail-block">
+          <h2 class="rail-title">${escapeHtml(t.recentArticles)}</h2>
+          <ul class="rail-list">${recent.map(railItem).join('')}</ul>
+        </section>`
+            : ''
+        }
+        ${
+          archives.length > 0
+            ? `<section class="rail-block">
+          <h2 class="rail-title">${escapeHtml(t.archives)}</h2>
+          <ul class="rail-archives">${archives
+            .map(
+              (y) =>
+                `<li><a href="${u.year(y.year)}"><span>${y.year}</span><span class="rail-count">${escapeHtml(t.articleCount(y.count))}</span></a>
+              <ul>${y.months.map((m) => `<li><a href="${u.month(y.year, m.month)}">${escapeHtml(m.label)}<span class="rail-badge">${m.count}</span></a></li>`).join('')}</ul></li>`,
+            )
+            .join('')}</ul>
+        </section>`
+            : ''
+        }
+        ${
+          topics.length > 0
+            ? `<section class="rail-block">
+          <h2 class="rail-title">${escapeHtml(t.exploreTopics)}</h2>
+          <ul class="rail-topics">${topics
+            .map(
+              (topic) =>
+                `<li><a class="topic-pill" href="${u.tag(topic.key)}">${escapeHtml(topic.label)}<span class="topic-pill-count">${topic.count}</span></a></li>`,
+            )
+            .join('')}</ul>
+        </section>`
+            : ''
+        }
+      </aside>`;
+};
+
 /* ── Pages ──────────────────────────────────────────────────────────────── */
 
-export const indexPage = ({ lang, posts, page, totalPages, categories, assets, schema, alternates, otherLangUrl = null }) => {
+export const indexPage = ({
+  lang,
+  posts,
+  page,
+  totalPages,
+  categories,
+  assets,
+  schema,
+  alternates,
+  otherLangUrl = null,
+  archives = [],
+  topics = [],
+  indexUrl = '',
+}) => {
   const t = UI[lang];
   const u = urls(lang);
   const isFirst = page === 1;
   const [lead, ...rest] = isFirst ? posts : [];
   const list = isFirst ? rest : posts;
+
+  /* Rythme éditorial : la première carte suivante passe en horizontal, les
+     autres en grille. Avec deux articles la page reste habitée ; avec vingt
+     elle ne devient pas une liste plate. */
+  const [firstRow, ...grid] = list;
 
   const seo = head({
     lang,
@@ -302,34 +519,180 @@ export const indexPage = ({ lang, posts, page, totalPages, categories, assets, s
     next: page < totalPages ? u.index(page + 1) : null,
   });
 
-  const body = `      <section class="blog-hero">
+  const body = `      <section class="blog-masthead">
         <div class="section-inner">
           ${breadcrumb(lang, [
             { name: t.home, path: '/' },
             { name: t.blog, path: u.index() },
           ])}
           <p class="section-eyebrow">${escapeHtml(t.blog)}</p>
-          <h1 class="section-title">${escapeHtml(t.blogTitle)}</h1>
-          <p class="section-desc">${escapeHtml(t.blogTagline)}</p>
+          <h1 class="masthead-title">${escapeHtml(t.blogTitle)}</h1>
+          <p class="masthead-tagline">${escapeHtml(t.blogTagline)}</p>
+          ${indexUrl ? searchToggle(lang, indexUrl) : ''}
         </div>
       </section>
 
-      <section class="section blog-listing">
-        <div class="section-inner">
-          ${categoryNav(lang, categories)}
-          ${
-            posts.length === 0
-              ? `<p class="blog-empty">${escapeHtml(t.empty)}</p>`
-              : `${isFirst && lead ? `<div class="post-grid post-grid-lead">${card(lead, lang, { featured: true })}</div>` : ''}
-          <div class="post-grid">${list.map((p) => card(p, lang)).join('')}</div>`
-          }
-          ${pagination(lang, { current: page, total: totalPages, hrefFor: (n) => u.index(n) })}
+      <div class="section-inner">
+        ${browseBar(lang, { categories, archives })}
+      </div>
+
+      ${
+        isFirst && lead
+          ? `<section class="blog-featured">
+        <div class="section-inner">${featuredBlock(lead, lang)}</div>
+      </section>`
+          : ''
+      }
+
+      <section class="section blog-columns">
+        <div class="section-inner blog-columns-inner">
+          <div class="blog-main">
+            ${posts.length === 0 ? `<p class="blog-empty">${escapeHtml(t.empty)}</p>` : ''}
+            ${
+              list.length > 0
+                ? `<h2 class="stream-title">${escapeHtml(t.latest)}</h2>
+            ${firstRow ? rowCard(firstRow, lang) : ''}
+            ${grid.length > 0 ? `<div class="post-grid">${grid.map((p) => card(p, lang)).join('')}</div>` : ''}`
+                : ''
+            }
+            ${pagination(lang, { current: page, total: totalPages, hrefFor: (n) => u.index(n) })}
+          </div>
+          ${rail(lang, { recent: isFirst ? [] : posts.slice(0, 4), archives, topics })}
         </div>
       </section>
 
       ${cta(lang)}`;
 
-  return layout({ lang, seo, schema, body, assets, bodyClass: 'blog-index', isBlogIndex: true, otherLangUrl });
+  return layout({ lang, seo, schema, body, assets, bodyClass: 'blog-index', isBlogIndex: true, otherLangUrl, categories });
+};
+
+/**
+ * Archive d'une année ou d'un mois.
+ * Une page d'archive n'est jamais générée à vide : le build ne l'appelle que
+ * pour les périodes qui contiennent réellement des articles.
+ */
+export const archivePage = ({
+  lang,
+  heading,
+  title,
+  description,
+  path: pathname,
+  posts,
+  page,
+  totalPages,
+  hrefFor,
+  categories,
+  archives,
+  assets,
+  schema,
+  activeArchive,
+  siblings = '',
+}) => {
+  const t = UI[lang];
+  const u = urls(lang);
+  const [firstRow, ...grid] = posts;
+
+  const seo = head({
+    lang,
+    title,
+    description,
+    path: pathname,
+    type: 'website',
+    prev: page > 1 ? hrefFor(page - 1) : null,
+    next: page < totalPages ? hrefFor(page + 1) : null,
+  });
+
+  const body = `      <section class="blog-hero blog-hero-compact">
+        <div class="section-inner">
+          ${breadcrumb(lang, [
+            { name: t.home, path: '/' },
+            { name: t.blog, path: u.index() },
+            { name: heading, path: pathname },
+          ])}
+          <p class="section-eyebrow">${escapeHtml(t.archives)}</p>
+          <h1 class="section-title">${escapeHtml(heading)}</h1>
+          ${siblings}
+        </div>
+      </section>
+
+      <section class="section blog-columns">
+        <div class="section-inner blog-columns-inner">
+          <div class="blog-main">
+            ${browseBar(lang, { categories, archives, activeArchive })}
+            ${posts.length === 0 ? `<p class="blog-empty">${escapeHtml(t.empty)}</p>` : ''}
+            <!-- Titre de niveau 2 non visible : les cartes sont des h3, il faut
+                 un h2 entre elles et le h1 pour que la hiérarchie reste continue. -->
+            <h2 class="sr-only">${escapeHtml(t.allArticles)}</h2>
+            ${firstRow ? rowCard(firstRow, lang) : ''}
+            ${grid.length > 0 ? `<div class="post-grid">${grid.map((p) => card(p, lang)).join('')}</div>` : ''}
+            ${pagination(lang, { current: page, total: totalPages, hrefFor })}
+          </div>
+          ${rail(lang, { archives })}
+        </div>
+      </section>
+
+      ${cta(lang)}`;
+
+  return layout({ lang, seo, schema, body, assets, bodyClass: 'blog-archive', categories });
+};
+
+/** Index des auteurs — générique, prévu pour plusieurs auteurs. */
+export const authorsPage = ({ lang, authors, categories, assets, schema, alternates }) => {
+  const t = UI[lang];
+  const u = urls(lang);
+
+  const seo = head({
+    lang,
+    title: `${t.authorsTitle} | ${BRAND}`,
+    description: t.authorsMeta,
+    path: u.authors(),
+    type: 'website',
+    alternates,
+  });
+
+  const body = `      <section class="blog-hero blog-hero-compact">
+        <div class="section-inner">
+          ${breadcrumb(lang, [
+            { name: t.home, path: '/' },
+            { name: t.blog, path: u.index() },
+            { name: t.authors, path: u.authors() },
+          ])}
+          <p class="section-eyebrow">${escapeHtml(t.authors)}</p>
+          <h1 class="section-title">${escapeHtml(t.authorsTitle)}</h1>
+          <p class="section-desc">${escapeHtml(t.authorsMeta)}</p>
+        </div>
+      </section>
+
+      <section class="section blog-listing">
+        <div class="section-inner">
+          <div class="author-grid">
+            ${authors
+              .map(
+                (a) => `<article class="author-card">
+              ${a.avatar ? `<img class="author-card-avatar" src="${escapeHtml(a.avatar)}" alt="" width="72" height="72" loading="lazy" />` : `<span class="author-card-avatar author-card-avatar-fallback" aria-hidden="true">${escapeHtml(a.name.trim().charAt(0))}</span>`}
+              <div class="author-card-body">
+                <h2 class="author-card-name"><a href="${u.author(a.slug)}">${escapeHtml(a.name)}</a></h2>
+                ${a.jobTitle ? `<p class="author-card-role">${escapeHtml(a.jobTitle)}</p>` : ''}
+                ${a.bio ? `<p class="author-card-bio">${escapeHtml(a.bio)}</p>` : ''}
+                <p class="author-card-meta">
+                  <span>${escapeHtml(t.articleCount(a.count))}</span>
+                  ${a.topCategories.length > 0 ? `<span aria-hidden="true">•</span><span>${escapeHtml(t.writesAbout)} ${escapeHtml(a.topCategories.join(', '))}</span>` : ''}
+                </p>
+                <p class="author-card-links">
+                  <a href="${u.author(a.slug)}">${escapeHtml(t.authorAllPosts(a.name))}</a>
+                  ${a.url && /^https?:\/\//i.test(a.url) ? `<a href="${escapeHtml(a.url)}" rel="author noopener noreferrer" target="_blank">${escapeHtml(a.urlLabel || t.authorWebsite)}</a>` : ''}
+                </p>
+              </div>
+            </article>`,
+              )
+              .join('')}
+          </div>
+        </div>
+      </section>
+
+      ${cta(lang)}`;
+
+  return layout({ lang, seo, schema, body, assets, bodyClass: 'blog-authors', categories });
 };
 
 export const listingPage = ({
@@ -563,7 +926,18 @@ ${post.html}
   return layout({ lang, seo, schema, body, assets, bodyClass: 'blog-article', otherLangUrl });
 };
 
-export const searchPage = ({ lang, categories, assets, schema, alternates, indexUrl }) => {
+export const searchPage = ({
+  lang,
+  categories,
+  assets,
+  schema,
+  alternates,
+  indexUrl,
+  recent = [],
+  topics = [],
+  archives = [],
+  suggestions = [],
+}) => {
   const t = UI[lang];
   const u = urls(lang);
 
@@ -584,26 +958,43 @@ export const searchPage = ({ lang, categories, assets, schema, alternates, index
             { name: t.search, path: u.search() },
           ])}
           <h1 class="section-title">${escapeHtml(t.searchTitle)}</h1>
+          <p class="section-desc">${escapeHtml(t.searchIntro)}</p>
           <form class="blog-search" role="search" data-search-index="${indexUrl}" novalidate>
             <label class="sr-only" for="q">${escapeHtml(t.searchTitle)}</label>
             <input id="q" name="q" type="search" autocomplete="off" placeholder="${escapeHtml(t.searchPlaceholder)}" />
             <button type="submit">${escapeHtml(t.search)}</button>
           </form>
           <p class="blog-search-status" data-search-status role="status">${escapeHtml(t.searchPrompt)}</p>
+          ${
+            suggestions.length > 0
+              ? `<p class="search-suggestions"><span>${escapeHtml(t.suggestions)}</span>${suggestions
+                  .map((q) => `<a class="chip" href="${u.search()}?q=${encodeURIComponent(q)}">${escapeHtml(q)}</a>`)
+                  .join('')}</p>`
+              : ''
+          }
         </div>
       </section>
 
-      <section class="section blog-listing">
-        <div class="section-inner">
-          ${categoryNav(lang, categories)}
-          <div class="post-grid" data-search-results></div>
-          <noscript><p class="blog-empty">${lang === 'fr' ? 'La recherche nécessite JavaScript. Parcours les catégories ci-dessus.' : 'Search requires JavaScript. Browse the categories above.'}</p></noscript>
+      <section class="section blog-columns">
+        <div class="section-inner blog-columns-inner">
+          <div class="blog-main">
+            ${browseBar(lang, { categories, archives })}
+            <div class="post-grid" data-search-results></div>
+            <!-- Avant toute recherche, la page reste utile : elle propose les
+                 derniers articles plutôt qu'une zone vide. -->
+            <div data-search-fallback>
+              ${recent.length > 0 ? `<h2 class="stream-title">${escapeHtml(t.recentArticles)}</h2><div class="post-grid">${recent.map((p) => card(p, lang)).join('')}</div>` : ''}
+            </div>
+            <noscript><p class="blog-empty">${lang === 'fr' ? 'La recherche nécessite JavaScript. Parcours les catégories et les articles ci-dessus.' : 'Search requires JavaScript. Browse the categories and articles above.'}</p></noscript>
+          </div>
+          ${rail(lang, { archives, topics })}
         </div>
       </section>
 
       ${cta(lang)}`;
 
-  return layout({ lang, seo, schema, body, assets, bodyClass: 'blog-search-page' });
+  return layout({ lang, seo, schema, body, assets, bodyClass: 'blog-search-page', categories });
 };
+
 
 export const PER_PAGE_EXPORT = PER_PAGE;
