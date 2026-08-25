@@ -270,6 +270,21 @@ const categoryNav = (lang, categories, activeSlug = null) => {
  * Document HTML complet.
  * `assets` = { css, js } — chemins versionnés produits par le build.
  */
+/**
+ * Vercel Web Analytics.
+ *
+ * Les pages du blog sont du HTML statique : elles ne montent pas l'application
+ * React, donc le composant <Analytics /> de src/App.jsx ne les couvre pas. On
+ * charge ici le même script officiel, sur l'endpoint exact qu'injecte
+ * @vercel/analytics (vérifié dans le paquet v2.0.1), servi par Vercel une fois
+ * Web Analytics activé sur le projet.
+ *
+ * En local le script renvoie 404 : attendu, l'endpoint n'existe que sur Vercel.
+ * Pas de file d'attente `window.va` : elle ne sert qu'aux événements
+ * personnalisés, et le blog n'en émet aucun.
+ */
+const ANALYTICS_TAG = '<script defer src="/_vercel/insights/script.js"></script>';
+
 export const layout = ({ lang, seo, schema, body, assets, bodyClass = '', otherLangUrl = null, isBlogIndex = false, categories = [] }) => {
   const conf = LANGS[lang];
   return `<!doctype html>
@@ -295,6 +310,7 @@ ${body}
     </main>
     ${footer(lang, { otherLangUrl, categories })}
     <script src="${assets.js}" defer></script>
+    ${ANALYTICS_TAG}
   </body>
 </html>
 `;
