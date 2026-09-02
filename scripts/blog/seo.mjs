@@ -174,6 +174,110 @@ export const collectionNode = ({ lang, path: pathname, name, description, posts 
   },
 });
 
+/* ── Identité de l'auteur ───────────────────────────────────────────────── */
+
+/**
+ * Identifiant stable d'un auteur dans le graphe.
+ *
+ * C'est la pièce maîtresse, et elle vaut d'être expliquée. Sans `@id`, chaque
+ * page émettait un objet Person anonyme : un moteur voyait autant de personnes
+ * distinctes que de pages, et aucune ne cumulait l'autorité des autres. Avec un
+ * `@id` ancré sur la page d'auteur, toutes les mentions du site — signature
+ * d'article, encadré auteur, crédit photo, page de profil — désignent
+ * littéralement le même nœud.
+ *
+ * L'ancre est la page d'auteur FRANÇAISE dans les deux langues, volontairement :
+ * une personne n'a pas une identité par langue. Traduire l'identifiant
+ * scinderait en deux ce qu'on cherche justement à réunir.
+ */
+export const personId = (slug) => `${SITE_URL}${LANGS.fr.base}/${LANGS.fr.segments.author}/${slug}/#person`;
+
+/**
+ * Nœud complet d'un auteur — Person, ou Organization pour une entité éditoriale.
+ *
+ * Trois champs font le vrai travail de désambiguïsation, et ils n'ont d'intérêt
+ * que pris ensemble :
+ *
+ *   · `sameAs` déclare que ces URLs désignent la même personne. C'est le seul
+ *     mécanisme normalisé pour relier une signature de blog à un site personnel
+ *     et à des profils publics. Un nom répandu sans `sameAs` reste indistinct
+ *     de ses homonymes, quelle que soit la qualité des articles.
+ *   · `alternateName` couvre la forme courte du nom, celle que les gens tapent.
+ *   · `homeLocation` sépare deux personnes du même nom par la géographie.
+ *
+ * `knowsAbout` est dérivé des sujets réellement traités, jamais déclaré à la
+ * main : une compétence qu'aucun article ne démontre n'est pas une compétence.
+ */
+export const personNode = (author, { knowsAbout = [] } = {}) => {
+  const isOrg = author.type === 'Organization';
+  return {
+    '@type': isOrg ? 'Organization' : 'Person',
+    '@id': personId(author.slug),
+    name: author.name,
+    ...(author.alternateName && !isOrg ? { alternateName: author.alternateName } : {}),
+    /* `url` pointe vers la page qui fait autorité sur la personne : son site
+       s'il en a un, sa page d'auteur sinon. */
+    url: author.url ? abs(author.url) : abs(author.path),
+    /* La page d'auteur du blog est toujours déclarée, même quand `url` pointe
+       ailleurs : c'est elle qui rassemble les articles. */
+    mainEntityOfPage: abs(author.path),
+    ...(author.jobTitleSchema && !isOrg ? { jobTitle: author.jobTitleSchema } : {}),
+    ...(author.bio ? { description: author.bio } : {}),
+    ...(author.homeLocation && !isOrg
+      ? { homeLocation: { '@type': 'Place', name: author.homeLocation } }
+      : {}),
+    ...(knowsAbout.length ? { knowsAbout } : {}),
+    /* Ne jamais émettre un `sameAs` vide : une liste vide se lit comme
+       « cette personne n'a aucun autre profil », ce qui est faux et inutile. */
+    ...(author.sameAs?.length ? { sameAs: author.sameAs } : {}),
+  };
+};
+
+/**
+ * Photographie, en Schema.org.
+ *
+ * Ce nœud existe pour une raison précise et vérifiable : sans `license` ET
+ * `acquireLicensePage`, Google Images n'affiche pas la mention de licence sous
+ * l'image, et le photographe reste anonyme partout où l'image circule. Les
+ * autres champs (`creator`, `creditText`, `copyrightNotice`) sont ce que Google
+ * recommande d'ajouter pour que ce crédit soit exploitable.
+ *
+ * `width` et `height` viennent du fichier réellement produit, pas d'une
+ * estimation : une dimension fausse ici contredirait le HTML de la page.
+ */
+export const imageObjectNode = (photo, { variant = 'body', representative = false } = {}) => {
+  /* La déclinaison de couverture est un autre fichier — autre recadrage, autres
+     dimensions —, donc une autre ressource : elle reçoit son propre `@id`. Les
+     déclarer sous le même identifiant reviendrait à affirmer que deux fichiers
+     différents sont la même image. */
+  const view = variant === 'cover' && photo.cover ? photo.cover : photo;
+  return {
+    '@type': 'ImageObject',
+    '@id': `${abs(view.src)}#image`,
+    contentUrl: abs(view.src),
+    url: abs(view.src),
+    width: view.width,
+    height: view.height,
+    /* `representativeOfPage` : l'image que la page revendique comme la sienne.
+       Réservé à la couverture — le dire de plusieurs images n'aurait pas de sens. */
+    ...(representative ? { representativeOfPage: true } : {}),
+    name: photo.place,
+    caption: photo.caption,
+    description: photo.alt,
+    /* Référence, pas copie : le crédit d'une photo doit alimenter la MÊME entité
+       que la signature des articles, sinon le photographe et l'auteur deviennent
+       deux personnes aux yeux d'un moteur. */
+    creator: { '@id': personId(photo.photographer.slug) },
+    creditText: photo.photographer.name,
+    copyrightNotice: `© ${photo.photographer.name}`,
+    license: photo.license.deed,
+    acquireLicensePage: abs(photo.license.acquirePath),
+    ...(photo.place ? { contentLocation: { '@type': 'Place', name: photo.place } } : {}),
+    /* Jamais de date inventée : le champ n'apparaît que si elle est connue. */
+    ...(photo.capturedAt ? { dateCreated: photo.capturedAt } : {}),
+  };
+};
+
 export const articleNode = (post) => ({
   '@type': 'BlogPosting',
   '@id': `${abs(post.url)}#article`,
@@ -188,14 +292,20 @@ export const articleNode = (post) => ({
   dateModified: post.updatedIso,
   wordCount: post.wordCount,
   timeRequired: `PT${post.readingTime}M`,
-  image: [abs(post.ogImage)],
-  author: {
-    '@type': post.author.type === 'Organization' ? 'Organization' : 'Person',
-    name: post.author.name,
-    ...(post.author.url ? { url: abs(post.author.url) } : {}),
-    ...(post.author.jobTitleSchema ? { jobTitle: post.author.jobTitleSchema } : {}),
-    ...(post.author.bio ? { description: post.author.bio } : {}),
-  },
+  /* Une couverture PHOTOGRAPHIQUE est un ImageObject complet, marqué
+     `representativeOfPage` : la page revendique cette image, et l'image porte
+     sa licence. Une couverture illustrée reste une simple URL — une œuvre Kiro
+     n'a pas de licence tierce à déclarer. */
+  image: [
+    post.coverPhoto
+      ? imageObjectNode(post.coverPhoto, { variant: 'cover', representative: true })
+      : abs(post.ogImage),
+    ...(post.photos || []).map((photo) => imageObjectNode(photo)),
+  ],
+  /* L'auteur est une RÉFÉRENCE vers le nœud complet, ajouté au même graphe par
+     scripts/build-blog.mjs. Recopier ses champs sur chaque article produirait
+     autant d'entités que d'articles — l'inverse de ce qu'on veut. */
+  author: { '@id': personId(post.author.slug) },
   publisher: { '@id': `${SITE_URL}/#organization` },
   isPartOf: { '@id': `${SITE_URL}/#website` },
 });

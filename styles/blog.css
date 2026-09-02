@@ -942,6 +942,62 @@ img {
   text-align: center;
 }
 
+/* ── Photographie originale ─────────────────────────────────────────────────
+   Une photographie n'est pas une illustration : elle a un auteur et une
+   licence, et les deux doivent rester lisibles sous l'image. La légende et le
+   crédit sont donc deux blocs distincts, hiérarchisés — l'un se lit, l'autre
+   se consulte. */
+
+.post-photo picture {
+  display: block;
+}
+
+.post-photo img {
+  display: block;
+  width: 100%;
+  /* Indispensable : sans lui, les attributs width/height du HTML — qui
+     existent pour réserver la place et éviter le décalage — imposeraient la
+     hauteur brute du fichier et déformeraient l'image. */
+  height: auto;
+  border-radius: 16px;
+}
+
+.post-photo figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 12px;
+  text-align: left;
+}
+
+.post-figure-legend {
+  line-height: 1.55;
+}
+
+.post-figure-credit {
+  font-size: 0.78rem;
+  letter-spacing: 0.01em;
+  opacity: 0.82;
+}
+
+.post-figure-credit a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(0, 0, 0, 0.25);
+  text-underline-offset: 2px;
+}
+
+.post-figure-credit a:hover {
+  color: var(--accent-red);
+  text-decoration-color: currentColor;
+}
+
+@media (max-width: 560px) {
+  .post-photo img {
+    border-radius: 12px;
+  }
+}
+
 .post-table-wrap {
   overflow-x: auto;
   border: 1px solid var(--card-border);
@@ -1166,6 +1222,175 @@ img {
 
 .post-cover-credit a {
   color: inherit;
+}
+
+/* ── Identité de l'auteur ───────────────────────────────────────────────────
+   Sous le titre d'une page d'auteur : le métier, puis les liens vers ses
+   profils. Discret par construction — c'est une carte de visite, pas une
+   barre de partage. */
+
+.author-profile {
+  margin-top: 18px;
+}
+
+.author-profile-role {
+  margin: 0 0 8px;
+  font-weight: 600;
+  color: #26211f;
+}
+
+.author-profile-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 14px;
+  margin: 0;
+  font-size: 0.92rem;
+}
+
+.author-profile-label {
+  color: var(--text-secondary);
+}
+
+.author-profile-links a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(0, 0, 0, 0.25);
+  text-underline-offset: 3px;
+}
+
+.author-profile-links a:hover {
+  color: var(--accent-red);
+  text-decoration-color: currentColor;
+}
+
+/* ── Crédits photo ──────────────────────────────────────────────────────────
+   Page de référence des photographies : elle doit se lire comme un registre,
+   pas comme une galerie. La vignette sert à identifier, pas à impressionner —
+   c'est la ligne d'attribution, sélectionnable d'un geste, qui est l'objet
+   utile de la page. */
+
+.photo-license-box {
+  margin-bottom: 34px;
+  padding: 24px 26px;
+  background: var(--s-cream);
+  border-radius: 18px;
+}
+
+.photo-license-box h2 {
+  margin: 0 0 10px;
+  font-size: 1.05rem;
+  font-weight: 650;
+}
+
+.photo-license-box p {
+  margin: 0 0 8px;
+  line-height: 1.65;
+}
+
+.photo-license-note {
+  margin-top: 12px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.photo-credit-count {
+  margin-bottom: 16px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.photo-credit-list {
+  display: grid;
+  gap: 18px;
+}
+
+.photo-credit {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 20px;
+  padding: 18px;
+  border: 1px solid var(--card-border);
+  border-radius: 18px;
+  background: #fff;
+}
+
+.photo-credit-thumb {
+  display: block;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.photo-credit-thumb img {
+  display: block;
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}
+
+.photo-credit-place {
+  margin: 0 0 10px;
+  font-size: 1.02rem;
+  font-weight: 640;
+  line-height: 1.35;
+}
+
+.photo-credit-meta {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3px 12px;
+  margin: 0 0 12px;
+  font-size: 0.88rem;
+}
+
+.photo-credit-meta dt {
+  color: var(--text-secondary);
+}
+
+.photo-credit-meta dd {
+  margin: 0;
+}
+
+.photo-credit-unused {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* La ligne à recopier. Le fond la désigne comme un bloc à sélectionner, et le
+   retour à la ligne autorisé évite qu'elle déborde sur un petit écran. */
+.photo-credit-attribution {
+  margin: 0;
+}
+
+.photo-credit-attribution code {
+  display: inline-block;
+  padding: 6px 10px;
+  background: var(--s-cream);
+  border-radius: 8px;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 620px) {
+  .photo-credit {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .photo-credit-thumb img {
+    height: 160px;
+  }
+
+  .photo-credit-meta {
+    grid-template-columns: 1fr;
+    gap: 0 0;
+  }
+
+  .photo-credit-meta dt {
+    margin-top: 8px;
+    font-size: 0.8rem;
+  }
 }
 
 /* ── Encadré auteur ─────────────────────────────────────────────────────── */

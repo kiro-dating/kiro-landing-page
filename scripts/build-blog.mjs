@@ -30,11 +30,24 @@ import {
   ContentError,
   decorate,
   loadAuthors,
+  loadPhotos,
   loadPosts,
   loadTaxonomy,
+  localizeAuthor,
   relatedPosts,
+  resolvePhotos,
 } from './blog/content.mjs';
-import { archivePage, articlePage, authorsPage, indexPage, listingPage, searchPage, urls } from './blog/templates.mjs';
+import {
+  archivePage,
+  articlePage,
+  authorProfile,
+  authorsPage,
+  indexPage,
+  listingPage,
+  photoCreditsPage,
+  searchPage,
+  urls,
+} from './blog/templates.mjs';
 import { robots, rss, searchIndex, sitemap, sitemapIndex } from './blog/feeds.mjs';
 import { assertNoBrokenInternalLinks } from './blog/links.mjs';
 import {
@@ -45,7 +58,10 @@ import {
   collectionNode,
   faqNode,
   graph,
+  imageObjectNode,
   organizationNode,
+  personId,
+  personNode,
   websiteNode,
 } from './blog/seo.mjs';
 import { isoDay, paginate, shortHash, slugify, unique } from './blog/utils.mjs';
@@ -174,8 +190,55 @@ const assertNoLegacyHelpCenter = (relativePath, contents) => {
   }
 };
 
+/**
+ * Toute référence `@id` du JSON-LD doit être résolue sur la MÊME page.
+ *
+ * Le graphe d'une page est autonome : un moteur qui la lit n'a rien d'autre
+ * sous les yeux. Référencer une entité sans la définir revient donc à ne rien
+ * dire du tout — l'auteur d'un article, le photographe d'une image
+ * disparaissent silencieusement, sans qu'aucune page ne paraisse cassée.
+ *
+ * Ce contrôle a été ajouté après avoir laissé passer exactement ce défaut : la
+ * page de crédits anglaise créditait un photographe par `@id` alors que son
+ * nœud n'était construit que pour les auteurs publiés dans cette langue.
+ *
+ * Les `@id` du site (#organization, #website) sont définis sur chaque page ;
+ * seules les références internes au graphe sont vérifiées.
+ */
+const assertResolvableSchemaIds = (relativePath, contents) => {
+  if (!relativePath.endsWith('.html')) return;
+  const block = contents.match(/<script type="application\/ld\+json">(.*?)<\/script>/s);
+  if (!block) return;
+  const graph = JSON.parse(
+    block[1].replace(/\\u003c/g, '<').replace(/\\u003e/g, '>').replace(/\\u0026/g, '&'),
+  )['@graph'];
+  if (!Array.isArray(graph)) return;
+
+  const defined = new Set(graph.map((node) => node['@id']).filter(Boolean));
+  const referenced = new Set();
+  const walk = (value) => {
+    if (Array.isArray(value)) return value.forEach(walk);
+    if (!value || typeof value !== 'object') return;
+    /* Une référence pure est un objet qui ne porte QUE `@id`. Un nœud complet
+       porte aussi son `@type` : c'est une définition, pas un renvoi. */
+    const keys = Object.keys(value);
+    if (keys.length === 1 && keys[0] === '@id') referenced.add(value['@id']);
+    else Object.values(value).forEach(walk);
+  };
+  graph.forEach(walk);
+
+  const orphans = [...referenced].filter((id) => !defined.has(id));
+  if (orphans.length > 0) {
+    throw new Error(
+      `référence JSON-LD non résolue dans « ${relativePath} » : ${orphans.join(', ')}\n`
+        + '  Le nœud complet doit figurer dans le même @graph que la référence.',
+    );
+  }
+};
+
 const write = (relativePath, contents) => {
   assertNoLegacyHelpCenter(relativePath, contents);
+  assertResolvableSchemaIds(relativePath, contents);
   const target = path.join(PATHS.dist, relativePath.replace(/^\/+/, ''));
   fs.mkdirSync(path.dirname(target), { recursive: true });
   fs.writeFileSync(target, contents);
@@ -232,6 +295,13 @@ const main = () => {
 
   const taxonomy = loadTaxonomy();
   const authors = loadAuthors();
+  /* Registre des photographies, résolu une fois PAR LANGUE : les légendes et
+     les libellés de licence sont traduits, mais les fichiers et les droits,
+     eux, sont les mêmes des deux côtés. */
+  const photoRegistry = loadPhotos();
+  const photosByLang = Object.fromEntries(
+    LANG_CODES.map((lang) => [lang, resolvePhotos(photoRegistry, { authors, lang })]),
+  );
 
   const assets = { css: buildStylesheet(), js: buildScript() };
 
@@ -240,10 +310,11 @@ const main = () => {
   /** Brouillons décorés, par langue — vides hors mode relecture. */
   const draftsByLang = {};
   for (const lang of LANG_CODES) {
-    const raw = loadPosts(lang, { taxonomy, authors, warn });
+    const photos = photosByLang[lang];
+    const raw = loadPosts(lang, { taxonomy, authors, photos, warn });
     byLang[lang] = raw.map((post) => decorate(post, { taxonomy, authors }));
     draftsByLang[lang] = PREVIEW
-      ? loadPosts(lang, { taxonomy, authors, warn, only: 'drafts' }).map((post) =>
+      ? loadPosts(lang, { taxonomy, authors, photos, warn, only: 'drafts' }).map((post) =>
           decorate(post, { taxonomy, authors }),
         )
       : [];
@@ -277,6 +348,27 @@ const main = () => {
   const staticAlternates = (builder) =>
     LANG_CODES.map((code) => ({ lang: code, path: builder(code) }));
 
+  /**
+   * Sujets qu'un auteur traite RÉELLEMENT, déduits de ses articles publiés.
+   *
+   * Alimente `knowsAbout` du nœud Person. Déduire plutôt que déclarer a deux
+   * vertus : la liste ne peut pas mentir, et elle se met à jour toute seule
+   * quand l'auteur écrit sur autre chose. Les catégories d'abord — elles
+   * portent le sujet —, complétées par les tags les plus fréquents.
+   */
+  const knowsAboutOf = (authorPosts, lang) => {
+    const counts = new Map();
+    for (const post of authorPosts) {
+      for (const label of [post.categoryLabel, ...post.tagLabels.map((t) => t.label)]) {
+        if (label) counts.set(label, (counts.get(label) || 0) + 1);
+      }
+    }
+    return [...counts.entries()]
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], lang))
+      .slice(0, 8)
+      .map(([label]) => label);
+  };
+
   const sitemapEntries = { pages: [], blog: [] };
   const allUrls = new Set();
 
@@ -304,6 +396,29 @@ const main = () => {
        en avance sur le contenu réel. */
     const archives = archiveTree(posts, lang);
     const authorList = authorCards(posts, authors, lang);
+
+    /**
+     * Un nœud Person par auteur, construit UNE fois pour toute la langue.
+     *
+     * Toutes les pages qui parlent d'un auteur — ses articles, sa page de
+     * profil, l'index des auteurs, les crédits photo — insèrent ce même objet
+     * et le référencent par son `@id`. C'est ce qui fait qu'un moteur voit une
+     * personne avec vingt mentions plutôt que vingt personnes avec une mention.
+     */
+    const personByAuthor = new Map(
+      unique(posts.map((p) => p.authorKey)).map((key) => {
+        const authorPosts = posts.filter((p) => p.authorKey === key);
+        const merged = { ...authors[key], ...authorPosts[0].author };
+        const slug = slugify(merged.slug || key);
+        return [
+          key,
+          personNode(
+            { ...merged, slug, path: u.author(slug) },
+            { knowsAbout: knowsAboutOf(authorPosts, lang) },
+          ),
+        ];
+      }),
+    );
     const topics = topicChips(posts, taxonomy, lang);
 
     /* Catégories effectivement utilisées : on ne publie pas de page vide. */
@@ -381,6 +496,10 @@ const main = () => {
           organizationNode(),
           websiteNode(lang),
           articleNode(post),
+          /* `articleNode` ne référence l'auteur que par son `@id` : le nœud
+             complet doit donc voyager dans le même graphe, sinon la référence
+             ne résout rien. */
+          personByAuthor.get(post.authorKey),
           faqNode(post),
           breadcrumbNode([
             { name: t.home, path: '/' },
@@ -401,15 +520,26 @@ const main = () => {
           alternates,
           /* Illustration déclarée avec la page : l'image est rattachée à son
              article plutôt qu'indexée comme un fichier isolé. */
-          images: post.cover
-            ? [
-                {
-                  loc: post.cover,
-                  title: post.coverTitle || post.title,
-                  caption: post.coverCaption || post.coverAlt,
-                },
-              ]
-            : [],
+          images: [
+            ...(post.cover
+              ? [
+                  {
+                    loc: post.cover,
+                    title: post.coverTitle || post.title,
+                    caption: post.coverCaption || post.coverAlt,
+                  },
+                ]
+              : []),
+            /* Les photographies du corps aussi : sans elles, le sitemap
+               n'annoncerait que l'illustration, et les originaux — les seules
+               images à porter une licence déclarée — resteraient invisibles
+               pour l'indexation d'images. */
+            ...post.photos.map((photo) => ({
+              loc: photo.src,
+              title: photo.place,
+              caption: photo.caption,
+            })),
+          ],
         });
       }
     }
@@ -425,7 +555,13 @@ const main = () => {
         assets,
         alternates: [],
         otherLangUrl: null,
-        schema: graph([organizationNode(), websiteNode(lang), articleNode(post), faqNode(post)]),
+        schema: graph([
+          organizationNode(),
+          websiteNode(lang),
+          articleNode(post),
+          personByAuthor.get(post.authorKey),
+          faqNode(post),
+        ]),
       });
       writePage(post.url, html);
       /* URL locale complète : un brouillon n'est listé nulle part (c'est la
@@ -542,10 +678,15 @@ const main = () => {
       const author = { ...authors[authorKey], ...authorPosts[0].author };
       const slug = slugify(author.slug || authorKey);
       const url = u.author(slug);
+      const person = personByAuthor.get(authorKey);
       const html = listingPage({
         lang,
         kind: 'author',
-        title: `${author.name} — ${t.blogTitle}`,
+        /* Le titre porte le nom ET le métier : une recherche sur un nom
+           répandu se départage sur ce qui suit le nom. */
+        title: author.jobTitle
+          ? `${author.name} — ${author.jobTitle} | ${t.blogTitle}`
+          : `${author.name} — ${t.blogTitle}`,
         heading: t.articlesBy(author.name),
         description: author.bio || '',
         path: url,
@@ -555,15 +696,29 @@ const main = () => {
         categories,
         assets,
         hrefFor: () => url,
+        /* Bloc d'identité : métier + liens `rel="me"` vers ses profils. Il
+           double en HTML ce que `sameAs` déclare en JSON-LD — jusqu'ici, la
+           page d'auteur ne renvoyait vers aucun de ses profils. */
+        extraHtml: authorProfile(author, lang),
         schema: graph([
           organizationNode(),
           websiteNode(lang),
+          person,
+          /* ProfilePage plutôt que CollectionPage : c'est le type que Google
+             attend d'une page qui PRÉSENTE quelqu'un, et il désigne
+             explicitement la personne concernée via `mainEntity`. Une
+             CollectionPage seule décrivait une liste d'articles sans jamais
+             dire de qui elle parle. */
           {
-            '@type': author.type === 'Organization' ? 'Organization' : 'Person',
+            '@type': 'ProfilePage',
+            '@id': `${abs(url)}#profile`,
+            url: abs(url),
             name: author.name,
-            ...(author.url ? { url: abs(author.url) } : {}),
-            ...(author.jobTitleSchema ? { jobTitle: author.jobTitleSchema } : {}),
             ...(author.bio ? { description: author.bio } : {}),
+            inLanguage: LANGS[lang].locale,
+            isPartOf: { '@id': `${SITE_URL}/#website` },
+            mainEntity: { '@id': personId(author.slug || authorKey) },
+            dateModified: newestUpdate(authorPosts).toISOString(),
           },
           collectionNode({ lang, path: url, name: author.name, description: '', posts: authorPosts }),
           breadcrumbNode([
@@ -677,6 +832,9 @@ const main = () => {
           schema: graph([
             organizationNode(),
             websiteNode(lang),
+            /* La page qui présente les auteurs doit décrire les auteurs :
+               sans ces nœuds, elle n'était qu'une liste de liens. */
+            ...personByAuthor.values(),
             breadcrumbNode([
               { name: t.home, path: '/' },
               { name: t.blog, path: u.index() },
@@ -686,6 +844,70 @@ const main = () => {
         }),
       );
       track('blog', { loc: url, changefreq: 'monthly', priority: '0.4', lastmod: isoDay(newestUpdate(posts)) });
+    }
+
+    /* — Crédits et licence des photographies —
+       Générée dès qu'une photographie est déclarée. Elle DOIT exister : les
+       données structurées de chaque photo pointent vers elle via
+       `acquireLicensePage`, et un lien mort y ruinerait la déclaration de
+       licence en plus de casser le garde-fou anti-lien-mort. */
+    const creditPhotos = [...photosByLang[lang].values()];
+    if (creditPhotos.length > 0) {
+      /* Un nœud par photographe distinct. On réutilise celui de la langue
+         courante quand l'auteur y publie — il porte alors `knowsAbout` —, et
+         on le construit sinon. L'`@id` est le même dans les deux cas : c'est
+         toujours la même personne. */
+      const creditPersons = unique(creditPhotos.map((photo) => photo.photographer.key)).map(
+        (key) =>
+          personByAuthor.get(key) || personNode(localizeAuthor(authors[key], key, lang)),
+      );
+      const url = u.photoCredits();
+      writePage(
+        url,
+        photoCreditsPage({
+          lang,
+          photos: creditPhotos,
+          posts,
+          categories,
+          assets,
+          alternates: staticAlternates((code) => urls(code).photoCredits()),
+          schema: graph([
+            organizationNode(),
+            websiteNode(lang),
+            /* Les nœuds des photographes CRÉDITÉS, pas ceux des auteurs
+               d'articles. La distinction compte : un photographe peut n'avoir
+               publié aucun article dans cette langue — c'est le cas de la
+               version anglaise — et son nœud manquerait alors, laissant les
+               crédits pointer vers un `@id` que rien ne définit. */
+            ...creditPersons,
+            {
+              '@type': 'CollectionPage',
+              '@id': `${abs(url)}#collection`,
+              url: abs(url),
+              name: t.photoCreditsTitle,
+              description: t.photoCreditsMeta,
+              inLanguage: LANGS[lang].locale,
+              isPartOf: { '@id': `${SITE_URL}/#website` },
+              /* Les ImageObject complets, licence comprise : cette page est
+                 aussi une source valide pour l'indexation d'images. */
+              mainEntity: {
+                '@type': 'ItemList',
+                itemListElement: creditPhotos.map((photo, index) => ({
+                  '@type': 'ListItem',
+                  position: index + 1,
+                  item: imageObjectNode(photo),
+                })),
+              },
+            },
+            breadcrumbNode([
+              { name: t.home, path: '/' },
+              { name: t.blog, path: u.index() },
+              { name: t.photoCredits, path: url },
+            ]),
+          ]),
+        }),
+      );
+      track('blog', { loc: url, changefreq: 'monthly', priority: '0.3', lastmod: isoDay(new Date()) });
     }
 
     /* — Recherche (noindex : outil, pas contenu) — */

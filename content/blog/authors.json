@@ -18,11 +18,29 @@
     "",
     "`jobTitleSchema` : titre court destiné aux données structurées, quand le",
     "titre affiché est plus long ou plus éditorial. Facultatif ; à défaut, c'est",
-    "`jobTitle` qui est repris dans le JSON-LD."
+    "`jobTitle` qui est repris dans le JSON-LD.",
+    "",
+    "IDENTITÉ ET DÉSAMBIGUÏSATION — trois champs travaillent ensemble pour que les",
+    "moteurs comprennent que l'auteur du blog, le propriétaire de son site personnel",
+    "et ses profils publics sont UNE SEULE personne. Sans eux, un nom courant se",
+    "confond avec ses homonymes et l'autorité se disperse entre plusieurs entités.",
+    "",
+    "`alternateName` : autre forme du nom réellement employée en public (ex. la forme",
+    "courte utilisée par le site personnel). Jamais un surnom inventé.",
+    "",
+    "`sameAs` : URLs des profils qui désignent la MÊME personne — site personnel,",
+    "LinkedIn, GitHub, réseaux. C'est le champ décisif. N'y mettre qu'une URL dont on",
+    "a vérifié qu'elle appartient bien à cette personne : une URL d'homonyme aggrave",
+    "exactement le problème qu'on cherche à résoudre.",
+    "",
+    "`homeLocation` : ville de rattachement, telle qu'énoncée publiquement. Sert de",
+    "critère de distinction entre personnes de même nom."
   ],
-
   "equipe-kiro": {
-    "name": { "fr": "L’équipe Kiro", "en": "The Kiro team" },
+    "name": {
+      "fr": "L’équipe Kiro",
+      "en": "The Kiro team"
+    },
     "slug": "equipe-kiro",
     "type": "Organization",
     "jobTitle": null,
@@ -33,22 +51,26 @@
       "en": "Kiro’s editorial team, based in Montreal. We write about dating as it is actually lived in Quebec and in the communities we serve — no magic formulas, and always in conversation with the people involved."
     }
   },
-
   "pierre-handy-charles": {
     "name": "Pierre Handy Charles",
+    "alternateName": "Pierre Handy",
     "slug": "pierre-handy-charles",
     "type": "Person",
     "jobTitle": {
-      "fr": "Développeur full-stack, entrepreneur technologique et fondateur de Kiro",
-      "en": "Full-stack developer, tech entrepreneur and founder of Kiro"
-    },
-    "jobTitleSchema": {
       "fr": "Développeur full-stack et entrepreneur technologique",
       "en": "Full-stack developer and tech entrepreneur"
     },
     "avatar": null,
     "url": "https://www.pierrehandy.com/",
     "urlLabel": "pierrehandy.com",
+    "homeLocation": "Montréal, Québec, Canada",
+    "sameAs": [
+      "https://www.pierrehandy.com/",
+      "https://www.linkedin.com/in/handy-pierre-5977a9186/",
+      "https://www.youtube.com/channel/UCam0iShgYKcMwQFCs3k1-mA",
+      "https://www.instagram.com/handy.up/",
+      "https://www.tiktok.com/@handy_sup"
+    ],
     "bio": {
       "fr": "Pierre Handy Charles est un développeur full-stack et entrepreneur technologique basé à Montréal. Il conçoit des produits web et mobiles autour de l’expérience utilisateur, des communautés et des nouvelles façons de créer des connexions en ligne.",
       "en": "Pierre Handy Charles is a full-stack developer and tech entrepreneur based in Montreal. He builds web and mobile products around user experience, communities and new ways of creating connections online."

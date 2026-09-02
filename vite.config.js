@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
+import { readOgPreview } from './scripts/og-preview.mjs'
 
 /**
  * Sert les pages statiques du blog pendant `npm run dev`.
@@ -79,18 +80,32 @@ export default defineConfig(({ mode }) => {
      Utilisé par index.html (%VITE_SITE_URL%) pour canonical/Open Graph. */
   const siteUrl = env.VITE_SITE_URL || 'https://kirodating.com'
 
+  /* Aperçu de partage (Open Graph).
+     Titre, description et image viennent d'un seul fichier, produit par
+     `npm run og` à partir de la copie du hero et des jetons de design. Les
+     écrire en dur dans index.html les avait fait mentir pendant des mois :
+     le site disait « Brisez la glace », l'aperçu partagé disait encore
+     « Arrête de swiper » et affichait un domaine qui n'est pas le nôtre. */
+  const preview = readOgPreview(process.cwd())
+
   return {
     plugins: [
       react(),
       {
-        name: 'kiro-site-url-default',
+        name: 'kiro-html-meta',
         /* `order: 'pre'` — la substitution passe AVANT le remplacement des
            variables d'environnement de Vite. Sans ça, Vite voit un jeton
            %VITE_SITE_URL% qu'il ne connaît pas et affiche un avertissement à
            chaque occurrence, alors que le remplacement fonctionne très bien. */
         transformIndexHtml: {
           order: 'pre',
-          handler: (html) => html.replaceAll('%VITE_SITE_URL%', siteUrl),
+          handler: (html) =>
+            Object.entries({
+              '%VITE_SITE_URL%': siteUrl,
+              '%KIRO_TITLE%': preview.title,
+              '%KIRO_OG_DESCRIPTION%': preview.description,
+              '%KIRO_OG_IMAGE%': preview.image,
+            }).reduce((out, [token, value]) => out.replaceAll(token, value), html),
         },
       },
       blogDevServer(path.resolve(process.cwd(), 'dist')),

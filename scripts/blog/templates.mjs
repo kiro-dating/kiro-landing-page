@@ -27,6 +27,10 @@ export const urls = (lang) => {
       page <= 1 ? joinUrl(base, segments.tag, slug) : joinUrl(base, segments.tag, slug, segments.page, page),
     author: (slug) => joinUrl(base, segments.author, slug),
     authors: () => joinUrl(base, segments.authors),
+    /* Page de crédits photo. Ce n'est pas une page de confort : c'est la cible
+       de `acquireLicensePage` dans les données structurées, donc une URL qui
+       DOIT exister — le garde-fou anti-lien-mort la vérifie. */
+    photoCredits: () => joinUrl(base, segments.photoCredits),
     /* Archives : /blog/2026/ et /blog/2026/08/. Le mois est toujours sur deux
        chiffres pour que les URLs se trient naturellement. */
     year: (y, page = 1) => (page <= 1 ? joinUrl(base, y) : joinUrl(base, y, segments.page, page)),
@@ -135,6 +139,7 @@ const footer = (lang, { otherLangUrl, categories = [] }) => {
               .map((c) => `<li><a href="${u.category(c.slug[lang])}">${escapeHtml(c.label[lang])}</a></li>`)
               .join('\n            ')}
             <li><a href="${u.authors()}">${escapeHtml(t.allAuthors)}</a></li>
+            <li><a href="${u.photoCredits()}">${escapeHtml(t.photoCredits)}</a></li>
             <li><a href="${u.search()}">${escapeHtml(t.search)}</a></li>
             <li><a href="${u.rss()}">RSS</a></li>
             ${otherLangUrl ? `<li><a href="${otherLangUrl}" hreflang="${LANGS[lang === 'fr' ? 'en' : 'fr'].locale}">${escapeHtml(t.otherLang)}</a></li>` : ''}
@@ -265,6 +270,146 @@ const categoryNav = (lang, categories, activeSlug = null) => {
 };
 
 /* ── Enveloppe de page ──────────────────────────────────────────────────── */
+
+/* ── Identité de l'auteur ───────────────────────────────────────────────── */
+
+/**
+ * Libellé lisible d'un profil, déduit de son domaine.
+ *
+ * Évite d'avoir à saisir un libellé à côté de chaque URL dans authors.json :
+ * ajouter un profil reste une seule ligne, et le lien s'affiche correctement.
+ */
+const PROFILE_LABELS = [
+  [/(^|\.)linkedin\.com$/, 'LinkedIn'],
+  [/(^|\.)github\.com$/, 'GitHub'],
+  [/(^|\.)(x|twitter)\.com$/, 'X'],
+  [/(^|\.)instagram\.com$/, 'Instagram'],
+  [/(^|\.)youtube\.com$/, 'YouTube'],
+  [/(^|\.)threads\.(net|com)$/, 'Threads'],
+  [/(^|\.)tiktok\.com$/, 'TikTok'],
+  [/(^|\.)medium\.com$/, 'Medium'],
+  [/(^|\.)dev\.to$/, 'DEV'],
+  [/(^|\.)stackoverflow\.com$/, 'Stack Overflow'],
+];
+
+const profileLabel = (url) => {
+  try {
+    const host = new URL(url).hostname.replace(/^www\./, '');
+    const known = PROFILE_LABELS.find(([re]) => re.test(host));
+    return known ? known[1] : host;
+  } catch {
+    return url;
+  }
+};
+
+/**
+ * Bloc d'identité affiché en tête d'une page d'auteur.
+ *
+ * Il porte les liens `rel="me"` vers les profils de la personne. Ce n'est pas
+ * décoratif : `rel="me"` est la déclaration d'identité lisible par machine qui
+ * double le `sameAs` du JSON-LD. Les deux disent la même chose par deux canaux
+ * différents, et c'est ce qui permet à un moteur de rattacher une signature de
+ * blog à un site personnel plutôt que de la confondre avec un homonyme.
+ *
+ * Le site personnel passe en premier — c'est la page qui fait autorité sur la
+ * personne ; les autres profils suivent, dans l'ordre déclaré.
+ */
+export const authorProfile = (author, lang) => {
+  const t = UI[lang];
+  const primary = author.url && /^https?:\/\//i.test(author.url) ? author.url : null;
+  const others = (author.sameAs || []).filter((url) => url !== primary);
+  const links = [
+    ...(primary ? [{ url: primary, label: author.urlLabel || profileLabel(primary) }] : []),
+    ...others.map((url) => ({ url, label: profileLabel(url) })),
+  ];
+  /* Le métier n'est répété que s'il n'est pas déjà dans la bio affichée
+     juste au-dessus. Sur une page d'auteur, une bio qui commence par « X est
+     développeur… » suivie d'une ligne « Développeur… » se lit comme un bug de
+     gabarit, pas comme une mise en avant. */
+  const role =
+    author.jobTitle && !(author.bio || '').toLowerCase().includes(author.jobTitle.toLowerCase())
+      ? author.jobTitle
+      : null;
+  if (!role && links.length === 0) return '';
+
+  return `<div class="author-profile">
+            ${role ? `<p class="author-profile-role">${escapeHtml(role)}</p>` : ''}
+            ${
+              links.length > 0
+                ? `<p class="author-profile-links"><span class="author-profile-label">${escapeHtml(
+                    t.authorElsewhere,
+                  )}</span>${links
+                    .map(
+                      ({ url, label }) =>
+                        `<a href="${escapeHtml(url)}" rel="me noopener noreferrer" target="_blank">${escapeHtml(label)}</a>`,
+                    )
+                    .join('')}</p>`
+                : ''
+            }
+          </div>`;
+};
+
+/* ── Photographies ──────────────────────────────────────────────────────── */
+
+/**
+ * Largeur d'affichage réelle d'une image dans le corps d'un article.
+ *
+ * Elle n'est pas décorative : c'est elle qui décide quelle dérivée le
+ * navigateur télécharge. `.post-layout` est plafonné à 820 px et
+ * `.section-inner` lui retire 24 px de chaque côté (styles/blog.css) — soit
+ * 772 px. Sous ce seuil l'image occupe la largeur de l'écran moins les marges.
+ *
+ * Si ces valeurs changent dans le CSS, elles doivent changer ici : une
+ * annonce `sizes` fausse est invisible à l'œil et coûte de la bande passante à
+ * chaque visite.
+ */
+const PHOTO_SIZES = '(max-width: 820px) calc(100vw - 40px), 772px';
+
+/**
+ * Figure d'une photographie du registre.
+ *
+ * Trois exigences tenues ensemble :
+ *
+ *   · AUCUN décalage de mise en page — `width`/`height` viennent du fichier
+ *     réellement produit, donc le navigateur réserve la place avant l'octet
+ *     d'image. C'est ce qui protège le Cumulative Layout Shift.
+ *   · AVIF puis WebP puis JPEG, dans cet ordre : le premier format compris
+ *     gagne, et le JPEG n'est chargé que par les navigateurs qui ne
+ *     comprennent ni l'un ni l'autre.
+ *   · Le crédit est VISIBLE, pas seulement dans les données structurées. Une
+ *     licence qu'il faut lire le code source pour connaître n'est pas une
+ *     licence exploitable par un lecteur.
+ *
+ * `overrides` permet à un article de remplacer le texte alternatif ou la
+ * légende sans toucher au registre — cas particulier, pas usage courant.
+ */
+export const photoFigure = (photo, overrides = {}) => {
+  const alt = overrides.alt ?? photo.alt;
+  const caption = overrides.caption ?? photo.caption;
+  const sources = photo.sources
+    .map(
+      ({ type, srcset }) =>
+        `<source type="${type}" srcset="${escapeHtml(srcset)}" sizes="${escapeHtml(PHOTO_SIZES)}" />`,
+    )
+    .join('');
+
+  /* `rel="license"` est lu par les moteurs et par les extensions de
+     réutilisation : c'est la déclaration lisible par machine qui double le
+     JSON-LD, et les deux pointent la même URL par construction. */
+  const credit =
+    `<span class="post-figure-credit">Photo&nbsp;: ` +
+    `<a href="${escapeHtml(photo.photographer.path)}">${escapeHtml(photo.photographer.name)}</a>` +
+    ` — <a href="${escapeHtml(photo.license.deed)}" rel="license noopener" target="_blank">${escapeHtml(
+      photo.license.label,
+    )}</a></span>`;
+
+  return `<figure class="post-figure post-photo">
+          <picture>${sources}<img src="${escapeHtml(photo.src)}" alt="${escapeHtml(alt)}" width="${
+            photo.width
+          }" height="${photo.height}" loading="lazy" decoding="async" /></picture>
+          <figcaption>${caption ? `<span class="post-figure-legend">${escapeHtml(caption)}</span>` : ''}${credit}</figcaption>
+        </figure>`;
+};
 
 /**
  * Document HTML complet.
@@ -696,7 +841,7 @@ export const authorsPage = ({ lang, authors, categories, assets, schema, alterna
                 </p>
                 <p class="author-card-links">
                   <a href="${u.author(a.slug)}">${escapeHtml(t.authorAllPosts(a.name))}</a>
-                  ${a.url && /^https?:\/\//i.test(a.url) ? `<a href="${escapeHtml(a.url)}" rel="author noopener noreferrer" target="_blank">${escapeHtml(a.urlLabel || t.authorWebsite)}</a>` : ''}
+                  ${a.url && /^https?:\/\//i.test(a.url) ? `<a href="${escapeHtml(a.url)}" rel="author me noopener noreferrer" target="_blank">${escapeHtml(a.urlLabel || t.authorWebsite)}</a>` : ''}
                 </p>
               </div>
             </article>`,
@@ -709,6 +854,122 @@ export const authorsPage = ({ lang, authors, categories, assets, schema, alterna
       ${cta(lang)}`;
 
   return layout({ lang, seo, schema, body, assets, bodyClass: 'blog-authors', categories });
+};
+
+/**
+ * Crédits et licence des photographies.
+ *
+ * Cette page n'est pas une politesse : c'est la cible de `acquireLicensePage`
+ * dans les données structurées de chaque photo. Google exige qu'un lecteur
+ * puisse y apprendre à quelles conditions réutiliser l'image ; sans elle, la
+ * déclaration de licence est incomplète et le crédit n'apparaît nulle part.
+ *
+ * Elle sert aussi le lecteur : une photographie originale, prise sur place,
+ * n'a pas le même statut qu'une banque d'images, et cette différence mérite
+ * d'être vérifiable plutôt qu'affirmée.
+ */
+export const photoCreditsPage = ({ lang, photos, posts, categories, assets, schema, alternates }) => {
+  const t = UI[lang];
+  const u = urls(lang);
+  /* Le registre ne connaît que des slugs. On affiche le VRAI titre de
+     l'article : un slug transformé en phrase (« aborder quelquun a montreal »)
+     se lit mal et n'a aucune valeur de lien interne. */
+  const titleOf = new Map(posts.map((post) => [post.slug, post.title]));
+
+  const seo = head({
+    lang,
+    title: `${t.photoCreditsTitle} | ${BRAND}`,
+    description: t.photoCreditsMeta,
+    path: u.photoCredits(),
+    type: 'website',
+    alternates,
+  });
+
+  /* Les licences réellement utilisées, sans doublon : inutile d'expliquer une
+     licence qu'aucune photo de cette page ne porte. */
+  const licenses = [...new Map(photos.map((p) => [p.license.id, p.license])).values()];
+
+  const attribution = (photo) =>
+    `${photo.photographer.name} — ${photo.place} — ${photo.license.label}`;
+
+  const card = (photo) => {
+    const smallest = photo.widths[0];
+    const base = photo.src.replace(/\.jpg$/, '');
+    /* « Publiée dans » ne doit lister que des articles qui existent dans la
+       langue de la page : la version anglaise du blog ne publie pas encore
+       tous les articles français, et un lien vers une page absente serait un
+       lien mort. */
+    const published = photo.articles.some((slug) => titleOf.has(slug));
+    return `<article class="photo-credit">
+              <a class="photo-credit-thumb" href="${escapeHtml(photo.src)}">
+                <picture>
+                  <source type="image/avif" srcset="${escapeHtml(`${base}-${smallest}.avif`)}" />
+                  <source type="image/webp" srcset="${escapeHtml(`${base}-${smallest}.webp`)}" />
+                  <img src="${escapeHtml(photo.src)}" alt="${escapeHtml(photo.alt)}" width="${photo.width}" height="${photo.height}" loading="lazy" decoding="async" />
+                </picture>
+              </a>
+              <div class="photo-credit-body">
+                <h2 class="photo-credit-place">${escapeHtml(photo.place)}</h2>
+                <dl class="photo-credit-meta">
+                  <dt>${escapeHtml(t.photoCreditsPhotographer)}</dt>
+                  <dd><a href="${escapeHtml(photo.photographer.path)}">${escapeHtml(photo.photographer.name)}</a></dd>
+                  <dt>${escapeHtml(t.photoCreditsLicense)}</dt>
+                  <dd><a href="${escapeHtml(photo.license.deed)}" rel="license noopener" target="_blank">${escapeHtml(photo.license.label)}</a> — ${escapeHtml(photo.license.short)}</dd>
+                  <dt>${escapeHtml(t.photoCreditsSeenIn)}</dt>
+                  <dd>${
+                    published
+                      ? photo.articles
+                          .filter((slug) => titleOf.has(slug))
+                          .map((slug) => `<a href="${u.post(slug)}">${escapeHtml(titleOf.get(slug))}</a>`)
+                          .join(', ')
+                      : `<span class="photo-credit-unused">${escapeHtml(t.photoCreditsUnused)}</span>`
+                  }</dd>
+                </dl>
+                <p class="photo-credit-attribution"><code>${escapeHtml(attribution(photo))}</code></p>
+              </div>
+            </article>`;
+  };
+
+  const body = `      <section class="blog-hero blog-hero-compact">
+        <div class="section-inner">
+          ${breadcrumb(lang, [
+            { name: t.home, path: '/' },
+            { name: t.blog, path: u.index() },
+            { name: t.photoCredits, path: u.photoCredits() },
+          ])}
+          <p class="section-eyebrow">${escapeHtml(t.photoCredits)}</p>
+          <h1 class="section-title">${escapeHtml(t.photoCreditsTitle)}</h1>
+          <p class="section-desc">${escapeHtml(t.photoCreditsIntro)}</p>
+        </div>
+      </section>
+
+      <section class="section blog-listing">
+        <div class="section-inner">
+          <div class="photo-license-box">
+            <h2>${escapeHtml(t.photoCreditsHowTo)}</h2>
+            ${licenses
+              .map(
+                (l) => `<p><a href="${escapeHtml(l.deed)}" rel="license noopener" target="_blank"><strong>${escapeHtml(l.label)}</strong></a> — ${escapeHtml(l.summary)}</p>`,
+              )
+              .join('')}
+            <p class="photo-license-note">${escapeHtml(
+              lang === 'fr'
+                ? 'Reprenez la ligne d’attribution indiquée sous chaque photographie. Pour un usage commercial, écrivez-nous.'
+                : 'Reuse the attribution line shown under each photograph. For commercial use, get in touch.',
+            )} <a href="mailto:${CONTACT_EMAIL}">${escapeHtml(CONTACT_EMAIL)}</a></p>
+          </div>
+
+          <p class="photo-credit-count">${escapeHtml(t.photoCreditsCount(photos.length))}</p>
+
+          <div class="photo-credit-list">
+            ${photos.map(card).join('')}
+          </div>
+        </div>
+      </section>
+
+      ${cta(lang)}`;
+
+  return layout({ lang, seo, schema, body, assets, bodyClass: 'blog-photo-credits', categories });
 };
 
 export const listingPage = ({
@@ -836,7 +1097,7 @@ export const articlePage = ({ lang, post, related, assets, schema, alternates, o
                 <a href="${u.author(author.slug || author.key)}">${escapeHtml(t.authorAllPosts(author.name))}</a>
                 ${
                   author.url && /^https?:\/\//i.test(author.url)
-                    ? `<a href="${escapeHtml(author.url)}" rel="author noopener noreferrer" target="_blank">${escapeHtml(author.urlLabel || t.authorWebsite)}</a>`
+                    ? `<a href="${escapeHtml(author.url)}" rel="author me noopener noreferrer" target="_blank">${escapeHtml(author.urlLabel || t.authorWebsite)}</a>`
                     : ''
                 }
               </p>
@@ -887,16 +1148,33 @@ export const articlePage = ({ lang, post, related, assets, schema, alternates, o
 
         ${
           post.cover
-            ? `<figure class="post-cover">
+            ? `<figure class="post-cover${post.coverPhoto ? ' post-cover-photo' : ''}">
           <picture>
-            ${post.coverVector ? `<source srcset="${escapeHtml(post.coverVector)}" type="image/svg+xml" />` : ''}
+            ${(post.coverSources || [])
+              .filter((source) => source.srcset)
+              .map(
+                (source) =>
+                  `<source type="${source.type}" srcset="${escapeHtml(source.srcset)}"${
+                    source.type === 'image/svg+xml' ? '' : ' sizes="(max-width: 1160px) 100vw, 1112px"'
+                  } />`,
+              )
+              .join('\n            ')}
             <img src="${escapeHtml(post.cover)}"${post.coverSrcset ? ` srcset="${escapeHtml(post.coverSrcset)}" sizes="(max-width: 1160px) 100vw, 1112px"` : ''} alt="${escapeHtml(post.coverAlt)}"${post.coverTitle ? ` title="${escapeHtml(post.coverTitle)}"` : ''} width="1200" height="630" fetchpriority="high" decoding="async" />
           </picture>
           ${
-            post.coverCaption || post.coverCredit
+            post.coverCaption || post.coverCredit || post.coverPhoto
               ? `<figcaption class="post-cover-caption">${post.coverCaption ? escapeHtml(post.coverCaption) : ''}${
-                  post.coverCredit
-                    ? `<span class="post-cover-credit">${escapeHtml(post.coverCredit)}</span>`
+                  post.coverPhoto
+                    ? /* Couverture photographique : le crédit est cliquable, comme
+                         sous les photos du corps. Une licence qu'on ne peut pas
+                         atteindre depuis l'image n'est pas exploitable. */
+                      `<span class="post-cover-credit">Photo&nbsp;: <a href="${escapeHtml(
+                        post.coverPhoto.photographer.path,
+                      )}">${escapeHtml(post.coverPhoto.photographer.name)}</a> — <a href="${escapeHtml(
+                        post.coverPhoto.license.deed,
+                      )}" rel="license noopener" target="_blank">${escapeHtml(post.coverPhoto.license.label)}</a></span>`
+                    : post.coverCredit
+                      ? `<span class="post-cover-credit">${escapeHtml(post.coverCredit)}</span>`
                     : ''
                 }</figcaption>`
               : ''

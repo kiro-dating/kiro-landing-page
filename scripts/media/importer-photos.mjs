@@ -74,6 +74,33 @@ const PHOTOS = [
   },
 ];
 
+/**
+ * Candidats pour l'article « Aborder quelqu'un à Montréal » — À INSPECTER.
+ *
+ * IMPORTANT : aucune métadonnée n'est affirmée ici. Ces noms de fichiers
+ * viennent d'une recherche sur Commons, mais NI l'auteur NI la licence n'ont
+ * pu être relus : commons.wikimedia.org est injoignable depuis l'environnement
+ * d'assistance, et les pages de description de fichiers le sont aussi sur
+ * fr.wikipedia.org et en.wikipedia.org. Rien n'a donc été vérifié.
+ *
+ * Le mode `--inspect` interroge l'API en LECTURE SEULE : il affiche auteur,
+ * licence, conditions et dimensions, ne télécharge rien et n'écrit aucun
+ * fichier. C'est ce rapport qui permet ensuite de remplir une entrée PHOTOS
+ * avec des attentes réelles, puis de lancer l'import strict habituel.
+ *
+ *     node scripts/media/importer-photos.mjs --inspect
+ */
+const CANDIDATS = [
+  { sujet: 'Mont-Royal', file: 'Belvedere Kondiaronk chalet du Mont Royal.jpg' },
+  { sujet: 'Mont-Royal', file: 'Kondiaronk Belvedere, Montreal city, Canada.jpg' },
+  { sujet: 'Mont-Royal', file: 'Mount Royal Montreal Lookout.jpg' },
+  { sujet: 'Mont-Royal', file: 'Montreal from above Mont Royal.jpg' },
+  { sujet: 'Grande Bibliothèque', file: 'Bibliotheque Nationale Quebec.JPG' },
+  { sujet: 'Boulevard Saint-Laurent', file: "Montreal's Boulevard Saint-Laurent at sunset on summer solstice.jpg" },
+  { sujet: 'Boulevard Saint-Laurent', file: 'Boulevard Saint-Laurent et rue Sainte-Catherine Ouest.JPG' },
+  { sujet: 'Boulevard Saint-Laurent', file: '1203-1207 boulevard Saint-Laurent.jpg' },
+];
+
 const API = 'https://commons.wikimedia.org/w/api.php';
 const UA = 'KiroBlog/1.0 (https://kirodating.com; import éditorial vérifié)';
 
@@ -114,6 +141,40 @@ const download = async (url, dest) => {
   const res = await fetch(url, { headers: { 'user-agent': UA } });
   if (!res.ok) throw new Error(`téléchargement : HTTP ${res.status}`);
   fs.writeFileSync(dest, Buffer.from(await res.arrayBuffer()));
+};
+
+/**
+ * Lecture seule : affiche ce que Commons dit de chaque candidat.
+ * Ne télécharge rien, n'écrit rien, ne valide rien — c'est un rapport.
+ */
+const inspecter = async () => {
+  process.stdout.write(`\n▸ Inspection de ${CANDIDATS.length} candidat(s) — LECTURE SEULE, aucun téléchargement\n`);
+  let sujet = null;
+  for (const candidat of CANDIDATS) {
+    if (candidat.sujet !== sujet) {
+      sujet = candidat.sujet;
+      process.stdout.write(`\n── ${sujet} ──\n`);
+    }
+    process.stdout.write(`\n  ${candidat.file}\n`);
+    try {
+      const meta = await fetchMeta(candidat.file);
+      process.stdout.write(`    page       : ${meta.descriptionUrl}\n`);
+      process.stdout.write(`    auteur     : ${meta.auteur || '— NON RENSEIGNÉ'}\n`);
+      process.stdout.write(`    licence    : ${meta.licence || '— NON RENSEIGNÉE'}\n`);
+      process.stdout.write(`    conditions : ${meta.conditions || '—'}\n`);
+      process.stdout.write(`    licence URL: ${meta.licenceUrl || '—'}\n`);
+      process.stdout.write(`    restrictions: ${meta.usageCommercial}\n`);
+      process.stdout.write(`    dimensions : ${meta.largeur}×${meta.hauteur} (${meta.mime})\n`);
+      if (meta.description) process.stdout.write(`    description: ${meta.description}\n`);
+    } catch (error) {
+      process.stdout.write(`    ✗ ${error.message}\n`);
+    }
+  }
+  process.stdout.write(
+    `\nRien n'a été téléchargé. Colle ce rapport dans la conversation :\n` +
+      `les entrées PHOTOS seront remplies avec l'auteur et la licence RÉELS,\n` +
+      `puis l'import strict (sans --inspect) vérifiera à nouveau avant de télécharger.\n\n`,
+  );
 };
 
 const main = async () => {
@@ -181,7 +242,9 @@ const main = async () => {
   );
 };
 
-main().catch((error) => {
+const tache = process.argv.includes('--inspect') ? inspecter : main;
+
+tache().catch((error) => {
   process.stderr.write(`\n✗ ${error.message}\n`);
   process.exitCode = 1;
 });

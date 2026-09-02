@@ -1,0 +1,217 @@
+{
+  "_doc": {
+    "role": "Registre des photographies du blog — source unique de vérité.",
+    "pourquoi": [
+      "Une photographie porte trois choses qu'un simple ![alt](chemin) ne sait pas transporter :",
+      "  · un auteur, qui doit rester la MÊME entité Person que l'auteur des articles ;",
+      "  · une licence, qui doit être vérifiable et lisible par machine ;",
+      "  · des dimensions, sans lesquelles la page saute au chargement (CLS).",
+      "Tout est déclaré ici une fois, puis consommé par le rendu, le JSON-LD,",
+      "le sitemap images et la page de crédits. Aucun de ces quatre endroits ne",
+      "doit contenir de valeur écrite en dur."
+    ],
+    "champs": {
+      "photographer": "Clé d'un auteur de content/blog/authors.json. Jamais un nom libre : c'est ce qui garantit une seule entité Person côté Schema.org.",
+      "license": "Clé de PHOTO_LICENSES (scripts/blog/config.mjs). Une licence inconnue fait échouer le build.",
+      "collection": "Dossier des fichiers dérivés : public/images/blog/photos/<collection>/.",
+      "capturedAt": "Date de prise de vue, AAAA-MM-JJ. null tant qu'elle n'est pas connue — jamais devinée.",
+      "place": "Lieu réel, affiché dans la légende et sur la page de crédits.",
+      "alt": "Texte alternatif : ce qu'on voit, pour qui ne voit pas l'image. Décrit le LIEU, jamais les personnes de passage.",
+      "caption": "Légende visible. Éditoriale, mais toujours vraie.",
+      "widths": "Largeurs dérivées, croissantes. La dernière sert de référence pour width/height.",
+      "width/height": "ÉCRITS PAR scripts/media/photos-kiro.mjs à partir du fichier réellement produit. Ne pas éditer à la main.",
+      "crop": "Recadrage appliqué à la source avant dérivation, en pixels source {left,top,width,height}. null = image entière.",
+      "articles": "Slugs des articles qui utilisent la photo. Alimente la page de crédits."
+    },
+    "regle": "Aucune personne identifiable ne doit être présentée comme célibataire, comme utilisatrice de Kiro ou comme cherchant une relation. Les légendes parlent du lieu."
+  },
+  "photos": {
+    "vieux-port-montreal-vue-aerienne": {
+      "photographer": "pierre-handy-charles",
+      "collection": "montreal",
+      "license": "CC-BY-NC-4.0",
+      "capturedAt": null,
+      "place": {
+        "fr": "Vieux-Port de Montréal, vu depuis la Grande roue",
+        "en": "Old Port of Montreal, seen from the observation wheel"
+      },
+      "alt": {
+        "fr": "Vue aérienne du Vieux-Port de Montréal : le bassin Bonsecours au premier plan, la coupole argentée du marché Bonsecours, et les tours du centre-ville à l’horizon sous un ciel de beau temps.",
+        "en": "Aerial view of Montreal's Old Port: the Bonsecours basin in the foreground, the silver dome of Bonsecours Market, and the downtown towers on the horizon under a clear sky."
+      },
+      "caption": {
+        "fr": "Le Vieux-Port depuis la Grande roue. Presque tout ce qu’on voit ici est un endroit où quelqu’un a déjà une raison d’être — et où deux personnes en ont donc une en commun.",
+        "en": "The Old Port from the observation wheel. Almost everything visible here is a place where someone already has a reason to be — which means two people already share one."
+      },
+      "widths": [
+        480,
+        900,
+        1560
+      ],
+      "crop": null,
+      "articles": [
+        "aborder-quelquun-a-montreal"
+      ],
+      "width": 1560,
+      "height": 1170
+    },
+    "belvedere-kondiaronk-mont-royal": {
+      "photographer": "pierre-handy-charles",
+      "collection": "montreal",
+      "license": "CC-BY-NC-4.0",
+      "capturedAt": null,
+      "place": {
+        "fr": "Belvédère Kondiaronk, mont Royal, Montréal",
+        "en": "Kondiaronk Belvedere, Mount Royal, Montreal"
+      },
+      "alt": {
+        "fr": "L’esplanade du belvédère Kondiaronk au mont Royal sous un ciel d’orage, avec la balustrade de pierre, les lampadaires, et le centre-ville de Montréal et le fleuve Saint-Laurent en arrière-plan.",
+        "en": "The esplanade of the Kondiaronk Belvedere on Mount Royal under a stormy sky, with its stone balustrade, lampposts, and downtown Montreal and the St. Lawrence River in the background."
+      },
+      "caption": {
+        "fr": "Le belvédère Kondiaronk, en haut des marches. Personne n’arrive ici par hasard : c’est précisément ce qui rend une remarque sur la montée si facile à faire.",
+        "en": "The Kondiaronk Belvedere, at the top of the stairs. Nobody ends up here by accident — which is exactly what makes a remark about the climb so easy to make."
+      },
+      "widths": [
+        480,
+        900,
+        1560
+      ],
+      "crop": null,
+      "articles": [
+        "aborder-quelquun-a-montreal"
+      ],
+      "width": 1560,
+      "height": 1040,
+      "cover": {
+        "crop": {
+          "left": 0,
+          "top": 145,
+          "width": 2048,
+          "height": 1075
+        }
+      },
+      "coverWidths": [
+        1200,
+        2048
+      ]
+    },
+    "square-dorchester-fontaine": {
+      "photographer": "pierre-handy-charles",
+      "collection": "montreal",
+      "license": "CC-BY-NC-4.0",
+      "capturedAt": null,
+      "place": {
+        "fr": "Square Dorchester, centre-ville de Montréal",
+        "en": "Dorchester Square, downtown Montreal"
+      },
+      "alt": {
+        "fr": "La fontaine à vasques du square Dorchester en fonctionnement, entourée de bancs de bois courbes et d’arbres, devant la façade à colonnes de l’édifice Sun Life.",
+        "en": "The tiered fountain at Dorchester Square running, surrounded by curved wooden benches and trees, in front of the columned façade of the Sun Life Building."
+      },
+      "caption": {
+        "fr": "Le square Dorchester, un midi d’été. Une place publique ne demande aucune justification pour s’y arrêter — c’est ce qui en fait un terrain facile.",
+        "en": "Dorchester Square on a summer afternoon. A public square asks for no reason to linger — which is what makes it easy ground."
+      },
+      "widths": [
+        480,
+        900,
+        1560
+      ],
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1860,
+        "height": 1160
+      },
+      "articles": [
+        "aborder-quelquun-a-montreal"
+      ],
+      "width": 1560,
+      "height": 973
+    },
+    "grande-roue-vieux-port": {
+      "photographer": "pierre-handy-charles",
+      "collection": "montreal",
+      "license": "CC-BY-NC-4.0",
+      "capturedAt": null,
+      "place": {
+        "fr": "Grande roue de Montréal, Vieux-Port",
+        "en": "La Grande Roue de Montréal, Old Port"
+      },
+      "alt": {
+        "fr": "La Grande roue de Montréal, blanche sur un ciel bleu, vue depuis une pelouse du Vieux-Port encadrée par le feuillage de deux arbres.",
+        "en": "La Grande Roue de Montréal, white against a blue sky, seen from a lawn in the Old Port framed by the foliage of two trees."
+      },
+      "caption": {
+        "fr": "La Grande roue, côté parc. Proposer de se revoir marche mieux quand ce qu’on propose est petit, précis, et facile à refuser.",
+        "en": "The observation wheel, from the park side. Asking to meet again works better when what you suggest is small, specific and easy to decline."
+      },
+      "widths": [
+        480,
+        900,
+        1560
+      ],
+      "crop": null,
+      "articles": [
+        "aborder-quelquun-a-montreal"
+      ],
+      "width": 1560,
+      "height": 1170
+    },
+    "cathedrale-marie-reine-du-monde": {
+      "photographer": "pierre-handy-charles",
+      "collection": "montreal",
+      "license": "CC-BY-NC-4.0",
+      "capturedAt": null,
+      "place": {
+        "fr": "Cathédrale Marie-Reine-du-Monde, boulevard René-Lévesque, Montréal",
+        "en": "Mary, Queen of the World Cathedral, René-Lévesque Boulevard, Montreal"
+      },
+      "alt": {
+        "fr": "La cathédrale Marie-Reine-du-Monde et son dôme de cuivre vert, bordée d’arbres, vue depuis le boulevard René-Lévesque, avec des gratte-ciel en construction à l’arrière-plan.",
+        "en": "Mary, Queen of the World Cathedral and its green copper dome, lined with trees, seen from René-Lévesque Boulevard, with high-rises under construction in the background."
+      },
+      "caption": {
+        "fr": "La cathédrale Marie-Reine-du-Monde, boulevard René-Lévesque.",
+        "en": "Mary, Queen of the World Cathedral, René-Lévesque Boulevard."
+      },
+      "widths": [
+        480,
+        900,
+        1560
+      ],
+      "crop": null,
+      "articles": [],
+      "width": 1560,
+      "height": 1040
+    },
+    "centre-ville-depuis-mont-royal": {
+      "photographer": "pierre-handy-charles",
+      "collection": "montreal",
+      "license": "CC-BY-NC-4.0",
+      "capturedAt": null,
+      "place": {
+        "fr": "Centre-ville de Montréal vu du mont Royal",
+        "en": "Downtown Montreal seen from Mount Royal"
+      },
+      "alt": {
+        "fr": "Le centre-ville de Montréal vu de haut depuis le mont Royal : tours d’habitation et de bureaux serrées, une murale monumentale sur un pignon, et le fleuve Saint-Laurent à l’horizon.",
+        "en": "Downtown Montreal seen from above from Mount Royal: densely packed residential and office towers, a monumental mural on a gable wall, and the St. Lawrence River on the horizon."
+      },
+      "caption": {
+        "fr": "Le centre-ville depuis la montagne.",
+        "en": "Downtown from the mountain."
+      },
+      "widths": [
+        480,
+        900,
+        1560
+      ],
+      "crop": null,
+      "articles": [],
+      "width": 1560,
+      "height": 1040
+    }
+  }
+}

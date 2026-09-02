@@ -14,16 +14,22 @@
     <meta name="theme-color" content="#070709" />
 
     <!-- Primary Meta -->
-    <title>Kiro — Arrête de swiper. Viens rencontrer.</title>
+    <title>%KIRO_TITLE%</title>
     <meta name="description" content="Kiro, l'app de rencontre qui casse la glace : jeux brise-glace, traduction instantanée (créole inclus), communautés et confidentialité d'abord. Réserve ta place." />
     <link rel="canonical" href="%VITE_SITE_URL%/" />
 
-    <!-- Open Graph (Facebook, WhatsApp, Discord…) -->
+    <!-- Open Graph (Facebook, WhatsApp, Discord…)
+         Titre, description et image sont INJECTÉS au build depuis
+         src/config/og-preview.json, lui-même produit par `npm run og` à partir
+         de la copie du hero et des jetons de design. Ne pas les réécrire ici :
+         ils redeviendraient faux à la première modification du site.
+         La `description` ci-dessus, elle, reste rédigée à la main — c'est
+         l'extrait de résultat de recherche, pas l'aperçu de partage. -->
     <meta property="og:site_name" content="Kiro" />
-    <meta property="og:title" content="Kiro — Arrête de swiper. Viens rencontrer." />
-    <meta property="og:description" content="Jeux brise-glace, traduction instantanée et rencontres authentiques. Sois parmi les premiers à tester Kiro." />
+    <meta property="og:title" content="%KIRO_TITLE%" />
+    <meta property="og:description" content="%KIRO_OG_DESCRIPTION%" />
     <meta property="og:url" content="%VITE_SITE_URL%/" />
-    <meta property="og:image" content="%VITE_SITE_URL%/images/og-kiro.jpg" />
+    <meta property="og:image" content="%VITE_SITE_URL%%KIRO_OG_IMAGE%" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:type" content="website" />
@@ -33,9 +39,9 @@
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Kiro — Arrête de swiper. Viens rencontrer." />
-    <meta name="twitter:description" content="Jeux brise-glace, traduction instantanée et rencontres authentiques. Sois parmi les premiers à tester Kiro." />
-    <meta name="twitter:image" content="%VITE_SITE_URL%/images/og-kiro.jpg" />
+    <meta name="twitter:title" content="%KIRO_TITLE%" />
+    <meta name="twitter:description" content="%KIRO_OG_DESCRIPTION%" />
+    <meta name="twitter:image" content="%VITE_SITE_URL%%KIRO_OG_IMAGE%" />
 
     <!-- LCP : le téléphone n'existe que sur grand écran — préchargé seulement là -->
     <link rel="preload" as="image" href="/images/phone-frame.svg" type="image/svg+xml" fetchpriority="high" media="(min-width: 768px)" />

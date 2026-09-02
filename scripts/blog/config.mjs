@@ -12,6 +12,7 @@
 
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readOgPreview } from '../og-preview.mjs';
 import { frenchTypography } from './utils.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -27,7 +28,13 @@ export const PATHS = {
   publicDir: path.join(ROOT, 'public'),
   /** Sortie : le dossier produit par `vite build` */
   dist: path.join(ROOT, 'dist'),
+  /** Photographies : originaux hors dépôt public, dérivés web publiés. */
+  photoSources: path.join(ROOT, 'media', 'photos'),
+  photoOutput: path.join(ROOT, 'public', 'images', 'blog', 'photos'),
 };
+
+/** Chemin de site d'une photographie dérivée, sans extension ni largeur. */
+export const photoBase = (collection, id) => `/images/blog/photos/${collection}/${id}`;
 
 /** Domaine officiel, sans barre oblique finale. */
 export const SITE_URL = (process.env.VITE_SITE_URL || 'https://kirodating.com').replace(/\/+$/, '');
@@ -56,6 +63,41 @@ export const HELP = {
 
 /** Adresse de contact affichée dans le pied de page du blog. */
 export const CONTACT_EMAIL = process.env.VITE_CONTACT_EMAIL || 'contact@kirosocial.com';
+
+/**
+ * Licences des photographies publiées sur le blog.
+ *
+ * Une seule table, pour une raison précise : le champ `license` de Schema.org
+ * et le champ XMP `WebStatement` embarqué dans le fichier doivent porter
+ * EXACTEMENT la même URL. Si les deux divergent, Google considère la
+ * déclaration comme non fiable et n'affiche pas le badge de licence.
+ *
+ * `deed` est la page lisible par un humain, `legal` le texte juridique complet.
+ * C'est `deed` qui est déclarée partout : c'est ce qu'un réutilisateur doit lire.
+ *
+ * Ajouter une licence = ajouter une entrée ici. Une photo qui référence une clé
+ * absente de cette table fait échouer le build — jamais de licence approximative.
+ */
+export const PHOTO_LICENSES = {
+  'CC-BY-NC-4.0': {
+    id: 'CC-BY-NC-4.0',
+    spdx: 'CC-BY-NC-4.0',
+    deed: {
+      fr: 'https://creativecommons.org/licenses/by-nc/4.0/deed.fr',
+      en: 'https://creativecommons.org/licenses/by-nc/4.0/',
+    },
+    legal: 'https://creativecommons.org/licenses/by-nc/4.0/legalcode',
+    label: 'CC BY-NC 4.0',
+    short: {
+      fr: 'réutilisation non commerciale, avec attribution',
+      en: 'non-commercial reuse, with attribution',
+    },
+    summary: {
+      fr: 'Vous pouvez copier, redistribuer et adapter cette photographie à des fins non commerciales, à condition de créditer le photographe.',
+      en: 'You may copy, redistribute and adapt this photograph for non-commercial purposes, provided you credit the photographer.',
+    },
+  },
+};
 
 /** Nom de la marque, utilisé dans les <title> et le JSON-LD. */
 export const BRAND = 'Kiro';
@@ -96,6 +138,7 @@ export const LANGS = {
       page: 'page',
       search: 'recherche',
       authors: 'auteurs',
+      photoCredits: 'credits-photos',
     },
   },
   en: {
@@ -112,6 +155,7 @@ export const LANGS = {
       page: 'page',
       search: 'search',
       authors: 'authors',
+      photoCredits: 'photo-credits',
     },
   },
 };
@@ -144,6 +188,7 @@ export const UI = {
     aboutAuthor: 'À propos de l’auteur',
     authorAllPosts: (n) => `Tous les articles de ${n}`,
     authorWebsite: 'Site personnel',
+    authorElsewhere: 'Aussi sur',
     relatedTitle: 'À lire ensuite',
     share: 'Partager',
     shareOn: (n) => `Partager sur ${n}`,
@@ -193,6 +238,19 @@ export const UI = {
     allAuthors: 'Tous les auteurs',
     articleCount: (n) => (n === 1 ? '1 article' : `${n} articles`),
     writesAbout: 'Écrit surtout sur',
+    photoCredits: 'Crédits photo',
+    photoCreditsTitle: 'Crédits et licence des photographies',
+    photoCreditsMeta:
+      'Les photographies publiées sur le blog Kiro : auteur, lieu, article, et conditions de réutilisation.',
+    photoCreditsIntro:
+      'Les photographies qui illustrent ce blog sont des originaux, pris sur place. Cette page dit qui les a faites, où, et ce que vous avez le droit d’en faire.',
+    photoCreditsHowTo: 'Réutiliser une photographie',
+    photoCreditsUnused: 'Non publiée pour l’instant',
+    photoCreditsSeenIn: 'Publiée dans',
+    photoCreditsPhotographer: 'Photographe',
+    photoCreditsPlace: 'Lieu',
+    photoCreditsLicense: 'Licence',
+    photoCreditsCount: (n) => (n === 1 ? '1 photographie' : `${n} photographies`),
     openSearch: 'Ouvrir la recherche',
     closeSearch: 'Fermer la recherche',
     searchIntro: 'Cherche un sujet, une ville, une question — ou parcours ce qui suit.',
@@ -283,6 +341,19 @@ export const UI = {
     allAuthors: 'All authors',
     articleCount: (n) => (n === 1 ? '1 article' : `${n} articles`),
     writesAbout: 'Mostly writes about',
+    photoCredits: 'Photo credits',
+    photoCreditsTitle: 'Photo credits and licence',
+    photoCreditsMeta:
+      'The photographs published on the Kiro blog: author, place, article, and reuse conditions.',
+    photoCreditsIntro:
+      'The photographs on this blog are originals, taken on location. This page says who made them, where, and what you may do with them.',
+    photoCreditsHowTo: 'Reusing a photograph',
+    photoCreditsUnused: 'Not published yet',
+    photoCreditsSeenIn: 'Published in',
+    photoCreditsPhotographer: 'Photographer',
+    photoCreditsPlace: 'Place',
+    photoCreditsLicense: 'Licence',
+    photoCreditsCount: (n) => (n === 1 ? '1 photograph' : `${n} photographs`),
     openSearch: 'Open search',
     closeSearch: 'Close search',
     searchIntro: 'Look for a topic, a city, a question — or browse below.',
@@ -320,7 +391,15 @@ const withFrenchTypography = (dict) =>
 UI.fr = withFrenchTypography(UI.fr);
 
 /** Image Open Graph de repli quand un article n'a pas de couverture. */
-export const DEFAULT_OG_IMAGE = '/images/og-kiro.jpg';
+/**
+ * Image de partage par défaut du blog.
+ *
+ * Lue depuis le manifeste produit par `npm run og`, pas écrite en dur : le nom
+ * du fichier porte l'empreinte de ses sources, précisément pour qu'un aperçu
+ * modifié reçoive une NOUVELLE URL. Sans ça, Facebook et WhatsApp continueraient
+ * de servir la version qu'ils ont mise en cache, parfois pendant des semaines.
+ */
+export const DEFAULT_OG_IMAGE = readOgPreview(ROOT).image;
 
 /** Comptes sociaux — repris de src/config/links.js (sameAs du JSON-LD Organization). */
 export const SOCIAL = [
