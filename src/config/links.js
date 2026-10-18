@@ -22,9 +22,9 @@ const HELP_BASE = (env.VITE_HELP_BASE || 'https://aide.kirodating.com').replace(
 
 export const LINKS = {
   // Help Center
-  terms: env.VITE_TERMS_URL || `${HELP_BASE}/conditions-utilisation.html`,
-  privacy: env.VITE_PRIVACY_URL || `${HELP_BASE}/politique-confidentialite.html`,
-  support: env.VITE_SUPPORT_URL || `${HELP_BASE}/support.html`,
+  terms: env.VITE_TERMS_URL || `${HELP_BASE}/conditions-utilisation`,
+  privacy: env.VITE_PRIVACY_URL || `${HELP_BASE}/politique-confidentialite`,
+  support: env.VITE_SUPPORT_URL || `${HELP_BASE}/support`,
 
   // Contact
   contactEmail: env.VITE_CONTACT_EMAIL || 'contact@kirosocial.com',

@@ -95,4 +95,32 @@ describe('centre d’aide Kiro', () => {
     }
     expect(offenders, `Références interdites :\n${offenders.join('\n')}`).toEqual([]);
   });
+
+  it('les pages du centre d’aide utilisent les URL propres (sans .html)', () => {
+    /* Le centre d'aide est servi avec `cleanUrls` (Vercel) : les anciennes
+       adresses en .html redirigent (308) vers ces URL, qui restent canoniques. */
+    for (const key of ['support', 'terms', 'privacy']) {
+      expect(LINKS[key], key).not.toMatch(/\.html(?:[?#]|$)/);
+      expect(HELP[key], key).not.toMatch(/\.html(?:[?#]|$)/);
+    }
+    expect(LINKS.privacy).toBe(`${OFFICIAL_HELP}/politique-confidentialite`);
+    expect(LINKS.terms).toBe(`${OFFICIAL_HELP}/conditions-utilisation`);
+    expect(LINKS.support).toBe(`${OFFICIAL_HELP}/support`);
+  });
+});
+
+describe('app-ads.txt', () => {
+  /* Servi tel quel depuis public/ à https://kirodating.com/app-ads.txt.
+     Une seule ligne : compte AdMob de Kiro (aucune médiation configurée). */
+  const file = path.join(ROOT, 'public', 'app-ads.txt');
+
+  it('contient exactement la ligne autorisée du compte AdMob Kiro', () => {
+    const lines = fs.readFileSync(file, 'utf8').split('\n').map((l) => l.trim()).filter(Boolean);
+    expect(lines).toEqual(['google.com, pub-2415334122630110, DIRECT, f08c47fec0942fa0']);
+  });
+
+  it('respecte le format IAB (domaine, ID éditeur, relation, ID de certification)', () => {
+    const [line] = fs.readFileSync(file, 'utf8').split('\n');
+    expect(line).toMatch(/^google\.com, pub-\d{16}, DIRECT, f08c47fec0942fa0$/);
+  });
 });

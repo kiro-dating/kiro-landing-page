@@ -56,9 +56,9 @@ const HELP_BASE = (process.env.VITE_HELP_BASE || 'https://aide.kirodating.com').
 /** Pages du centre d'aide réellement publiées sous ce domaine (vérifiées). */
 export const HELP = {
   base: `${HELP_BASE}/`,
-  support: `${HELP_BASE}/support.html`,
-  terms: `${HELP_BASE}/conditions-utilisation.html`,
-  privacy: `${HELP_BASE}/politique-confidentialite.html`,
+  support: `${HELP_BASE}/support`,
+  terms: `${HELP_BASE}/conditions-utilisation`,
+  privacy: `${HELP_BASE}/politique-confidentialite`,
 };
 
 /** Adresse de contact affichée dans le pied de page du blog. */
