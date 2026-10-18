@@ -475,7 +475,44 @@ export const ChatDemo = () => {
 };
 
 /* ── 9. Abonnements — pile CardSwap ── */
+
+/* Géométrie de la pile selon l'écran. Au-delà de 1180 px : valeurs d'origine
+   (éventail collé au bord droit). En dessous, la pile est recentrée et
+   dimensionnée pour que la carte de devant reste ENTIÈREMENT visible : le
+   simple rétrécissement de la version bureau coupait la carte au bord de
+   l'écran et rendait son texte illisible. */
+const PLANS_STACK_DESKTOP = { width: 440, height: 400, distance: 72, vertical: 82 };
+
+const plansStackFor = (viewportWidth) => {
+  if (viewportWidth > 1180) return PLANS_STACK_DESKTOP;
+  if (viewportWidth > 640) return { width: 420, height: 320, distance: 44, vertical: 52 };
+  /* Mobile : 3 cartes arrière décalées de 16 px, 24 px de marge de chaque côté */
+  const width = Math.max(260, Math.min(380, viewportWidth - 48 - 3 * 16));
+  return { width, height: 250, distance: 16, vertical: 30 };
+};
+
+const readPlansStack = () => (
+  typeof window === 'undefined' ? PLANS_STACK_DESKTOP : plansStackFor(window.innerWidth)
+);
+
+const usePlansStack = () => {
+  const [stack, setStack] = useState(readPlansStack);
+  useEffect(() => {
+    const onResize = () => {
+      const next = readPlansStack();
+      setStack((prev) => (
+        prev.width === next.width && prev.height === next.height
+        && prev.distance === next.distance && prev.vertical === next.vertical ? prev : next
+      ));
+    };
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+  return stack;
+};
+
 export const Plans = () => {
+  const stack = usePlansStack();
   const { t } = useTranslation();
   const plans = [
     { key: 'free', name: t('plans.free_name'), desc: t('plans.free_desc'), icon: <Leaf size={15} /> },
@@ -505,12 +542,24 @@ export const Plans = () => {
 
         <m.div
           className="plans-visual"
+          style={{
+            '--stack-h': `${stack.height}px`,
+            '--stack-d': `${stack.distance}px`,
+            '--stack-v': `${stack.vertical}px`,
+          }}
           initial={{ opacity: 0, scale: 0.97 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         >
-          <CardSwap width={440} height={400} cardDistance={72} verticalDistance={82} delay={4500} skewAmount={5}>
+          <CardSwap
+            width={stack.width}
+            height={stack.height}
+            cardDistance={stack.distance}
+            verticalDistance={stack.vertical}
+            delay={4500}
+            skewAmount={5}
+          >
             {plans.map((p) => (
               <Card key={p.key} customClass={`plan-card tier-${p.key}`}>
                 <div className="plan-card-top">

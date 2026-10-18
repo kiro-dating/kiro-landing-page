@@ -18,6 +18,10 @@
   --s-gold: #f8f2e7;
   --s-ink: #171515;
 
+  /* Largeur utile commune (en-tête, sections, pied de page). Augmentée sur
+     grands écrans ci-dessous pour mieux occuper l'espace sans tout étirer. */
+  --page-max: 1160px;
+
   --font-inter: 'Inter', sans-serif;
   /* Police de la marque (logotype Kiro) — à recharger dans index.html si utilisée */
   --font-brand: 'Comfortaa', 'Inter', sans-serif;
@@ -67,7 +71,7 @@ img {
 }
 
 .container {
-  max-width: 1160px;
+  max-width: var(--page-max);
   margin: 0 auto;
   padding: 0 24px;
 }
@@ -82,7 +86,7 @@ img {
 }
 
 .section-inner {
-  max-width: 1160px;
+  max-width: var(--page-max);
   margin: 0 auto;
   padding: 0 24px;
 }
@@ -109,6 +113,8 @@ img {
 
 .section-title {
   max-width: 640px;
+  /* Lignes équilibrées : évite un mot isolé en fin de titre */
+  text-wrap: balance;
   font-size: clamp(1.7rem, 3.4vw, 2.5rem);
   font-weight: 800;
   line-height: 1.12;
@@ -169,5 +175,37 @@ main [id] {
 @media (max-width: 640px) {
   .section {
     padding: 60px 0;
+  }
+}
+
+/* ── Grands écrans (≥ 1800 px) et ultralarges (≥ 2400 px) ──
+   La composition restait figée à 1160 px, perdue au milieu de l'écran.
+   On élargit la colonne utile et on relève légèrement l'échelle typographique
+   (textes en rem). Les visuels à taille fixe (pile de cartes, jeux) gardent
+   leurs proportions : rien n'est étiré. */
+@media (min-width: 1800px) {
+  :root {
+    --page-max: 1320px;
+  }
+
+  html {
+    font-size: 106.25%;
+  }
+}
+
+@media (min-width: 2400px) {
+  :root {
+    --page-max: 1440px;
+  }
+
+  html {
+    font-size: 112.5%;
+  }
+}
+
+/* Moniteurs ultralarges (34" 3440 px et plus) */
+@media (min-width: 3000px) {
+  :root {
+    --page-max: 1560px;
   }
 }

@@ -19,7 +19,7 @@
 }
 
 .top-nav-inner {
-  max-width: 1160px;
+  max-width: var(--page-max);
   margin: 0 auto;
   padding: 0 24px;
   min-height: 68px;

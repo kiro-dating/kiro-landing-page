@@ -218,3 +218,17 @@
     --phw: min(clamp(280px, 40vw, 370px), var(--phw-max-h));
   }
 }
+
+/* Grands écrans : le plafond de 372 px laissait le téléphone petit dans un
+   héros élargi. Toujours borné par la hauteur utile (--phw-max-h). */
+@media (min-width: 1800px) {
+  .phone-showcase {
+    --phw: min(clamp(232px, 21vw, 440px), var(--phw-max-h));
+  }
+}
+
+@media (min-width: 3000px) {
+  .phone-showcase {
+    --phw: min(clamp(232px, 15vw, 500px), var(--phw-max-h));
+  }
+}

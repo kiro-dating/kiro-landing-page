@@ -247,12 +247,20 @@ export const Concept = () => {
     go(map[event.key]);
   };
 
-  /* Mobile : la puce active reste visible dans la barre défilante */
+  /* Mobile : la puce active reste visible dans la barre défilante.
+     On fait défiler UNIQUEMENT la barre, horizontalement : scrollIntoView()
+     faisait aussi défiler la page verticalement, si bien que le site
+     s'ouvrait déjà descendu d'environ 170 px sur téléphone. */
   useEffect(() => {
     if (!compact) return;
-    tabsRef.current[active]?.scrollIntoView({
-      behavior: stillness ? 'auto' : 'smooth', inline: 'center', block: 'nearest',
-    });
+    const tab = tabsRef.current[active];
+    const strip = tab?.closest('.cs-nav');
+    if (!tab || !strip) return;
+    const tabBox = tab.getBoundingClientRect();
+    const stripBox = strip.getBoundingClientRect();
+    const left = strip.scrollLeft + (tabBox.left - stripBox.left)
+      - (strip.clientWidth - tabBox.width) / 2;
+    strip.scrollTo({ left, behavior: stillness ? 'auto' : 'smooth' });
   }, [active, compact, stillness]);
 
   const Scene = SCENES[active];

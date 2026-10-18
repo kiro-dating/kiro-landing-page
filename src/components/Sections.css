@@ -895,10 +895,10 @@
   margin-right: -24px; /* mobile : jusqu'au bord de l'écran */
 }
 
-@media (min-width: 1001px) {
+@media (min-width: 1181px) {
   /* La colonne s'étire jusqu'au bord droit du viewport… */
   .plans-visual {
-    margin-right: calc(-1 * max(24px, (100vw - 1160px) / 2 + 24px));
+    margin-right: calc(-1 * max(24px, (100vw - var(--page-max)) / 2 + 24px));
   }
 
   /* …et la pile recule de la largeur des cartes arrière (3 × 72 px),
@@ -909,9 +909,32 @@
 }
 
 /* Écrans intermédiaires : éventail légèrement réduit pour ne pas mordre le texte */
-@media (min-width: 1001px) and (max-width: 1360px) {
+@media (min-width: 1181px) and (max-width: 1360px) {
   .plans-visual .card-swap-container {
     --cs-s: 0.8;
+  }
+}
+
+/* Tablette et mobile (≤ 1180 px) : texte au-dessus, pile recentrée sous le
+   texte. La géométrie (--stack-*) vient de usePlansStack() : la carte de
+   devant reste entièrement dans l'écran, les cartes arrière dépassent en haut
+   à droite comme sur ordinateur. */
+@media (max-width: 1180px) {
+  .plans-split {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .plans-visual {
+    height: calc(var(--stack-h) + 3 * var(--stack-v) + 40px);
+    margin-right: 0;
+  }
+
+  .plans-visual .card-swap-container {
+    right: auto;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(calc(-50% - 1.5 * var(--stack-d)));
   }
 }
 
@@ -989,6 +1012,28 @@
   background: linear-gradient(90deg, var(--tier), transparent 85%);
 }
 
+/* Cartes plus compactes sur mobile (pile de 250 px de haut) */
+@media (max-width: 640px) {
+  .plan-card-top {
+    padding: 11px 15px;
+    font-size: 0.72rem;
+  }
+
+  .plan-card-body {
+    gap: 8px;
+    padding: 16px 16px 18px;
+  }
+
+  .plan-card-body h3 {
+    font-size: 1.5rem;
+  }
+
+  .plan-card-body p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+}
+
 /* ════════ CTA final ════════ */
 .cta-final {
   text-align: center;
@@ -1012,15 +1057,6 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .plans-split {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-
-  .plans-visual {
-    height: 460px;
-  }
-
   .translate-grid {
     grid-template-columns: 1fr;
     gap: 36px;
@@ -1034,11 +1070,6 @@
 
   .feature-card {
     min-height: 0;
-  }
-
-  /* Pile de plans plus compacte sur mobile */
-  .plans-visual {
-    height: 380px;
   }
 
   .place-cards {

@@ -50,7 +50,7 @@
   align-items: center;
   gap: clamp(28px, 4vw, 72px);
   width: 100%;
-  max-width: 1280px;
+  max-width: calc(var(--page-max) + 120px);
   padding: 12px 24px 76px;
 }
 
@@ -73,6 +73,7 @@
 }
 
 .hero-copy h1 {
+  text-wrap: balance;
   font-size: clamp(2.1rem, 4.6vw, 4rem);
   font-weight: 800;
   line-height: 1.08;
@@ -216,10 +217,11 @@
     animation: none;
   }
 
+  /* Sous l'en-tête (68 px) : le glaçon passait derrière les boutons FR/menu */
   .ice-1 {
-    width: 84px;
+    width: 72px;
     right: 4%;
-    top: 18px;
+    top: 84px;
   }
 
   .ice-2 {
@@ -332,5 +334,18 @@
 
   .hero-copy h1 {
     font-size: clamp(2.1rem, 4.2vw, 3.1rem);
+  }
+}
+
+/* ── Grands écrans : visuel et texte du héros proportionnés à la colonne
+   élargie (--page-max), toujours bornés par la hauteur de l'écran. ── */
+@media (min-width: 1800px) {
+  .hero-copy {
+    max-width: 760px;
+  }
+
+  /* « faites le premier pas » tient sur une ligne : plus de « pas » isolé */
+  .hero-copy h1 {
+    font-size: 3.6rem;
   }
 }
