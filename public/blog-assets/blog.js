@@ -1,10 +1,13 @@
 /**
  * Blog Kiro — amélioration progressive.
  *
- * Ce fichier n'est JAMAIS nécessaire pour lire un article : tout le contenu est
- * déjà dans le HTML servi. Il n'ajoute que deux conforts :
- *   1. la copie du lien de partage ;
- *   2. la recherche côté client sur /blog/recherche/.
+ * Ce fichier n'est JAMAIS nécessaire pour lire un article ni pour naviguer :
+ * tout le contenu et tous les liens sont déjà dans le HTML servi, et les menus
+ * sont des <details> natifs. Il n'ajoute que des conforts :
+ *   1. menu mobile modal : piège du focus, Échap, défilement bloqué ;
+ *   2. partage (Web Share API, repli : copie du lien) et copie du lien ;
+ *   3. barre de progression de lecture (statique si « Réduire les animations ») ;
+ *   4. recherche côté client sur /blog/recherche/.
  *
  * Aucune dépendance, aucun suivi, aucune écriture de stockage navigateur.
  * Copié tel quel dans dist/ par scripts/build-blog.mjs (avec empreinte de cache).
@@ -12,51 +15,146 @@
 (function () {
   'use strict';
 
-  /* ── Menus dépliants : fermeture au clic extérieur et à Échap ──────────── */
+  var isFrench = document.documentElement.lang.indexOf('fr') === 0;
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* Les menus du blog sont des <details> natifs : ils fonctionnent déjà sans
-     JavaScript, au clavier comme à la souris. Ce bloc n'ajoute que le confort
-     attendu d'un menu — se refermer quand on clique ailleurs ou qu'on appuie
-     sur Échap — et rend le focus au bouton, comme le veut la pratique ARIA. */
-  var menus = document.querySelectorAll('details.more-menu, details.nav-menu, details.search-toggle');
+  /* ── Message bref (« Lien copié »), annoncé aux lecteurs d'écran ──────── */
 
-  if (menus.length > 0) {
-    document.addEventListener('click', function (event) {
-      for (var i = 0; i < menus.length; i += 1) {
-        if (menus[i].open && !menus[i].contains(event.target)) menus[i].open = false;
+  var toast = null;
+  var toastTimer = null;
+  function announce(message) {
+    if (!toast) {
+      toast = document.createElement('p');
+      toast.className = 'kb-toast';
+      toast.setAttribute('role', 'status');
+      document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    window.clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(function () {
+      toast.textContent = '';
+    }, 2200);
+  }
+
+  function copy(text) {
+    if (!navigator.clipboard) return Promise.reject(new Error('clipboard'));
+    return navigator.clipboard.writeText(text);
+  }
+
+  /* ── Menu mobile plein écran ──────────────────────────────────────────── */
+
+  var menu = document.querySelector('[data-kb-menu]');
+
+  if (menu) {
+    var summary = menu.querySelector('summary');
+    var panel = menu.querySelector('.kb-menu-panel');
+
+    var focusables = function () {
+      return [summary].concat(Array.prototype.slice.call(panel.querySelectorAll('a[href], button:not([disabled])')));
+    };
+
+    var close = function (restoreFocus) {
+      if (!menu.open) return;
+      menu.open = false;
+      if (restoreFocus) summary.focus();
+    };
+
+    menu.addEventListener('toggle', function () {
+      document.documentElement.classList.toggle('kb-menu-open', menu.open);
+      if (menu.open) {
+        var first = panel.querySelector('a[href]');
+        if (first) first.focus();
       }
     });
 
     document.addEventListener('keydown', function (event) {
-      if (event.key !== 'Escape') return;
-      for (var i = 0; i < menus.length; i += 1) {
-        if (!menus[i].open) continue;
-        menus[i].open = false;
-        var summary = menus[i].querySelector('summary');
-        if (summary) summary.focus();
+      if (!menu.open) return;
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        close(true);
+        return;
+      }
+      if (event.key !== 'Tab') return;
+      /* Piège du focus : le bouton du menu et les liens du panneau seulement. */
+      var items = focusables();
+      var firstItem = items[0];
+      var lastItem = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === firstItem) {
+        event.preventDefault();
+        lastItem.focus();
+      } else if (!event.shiftKey && document.activeElement === lastItem) {
+        event.preventDefault();
+        firstItem.focus();
+      } else if (items.indexOf(document.activeElement) === -1) {
+        event.preventDefault();
+        firstItem.focus();
       }
     });
 
-    /* La recherche dépliable donne le focus au champ dès l'ouverture. */
-    for (var m = 0; m < menus.length; m += 1) {
-      if (!menus[m].classList.contains('search-toggle')) continue;
-      menus[m].addEventListener('toggle', function () {
-        if (!this.open) return;
-        var field = this.querySelector('input[type="search"]');
-        if (field) field.focus();
-      });
+    /* Un lien d'ancre ou un passage en grand écran referme le menu. */
+    panel.addEventListener('click', function (event) {
+      if (event.target.closest('a')) close(false);
+    });
+    if (window.matchMedia) {
+      var wide = window.matchMedia('(min-width: 1120px)');
+      var onWide = function () {
+        if (wide.matches) close(false);
+      };
+      if (wide.addEventListener) wide.addEventListener('change', onWide);
     }
   }
 
-  /* ── Partage : copier le lien ─────────────────────────────────────────── */
+  /* ── Barre de filtres : puce active visible ─────────────────────────────
+     Sur mobile, la rangée de puces défile horizontalement : sur une page de
+     catégorie, la puce active peut se trouver hors de l'écran. On fait
+     défiler la RANGÉE (jamais la page) d'un coup, sans animation — donc rien
+     à adapter pour « Réduire les animations ». L'ordre des liens et les URL
+     ne changent pas. */
 
-  var shareBlock = document.querySelector('.post-share');
-  var copyButton = shareBlock && shareBlock.querySelector('.post-share-copy');
+  var chipTracks = document.querySelectorAll('.kb-chips-track');
+  for (var c = 0; c < chipTracks.length; c += 1) {
+    var track = chipTracks[c];
+    var activeChip = track.querySelector('.kb-chip.is-active');
+    if (!activeChip || track.scrollWidth <= track.clientWidth) continue;
+    var trackRect = track.getBoundingClientRect();
+    var chipRect = activeChip.getBoundingClientRect();
+    if (chipRect.left >= trackRect.left && chipRect.right <= trackRect.right) continue;
+    var gutter = parseFloat(window.getComputedStyle(track).paddingLeft) || 0;
+    track.scrollLeft += chipRect.left - trackRect.left - gutter;
+  }
 
+  /* ── Partage (en-tête d'article) ──────────────────────────────────────── */
+
+  var shareButton = document.querySelector('[data-kb-share]');
+  if (shareButton && (navigator.share || navigator.clipboard)) {
+    shareButton.hidden = false;
+    shareButton.addEventListener('click', function () {
+      var url = shareButton.getAttribute('data-share-url') || window.location.href;
+      var title = shareButton.getAttribute('data-share-title') || document.title;
+      if (navigator.share) {
+        navigator.share({ title: title, url: url }).catch(function () {
+          /* Annulation par l'utilisateur : rien à signaler. */
+        });
+        return;
+      }
+      copy(url).then(
+        function () {
+          announce(shareButton.getAttribute('data-copied-label') || (isFrench ? 'Lien copié' : 'Link copied'));
+        },
+        function () {},
+      );
+    });
+  }
+
+  /* ── Copier le lien (bloc de partage en fin d'article) ────────────────── */
+
+  var copyButton = document.querySelector('.kb-share-copy');
   if (copyButton && navigator.clipboard) {
+    copyButton.hidden = false;
     copyButton.addEventListener('click', function () {
-      var url = shareBlock.getAttribute('data-share-url') || window.location.href;
-      navigator.clipboard.writeText(url).then(
+      var block = copyButton.closest('[data-share-url]');
+      var url = (block && block.getAttribute('data-share-url')) || window.location.href;
+      copy(url).then(
         function () {
           var original = copyButton.getAttribute('data-copy-label');
           copyButton.textContent = copyButton.getAttribute('data-copied-label');
@@ -66,35 +164,32 @@
             copyButton.classList.remove('is-copied');
           }, 2000);
         },
-        function () {
-          /* Le presse-papiers peut être refusé : on laisse le bouton inchangé. */
-        },
+        function () {},
       );
     });
-  } else if (copyButton) {
-    /* Pas d'API presse-papiers : le bouton n'apporte rien, on le retire. */
-    copyButton.remove();
   }
 
-  /* ── Partage natif (mobile), en complément des liens réseaux ──────────── */
+  /* ── Progression de lecture ───────────────────────────────────────────── */
 
-  if (shareBlock && navigator.share) {
-    var nativeButton = document.createElement('button');
-    nativeButton.type = 'button';
-    nativeButton.className = 'post-share-copy';
-    nativeButton.textContent = shareBlock.getAttribute('data-share-native-label') || 'Partager';
-    nativeButton.setAttribute('aria-label', document.documentElement.lang.indexOf('fr') === 0 ? 'Partager' : 'Share');
-    nativeButton.addEventListener('click', function () {
-      navigator
-        .share({
-          title: shareBlock.getAttribute('data-share-title') || document.title,
-          url: shareBlock.getAttribute('data-share-url') || window.location.href,
-        })
-        .catch(function () {
-          /* Annulation utilisateur : rien à signaler. */
-        });
-    });
-    shareBlock.appendChild(nativeButton);
+  var progress = document.querySelector('[data-kb-progress]');
+  var prose = document.querySelector('.kb-prose');
+  if (progress && prose && !reduceMotion) {
+    var ticking = false;
+    var update = function () {
+      ticking = false;
+      var rect = prose.getBoundingClientRect();
+      var total = rect.height - window.innerHeight * 0.6;
+      var done = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 1;
+      progress.style.transform = 'scaleX(' + done.toFixed(4) + ')';
+    };
+    var request = function () {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(update);
+    };
+    window.addEventListener('scroll', request, { passive: true });
+    window.addEventListener('resize', request);
+    update();
   }
 
   /* ── Recherche ────────────────────────────────────────────────────────── */
@@ -106,11 +201,10 @@
   var results = document.querySelector('[data-search-results]');
   var status = document.querySelector('[data-search-status]');
   var indexUrl = form.getAttribute('data-search-index');
-  var isFrench = document.documentElement.lang.indexOf('fr') === 0;
 
   var strings = isFrench
-    ? { none: 'Aucun article ne correspond à cette recherche.', prompt: 'Tape un mot pour lancer la recherche.', error: 'La recherche est momentanément indisponible.', count: function (n) { return n === 1 ? '1 article trouvé' : n + ' articles trouvés'; } }
-    : { none: 'No article matches this search.', prompt: 'Type a word to start searching.', error: 'Search is temporarily unavailable.', count: function (n) { return n === 1 ? '1 article found' : n + ' articles found'; } };
+    ? { none: 'Aucun article ne correspond à cette recherche.', prompt: 'Tape un mot pour lancer la recherche.', error: 'La recherche est momentanément indisponible.', min: 'min', count: function (n) { return n === 1 ? '1 article trouvé' : n + ' articles trouvés'; } }
+    : { none: 'No article matches this search.', prompt: 'Type a word to start searching.', error: 'Search is temporarily unavailable.', min: 'min', count: function (n) { return n === 1 ? '1 article found' : n + ' articles found'; } };
 
   var data = null;
   var loading = null;
@@ -155,8 +249,8 @@
 
   var fallback = document.querySelector('[data-search-fallback]');
 
+  /** Même balisage que la carte `card()` de scripts/blog/templates.mjs. */
   function render(list) {
-    /* Le bloc de repli n'a de sens que tant qu'aucune recherche n'est lancée. */
     if (fallback) fallback.hidden = true;
     if (list.length === 0) {
       results.innerHTML = '';
@@ -167,17 +261,16 @@
     results.innerHTML = list
       .map(function (item) {
         return (
-          '<article class="post-card">' +
-          '<a class="post-card-media" href="' + escapeHtml(item.u) + '" tabindex="-1" aria-hidden="true">' +
+          '<article class="kb-card">' +
+          '<div class="kb-card-media">' +
           (item.i
             ? '<img src="' + escapeHtml(item.i) + '" alt="" loading="lazy" decoding="async" width="1200" height="630" />'
-            : '<span class="post-card-placeholder"></span>') +
-          '</a>' +
-          '<div class="post-card-body">' +
-          '<span class="post-card-cat">' + escapeHtml(item.c) + '</span>' +
-          '<h3 class="post-card-title"><a href="' + escapeHtml(item.u) + '">' + escapeHtml(item.t) + '</a></h3>' +
-          '<p class="post-card-excerpt">' + escapeHtml(item.d) + '</p>' +
-          '<p class="post-card-meta"><span>' + escapeHtml(item.p) + '</span><span aria-hidden="true">•</span><span>' + escapeHtml(item.r) + '</span></p>' +
+            : '<span class="kb-placeholder"></span>') +
+          '</div>' +
+          '<div class="kb-card-body">' +
+          '<p class="kb-eyebrow">' + escapeHtml(item.c) + '</p>' +
+          '<h2 class="kb-card-title"><a class="kb-stretched" href="' + escapeHtml(item.u) + '">' + escapeHtml(item.t) + '</a></h2>' +
+          '<p class="kb-card-meta"><span>' + escapeHtml(item.p) + '</span><span aria-hidden="true"> · </span><span>' + escapeHtml(item.r) + '</span></p>' +
           '</div></article>'
         );
       })

@@ -24,7 +24,6 @@ export const PATHS = {
   root: ROOT,
   content: path.join(ROOT, 'content', 'blog'),
   styles: path.join(ROOT, 'styles'),
-  appCss: path.join(ROOT, 'src', 'index.css'),
   publicDir: path.join(ROOT, 'public'),
   /** Sortie : le dossier produit par `vite build` */
   dist: path.join(ROOT, 'dist'),
@@ -96,6 +95,26 @@ export const PHOTO_LICENSES = {
       fr: 'Vous pouvez copier, redistribuer et adapter cette photographie à des fins non commerciales, à condition de créditer le photographe.',
       en: 'You may copy, redistribute and adapt this photograph for non-commercial purposes, provided you credit the photographer.',
     },
+  },
+};
+
+/**
+ * Appel à l'action vers l'application — UNE seule source pour tout le blog.
+ *
+ * En-tête, menu mobile, encart d'article et bandeau de bas de page lisent
+ * tous cette valeur. Aujourd'hui, l'app n'est pas encore publiée : le bouton
+ * mène à la page d'accueil du site. Le jour du lancement, il suffira de
+ * changer `href` (et au besoin `label`) ici pour viser les stores.
+ *
+ * Règle : aucun lien App Store, Google Play, TestFlight, Telegram ni liste
+ * d'attente tant que la publication n'est pas faite (contrôlé par
+ * scripts/blog/templates.test.mjs).
+ */
+export const APP_CTA = {
+  href: '/',
+  label: {
+    fr: 'Découvrir Kiro',
+    en: 'Discover Kiro',
   },
 };
 
@@ -204,10 +223,15 @@ export const UI = {
     searchPrompt: 'Tape un mot pour lancer la recherche.',
     searchCount: (n) => (n === 1 ? '1 article trouvé' : `${n} articles trouvés`),
     empty: 'Aucun article publié pour l’instant. Reviens bientôt.',
-    ctaTitle: 'Arrête de swiper. Viens rencontrer.',
-    ctaText:
-      'Kiro, c’est l’app de rencontre qui casse la glace : jeux brise-glace, traduction instantanée (créole inclus) et vraies conversations.',
-    ctaButton: 'Découvrir Kiro',
+    /* Bandeau application : le titre est coupé en deux pour mettre la fin en
+       rouge. Aucune fonction en dormance (traduction, Cercles…) n'y figure. */
+    ctaTitleStart: 'Arrête de swiper.',
+    ctaTitleEnd: 'Viens rencontrer.',
+    ctaText: 'Rencontres par les lieux, jeux brise-glace et rendez-vous planifiés dans le chat.',
+    ctaButton: APP_CTA.label.fr,
+    inlineCtaTitle: 'Sur Kiro, le contexte, ce sont les lieux.',
+    inlineCtaText:
+      'Croise les personnes qui fréquentent les mêmes endroits que toi, brise la glace avec un jeu et planifie le rendez-vous dans le chat.',
     breadcrumbAria: 'Fil d’Ariane',
     paginationAria: 'Pagination',
     featured: 'À la une',
@@ -217,6 +241,27 @@ export const UI = {
     articlesIn: (n) => `Articles classés dans « ${n} »`,
     articlesTagged: (n) => `Articles sur le sujet « ${n} »`,
     articlesBy: (n) => `Articles de ${n}`,
+    /* ── Refonte « Kiro Solid » (2026-10-29) ─────────────────────────────── */
+    heroTitleStart: 'Du match à la',
+    heroTitleEnd: 'vraie rencontre.',
+    heroLead: 'Profil, conversation, premiers rendez-vous — sans filtre, sans recette magique.',
+    brandHome: 'Blog Kiro — accueil',
+    headerTitle: 'Blog Kiro',
+    sectionsNav: 'Rubriques',
+    menu: 'Menu',
+    menuTitle: 'Navigation du blog',
+    backToBlogShort: 'Retour au blog',
+    shareArticle: 'Partager l’article',
+    langShort: 'EN',
+    /* Rédigé en anglais : le lien porte lang="en-CA". */
+    langSwitch: 'Read the blog in English',
+    toc: 'Sommaire',
+    tocSections: (n) => (n === 1 ? 'Sommaire · 1 section' : `Sommaire · ${n} sections`),
+    archivesOf: (y) => `Archives ${y}`,
+    allCategories: 'Tous les articles',
+    helpCenter: 'Centre d’aide',
+    terms: 'Conditions',
+    privacy: 'Confidentialité',
     /* ── Redesign éditorial ─────────────────────────────────────────────── */
     featuredEyebrow: 'À la une',
     latest: 'Derniers articles',
@@ -307,10 +352,13 @@ export const UI = {
     searchPrompt: 'Type a word to start searching.',
     searchCount: (n) => (n === 1 ? '1 article found' : `${n} articles found`),
     empty: 'No article published yet. Check back soon.',
-    ctaTitle: 'Stop swiping. Start meeting.',
-    ctaText:
-      'Kiro is the dating app that breaks the ice: icebreaker games, instant translation (Creole included) and real conversations.',
-    ctaButton: 'Discover Kiro',
+    ctaTitleStart: 'Stop swiping.',
+    ctaTitleEnd: 'Start meeting.',
+    ctaText: 'Meeting through places, icebreaker games and dates planned right in the chat.',
+    ctaButton: APP_CTA.label.en,
+    inlineCtaTitle: 'On Kiro, the context is places.',
+    inlineCtaText:
+      'Cross paths with people who go to the same places you do, break the ice with a game and plan the date right in the chat.',
     breadcrumbAria: 'Breadcrumb',
     paginationAria: 'Pagination',
     featured: 'Featured',
@@ -320,6 +368,26 @@ export const UI = {
     articlesIn: (n) => `Articles in “${n}”`,
     articlesTagged: (n) => `Articles tagged “${n}”`,
     articlesBy: (n) => `Articles by ${n}`,
+    /* ── "Kiro Solid" redesign (2026-10-29) ─────────────────────────────── */
+    heroTitleStart: 'From match to',
+    heroTitleEnd: 'real date.',
+    heroLead: 'Profiles, conversation, first dates — no filters, no magic formulas.',
+    brandHome: 'Kiro Blog — home',
+    headerTitle: 'Kiro Blog',
+    sectionsNav: 'Sections',
+    menu: 'Menu',
+    menuTitle: 'Blog navigation',
+    backToBlogShort: 'Back to the blog',
+    shareArticle: 'Share this article',
+    langShort: 'FR',
+    langSwitch: 'Lire le blog en français',
+    toc: 'Contents',
+    tocSections: (n) => (n === 1 ? 'Contents · 1 section' : `Contents · ${n} sections`),
+    archivesOf: (y) => `Archives ${y}`,
+    allCategories: 'All articles',
+    helpCenter: 'Help centre',
+    terms: 'Terms',
+    privacy: 'Privacy',
     /* ── Editorial redesign ─────────────────────────────────────────────── */
     featuredEyebrow: 'Featured',
     latest: 'Latest articles',

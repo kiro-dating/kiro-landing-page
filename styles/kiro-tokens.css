@@ -1,0 +1,116 @@
+/* Copie à l'identique de 01_FONDATIONS/kiro-solid-tokens.css (paquet
+   Kiro-Refonte-Aide-Blog-2026-10-29, v1.1). Concaténée UNIQUEMENT à la feuille
+   du blog par scripts/build-blog.mjs : la landing (src/index.css) n'est pas
+   concernée. Mettre à jour depuis la source, ne pas diverger localement. */
+
+/* ==========================================================================
+   Kiro Solid — jetons web partagés (centre d'aide + blog)
+   Version : 1.1 — 2026-10-29
+   Source : design system de l'app (briser-la-glace / src/design-system/tokens)
+   Règle : le code de l'app reste la source de vérité. Ces valeurs en dérivent.
+   Usage : centre d'aide -> en tête de assets/css/styles.css ;
+           blog -> bloc réservé au blog (jamais dans src/index.css tant que la
+           landing n'est pas refaite).
+   ========================================================================== */
+
+:root {
+  /* --- Marque ---------------------------------------------------------- */
+  --kiro-red: #F72C25;          /* app red.500 : accents, grands titres, aplats */
+  --kiro-red-action: #D92525;   /* app red.600 : boutons + petit texte rouge (AA) */
+  --kiro-red-soft: #FFF1F1;     /* app red.50 : fonds de pastilles, panneaux doux */
+  --kiro-red-on-dark: #FF4A4A;  /* app red.400 : accent rouge sur fond sombre */
+  --kiro-symbol: #F01C43;       /* couleur du symbole (logo) uniquement */
+
+  /* --- Neutres --------------------------------------------------------- */
+  --kiro-ink: #141414;          /* texte principal, boutons sombres */
+  --kiro-ink-2: #3A3A3C;        /* texte fort secondaire */
+  --kiro-text-2: #5F5F5F;       /* texte secondaire (AA sur blanc) */
+  --kiro-muted: #79797D;        /* métadonnées, mentions */
+  --kiro-page: #FFFFFF;         /* fond de page */
+  --kiro-canvas: #F8F8F6;       /* sections alternées, cartes sur blanc */
+  --kiro-surface-alt: #F1F1EE;  /* puces, champs, placeholders */
+  --kiro-hairline: #ECECEC;     /* bordures de cartes, séparateurs */
+  --kiro-control: #E4E4E7;      /* bordures de contrôles (boutons secondaires) */
+
+  /* --- Sombre (blocs nuit, footer sombre éventuel) --------------------- */
+  --kiro-night: #121212;
+  --kiro-night-2: #141414;
+  --kiro-night-surface: #181818;
+  --kiro-night-border: #252525;
+  --kiro-night-text-2: #A0A0A5;
+
+  /* --- Glace (accent secondaire « Gel ») ------------------------------- */
+  --kiro-ice-soft: #DDF0F7;
+  --kiro-ice: #3FA3C9;
+  --kiro-ice-ink: #2E90B4;
+
+  /* --- Plans (identiques à l'app, pastilles uniquement) ---------------- */
+  --kiro-plan-free: #F01C43;
+  --kiro-plan-standard: #FFC53D;
+  --kiro-plan-premium: #34D399;
+  --kiro-plan-max: #A78BFA;
+
+  /* --- États ----------------------------------------------------------- */
+  --kiro-success: #1A7F37;
+  --kiro-warning: #B8860B;
+  --kiro-danger: #D92D20;
+
+  /* --- Typographie ----------------------------------------------------- */
+  --kiro-font: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Échelle desktop / mobile (taille / interligne / graisse / approche) */
+  --kiro-display: 900 clamp(44px, 6vw, 76px)/1.03 var(--kiro-font);   /* -0.04em */
+  --kiro-h2: 800 clamp(32px, 4vw, 52px)/1.08 var(--kiro-font);        /* -0.035em */
+  --kiro-h3: 800 clamp(20px, 2vw, 24px)/1.25 var(--kiro-font);        /* -0.02em */
+  --kiro-lead: 400 clamp(17px, 1.6vw, 20px)/1.5 var(--kiro-font);
+  --kiro-body: 400 16px/1.55 var(--kiro-font);
+  --kiro-article: 400 18px/1.67 var(--kiro-font);                      /* corps d'article */
+  --kiro-label: 700 15px/1.2 var(--kiro-font);
+  --kiro-eyebrow: 700 12px/1.2 var(--kiro-font);                       /* 0.14em, MAJ */
+  --kiro-tracking-display: -0.04em;
+  --kiro-tracking-h2: -0.035em;
+  --kiro-tracking-h3: -0.02em;
+
+  /* --- Espacements (pas de 4/8) ---------------------------------------- */
+  --kiro-space-1: 4px;  --kiro-space-2: 8px;  --kiro-space-3: 12px;
+  --kiro-space-4: 16px; --kiro-space-5: 20px; --kiro-space-6: 24px;
+  --kiro-space-8: 32px; --kiro-space-10: 40px; --kiro-space-12: 48px;
+  --kiro-space-14: 56px; --kiro-space-18: 72px;
+  --kiro-section-y: clamp(48px, 9vw, 120px);   /* padding vertical des sections */
+  --kiro-gutter: clamp(16px, 3vw, 32px);       /* marge latérale */
+  --kiro-container: 1240px;
+  --kiro-reading: 680px;                       /* largeur de lecture du blog */
+
+  /* --- Rayons ---------------------------------------------------------- */
+  --kiro-radius-chip: 999px;
+  --kiro-radius-badge: 14px;   /* badges stores */
+  --kiro-radius-icon: 16px;    /* tuiles d'icône */
+  --kiro-radius-card: 24px;
+  --kiro-radius-card-lg: 32px;
+  --kiro-radius-block: 40px;   /* grands blocs (téléchargement, photo héros) */
+
+  /* --- Ombres (seulement sous les cartes flottantes et photos) --------- */
+  --kiro-shadow-card: 0 4px 8px rgba(20, 20, 20, 0.06);
+  --kiro-shadow-float: 0 16px 36px rgba(20, 20, 20, 0.14);
+  --kiro-shadow-photo: 0 30px 60px rgba(20, 20, 20, 0.18);
+
+  /* --- Mouvement ------------------------------------------------------- */
+  --kiro-duration-fast: 160ms;
+  --kiro-duration: 220ms;
+  --kiro-duration-slow: 300ms;
+  --kiro-ease: cubic-bezier(0.33, 1, 0.68, 1);
+
+  /* --- Tailles --------------------------------------------------------- */
+  --kiro-touch: 44px;          /* cible tactile minimale */
+  --kiro-btn-h: 56px;          /* bouton principal */
+  --kiro-badge-h: 60px;        /* badge store desktop (54–56px mobile) */
+  --kiro-header-h: 76px;       /* 64px mobile */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -154,6 +154,8 @@ const authorCards = (posts, authors, lang) =>
       key,
       slug: slugify(authors[key]?.slug || key),
       name: decorated.name,
+      /* Personne ou organisation : décide de l'avatar de repli (initiales ou « K »). */
+      type: authors[key]?.type || 'Person',
       jobTitle: decorated.jobTitle,
       bio: decorated.bio,
       avatar: authors[key]?.avatar || null,
@@ -251,25 +253,34 @@ const writePage = (url, html) => write(path.join(url, 'index.html'), html);
 /* ── Feuille de style ───────────────────────────────────────────────────── */
 
 /**
- * La feuille du blog est assemblée à partir de deux sources :
- *   1. le bloc `:root` de `src/index.css` — jetons de design du site (couleurs,
- *      polices). Extrait à la compilation : une seule source de vérité, aucune
- *      dérive possible entre la landing page et le blog.
- *   2. `styles/blog.css` — styles propres au blog.
+ * La feuille du blog est assemblée à partir de deux sources, toutes deux
+ * RÉSERVÉES au blog :
+ *   1. `styles/kiro-tokens.css` — jetons « Kiro Solid » (`--kiro-*`), dérivés
+ *      du design system de l'app ;
+ *   2. `styles/blog.css` — styles propres au blog, qui n'utilisent que ces
+ *      jetons.
+ *
+ * Depuis la refonte du 2026-10-29, le blog ne lit plus le bloc `:root` de
+ * src/index.css : la landing garde ses variables historiques, le blog a les
+ * siennes, et aucune des deux ne peut casser l'autre. Le CSS de la landing
+ * produit par Vite n'est donc jamais concerné par ce script.
  *
  * Le fichier produit porte une empreinte dans son nom : immuable côté CDN.
  */
 const buildStylesheet = () => {
-  const appCss = fs.readFileSync(PATHS.appCss, 'utf8');
-  const rootBlock = appCss.match(/:root\s*\{[\s\S]*?\n\}/);
-  if (!rootBlock) {
-    throw new Error(
-      "impossible d'extraire le bloc :root de src/index.css — les jetons de design du blog seraient incohérents",
-    );
+  const read = (name) => {
+    const file = path.join(PATHS.styles, name);
+    if (!fs.existsSync(file)) {
+      throw new Error(`feuille de style introuvable : styles/${name}`);
+    }
+    return fs.readFileSync(file, 'utf8');
+  };
+  const tokens = read('kiro-tokens.css');
+  if (!/--kiro-red-action\s*:/.test(tokens)) {
+    throw new Error('styles/kiro-tokens.css ne déclare pas les jetons --kiro-* attendus');
   }
-  const blogCss = fs.readFileSync(path.join(PATHS.styles, 'blog.css'), 'utf8');
   const css = `/* Généré par scripts/build-blog.mjs — ne pas éditer.
-   Jetons repris de src/index.css, styles issus de styles/blog.css. */\n${rootBlock[0]}\n\n${blogCss}`;
+   Jetons : styles/kiro-tokens.css · styles : styles/blog.css */\n${tokens}\n\n${read('blog.css')}`;
   const file = `/blog-assets/blog.${shortHash(css)}.css`;
   write(file, css);
   return file;
@@ -490,6 +501,7 @@ const main = () => {
         post,
         related,
         assets,
+        categories,
         alternates,
         otherLangUrl: otherLang ? otherLang.path : null,
         schema: graph([
@@ -553,6 +565,7 @@ const main = () => {
         post,
         related: [],
         assets,
+        categories,
         alternates: [],
         otherLangUrl: null,
         schema: graph([
@@ -738,8 +751,8 @@ const main = () => {
     for (const year of archives) {
       const yearPosts = posts.filter((p) => p.publishedAt.getUTCFullYear() === year.year);
       const yearPages = paginate(yearPosts, PER_PAGE);
-      const monthLinks = `<nav class="archive-siblings" aria-label="${t.archives}">${year.months
-        .map((m) => `<a href="${u.month(year.year, m.month)}">${m.label} <span>${m.count}</span></a>`)
+      const monthLinks = `<nav class="kb-archive-months" aria-label="${t.archives}">${year.months
+        .map((m) => `<a class="kb-chip" href="${u.month(year.year, m.month)}">${m.label}<span class="kb-chip-count">${m.count}</span></a>`)
         .join('')}</nav>`;
 
       yearPages.forEach((pagePosts, i) => {
@@ -799,7 +812,7 @@ const main = () => {
               archives,
               assets,
               activeArchive: `${year.year}-${month.month}`,
-              siblings: `<p class="archive-parent"><a href="${u.year(year.year)}">${t.archiveYear(year.year)}</a></p>`,
+              siblings: `<p class="kb-archive-parent"><a class="kb-link-arrow" href="${u.year(year.year)}">${t.archiveYear(year.year)}</a></p>`,
               schema: graph([
                 organizationNode(),
                 websiteNode(lang),

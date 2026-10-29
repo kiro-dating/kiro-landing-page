@@ -49,11 +49,15 @@ premium-landing-page/
 │       ├── content.mjs            lecture Markdown, validation, rendu
 │       ├── seo.mjs                <head>, Open Graph, Twitter, JSON-LD
 │       ├── templates.mjs          gabarits HTML (index, article, listes…)
+│       ├── inline-cta.mjs         emplacement de l'encart application dans l'article
 │       ├── feeds.mjs              sitemaps, RSS, robots.txt, index de recherche
-│       └── utils.mjs              fonctions pures (slug, dates, pagination…)
+│       ├── utils.mjs              fonctions pures (slug, dates, pagination…)
+│       ├── *.test.mjs             tests du générateur (npm test)
+│       └── vitest.config.mjs      configuration de ces tests
 │
-├── styles/blog.css                styles du blog (concaténés aux jetons du site)
-├── public/blog-assets/blog.js     partage + recherche (amélioration progressive)
+├── styles/kiro-tokens.css         jetons « Kiro Solid » (--kiro-*), réservés au blog
+├── styles/blog.css                styles du blog (n'utilisent que les jetons --kiro-*)
+├── public/blog-assets/blog.js     menu, partage, progression, recherche (amélioration progressive)
 └── docs/
     ├── BLOG.md                    ce fichier
     ├── SEO-STRATEGIE.md           clusters, quick wins, maillage interne
@@ -118,7 +122,7 @@ Le générateur **refuse de construire** et sort en code 1 si :
 - l'auteur n'existe pas dans `authors.json` ;
 - deux articles de la même langue partagent le même slug ;
 - la date de publication est illisible ;
-- le bloc `:root` de `src/index.css` est introuvable.
+- `styles/kiro-tokens.css` ou `styles/blog.css` est introuvable.
 
 Un tag non déclaré produit un **avertissement** (build vert) : le tag est publié
 mais sans libellé traduit. Mieux vaut le déclarer.
@@ -189,29 +193,44 @@ garde-le sous 60 caractères.
 C'est un outil pour les lecteurs, pas du contenu. Elle est également en
 `Disallow` dans `robots.txt`. Toutes les autres pages sont indexables.
 
-## 7. Cohérence visuelle avec le site
+## 7. Identité visuelle « Kiro Solid » (refonte du 29/10/2026)
 
-Le blog **ne duplique pas** les jetons de design. Au build, `build-blog.mjs`
-extrait le bloc `:root { … }` de `src/index.css` et le concatène à
-`styles/blog.css`. Changer une couleur de marque dans `src/index.css` la change
-automatiquement sur le blog au prochain build.
+Le blog a sa **propre** identité, alignée sur l'app (« Kiro Solid »), et ne
+dépend plus des variables de la landing :
 
-L'entête et le pied de page du blog reprennent volontairement le balisage et
-les classes de `TopNav.jsx` / `Footer.jsx` (`.top-nav`, `.site-footer`,
-`.section-inner`, `.card`…). Ils sont réécrits en HTML statique plutôt
-qu'importés en React, parce que ces composants dépendent de `react-i18next`,
-`framer-motion` et de l'état du navigateur — impossible à rendre au build sans
-alourdir considérablement la chaîne.
-
-**Conséquence à connaître** : une refonte visuelle de l'entête ou du pied de
-page du site doit être répercutée dans `scripts/blog/templates.mjs` (fonctions
-`header` et `footer`) et dans `styles/blog.css`. C'est le seul point de
-duplication assumé de l'architecture — il est délibéré, documenté, et limité à
-deux fonctions.
+- `styles/kiro-tokens.css` est une copie à l'identique des jetons de la
+  fondation (`Kiro-Refonte-Aide-Blog-2026-10-29/01_FONDATIONS/kiro-solid-tokens.css`).
+  `build-blog.mjs` le concatène **uniquement** à la feuille du blog, devant
+  `styles/blog.css`. Le bloc `:root` de `src/index.css` n'est plus lu : la
+  landing et le blog peuvent évoluer séparément, et le CSS produit par Vite
+  pour la landing n'est jamais concerné.
+- `styles/blog.css` n'utilise que les jetons `--kiro-*` : surfaces opaques,
+  aucun `backdrop-filter`, aucune ombre hors menu mobile ouvert, Inter
+  seulement, mouvement de 160 ms, rien en boucle.
+- L'en-tête et le pied de page sont ceux du blog (`header`, `footer` dans
+  `templates.mjs`) : ils ne recopient plus `TopNav.jsx` / `Footer.jsx`.
+  Une refonte de la landing n'a donc **plus** à être répercutée ici.
 
 La feuille de style et le script sont écrits avec une **empreinte de contenu**
 dans leur nom (`blog.4o0n1vos0k.css`) : cache immuable côté CDN, invalidation
 automatique dès qu'un octet change.
+
+### Appel à l'action vers l'app — un seul réglage
+
+`APP_CTA` dans `scripts/blog/config.mjs` (`{ href: '/', label: { fr, en } }`)
+alimente le bouton de l'en-tête, celui du menu mobile, l'encart d'article et
+le bandeau. Aujourd'hui il mène à la page d'accueil du site. **Le jour de la
+publication de l'app, il suffit de changer `href`** (et au besoin `label`).
+Les tests interdisent tout lien store, bêta, TestFlight, Telegram ou liste
+d'attente dans l'interface tant que ce n'est pas décidé.
+
+Règle « un seul appel à l'action par article en plus de l'en-tête » :
+`inline-cta.mjs` place un encart juste avant le H2 de premier niveau le plus
+proche de 40 % du texte (jamais dans une liste, une citation, un tableau,
+jamais avant le premier H2, aucune ancre modifiée). Si l'encart trouve sa
+place, le bandeau du bas n'est pas rendu. L'insertion se fait au rendu de la
+page : `post.html` (RSS, index de recherche, garde-fou de liens) n'est pas
+modifié.
 
 ### Auteurs localisés
 
@@ -224,11 +243,17 @@ page auteur, dans le RSS et dans le JSON-LD — sans dupliquer l'auteur.
 
 Deux mécanismes valent d'être connus avant de toucher aux gabarits.
 
-**Navigation mobile.** En dessous de 720 px la barre horizontale est masquée
-(comme sur la landing page). Le blog fournit à la place un menu `<details>`
-natif — aucun JavaScript, fermable au clavier, avec les liens du site, la
-recherche et la version dans l'autre langue. Sans lui, une page d'article
-n'offrirait aucune navigation sur téléphone.
+**Navigation mobile.** Sous 960 px, les rubriques et le bouton « Découvrir
+Kiro » passent dans un menu plein écran : un `<details>` natif (utilisable
+sans JavaScript), que `blog.js` transforme en vrai menu modal — piège du
+focus, Échap qui rend le focus au bouton, défilement de la page bloqué. Sur
+un article, sous 1024 px, l'en-tête devient compact (retour au blog, partage
+via Web Share API ou copie du lien) et porte une barre de progression de
+lecture de 3 px, statique si « Réduire les animations » est actif.
+
+**Sommaire.** Même contenu et mêmes ancres qu'avant ; deux présentations :
+un `<details>` « Sommaire · N sections » sous 1024 px, une colonne collante
+au-delà. Une seule est affichée à la fois.
 
 **Images de couverture.** `.post-cover img` porte `height: auto`. Ce n'est pas
 décoratif : sans cette déclaration, l'attribut HTML `height="630"` l'emporte
@@ -258,8 +283,9 @@ la recherche côté client normalise les insécables avant de comparer.
 ## 8. Performance
 
 - Aucun framework, aucune dépendance chargée côté client.
-- Le seul JavaScript (`blog-assets/blog.<hash>.js`, ~4 ko) est en `defer` et
-  purement optionnel : partage et recherche. Sans lui, tout reste lisible.
+- Le seul JavaScript (`blog-assets/blog.<hash>.js`, ~10 ko non minifié) est en
+  `defer` et purement optionnel : menu modal, partage, progression de lecture
+  et recherche. Sans lui, tout reste lisible et navigable.
 - L'index de recherche (`search-index.json`) n'est téléchargé que sur la page
   de recherche, à la première frappe.
 - Images en `loading="lazy"` + `decoding="async"`, dimensions déclarées pour

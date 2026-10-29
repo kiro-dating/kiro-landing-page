@@ -12,8 +12,9 @@
     "og": "node scripts/media/og-image.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "test": "vitest run && vitest run --config scripts/blog/vitest.config.mjs",
+    "test:watch": "vitest",
+    "test:blog": "vitest run --config scripts/blog/vitest.config.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.104.0",
