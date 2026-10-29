@@ -21,8 +21,11 @@ const strings = (node, prefix = '') =>
    pluriel (-áis, -éis, -ís au présent ; -steis au passé) et impératifs. */
 /* Bornes Unicode explicites : en JavaScript, \b ignore les lettres accentuées
    (« vacíos » contiendrait sinon le pronom « os »). */
-const VOSOTROS =
-  /(?<!\p{L})(vosotr[oa]s|vuestr[oa]s?|os|\p{L}+(?:áis|éis|asteis|isteis)|compartís|descubrid|probad|venid|unid|haced)(?!\p{L})/iu;
+const VOSOTROS_WORDS =
+  /(?<!\p{L})(vosotr[oa]s|vuestr[oa]s?|sois|vais|\p{L}+(?:áis|éis|abais|íais|asteis|isteis)|(?:compart|viv|dec|escrib|eleg|sent|ven|sal|ped|segu|descubr|recib)ís|descubrid|probad|venid|unid|haced|decid|id|mirad|elegid|jugad|empezad)(?!\p{L})/iu;
+/* Le pronom « os » est sensible à la casse : « Android OS » n'est pas du vosotros. */
+const OS_PRONOUN = /(?<!\p{L})[Oo]s(?!\p{L})/u;
+const VOSOTROS = { test: (text) => VOSOTROS_WORDS.test(text) || OS_PRONOUN.test(text) };
 
 describe('Espagnol du site : un seul registre', () => {
   for (const dir of ['es', 'es-MX']) {
@@ -38,6 +41,9 @@ describe('Espagnol du site : un seul registre', () => {
   it('le motif détecte bien le « vosotros » (contrôle négatif)', () => {
     expect(VOSOTROS.test('Descubrid vuestra puntuación')).toBe(true);
     expect(VOSOTROS.test('Kiro os propone')).toBe(true);
+    expect(VOSOTROS.test('Sois libres, vivís y jugabais')).toBe(true);
+    expect(VOSOTROS.test('Android OS')).toBe(false);
+    expect(VOSOTROS.test('Disponible en tu país')).toBe(false);
     expect(VOSOTROS.test('Descubre su puntuación y los rasgos que comparten')).toBe(false);
   });
 });
