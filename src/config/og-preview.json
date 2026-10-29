@@ -1,7 +1,7 @@
 {
   "_doc": "Généré par scripts/media/og-image.mjs — ne pas éditer à la main. `sourceHash` est l’empreinte des sources du site (copie du hero, jetons de design, logotype, glaçons) : s’il ne correspond plus, l’aperçu est périmé.",
-  "image": "/images/og-kiro-d95c2d2536cd.jpg",
-  "sourceHash": "d95c2d2536cd",
+  "image": "/images/og-kiro-7359d70911fc.jpg",
+  "sourceHash": "7359d70911fc",
   "title": "Kiro — Brisez la glace, faites le premier pas",
-  "description": "L'app de rencontre qui casse la glace : jeux, lieux, événements et communautés pour créer de vraies connexions."
+  "description": "L'app de rencontre pour se voir en vrai : lieux en commun, jeux brise-glace, idées de sorties et rendez-vous planifiés dans le chat."
 }

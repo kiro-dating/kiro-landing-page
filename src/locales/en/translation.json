@@ -11,7 +11,7 @@
   "hero": {
     "brand": "Kiro",
     "tagline": "Stop swiping. Start meeting.",
-    "secondary": "The dating app that breaks the ice: games, places, events and communities to build real connections.",
+    "secondary": "The dating app for meeting in real life: shared places, icebreaker games, date ideas and dates planned right in the chat.",
     "cta_test": "Try Kiro",
     "cta_more": "Learn more",
     "scroll": "Discover",
@@ -21,7 +21,7 @@
   "modals": {
     "close": "Close",
     "test_title": "Try Kiro right now",
-    "test_body": "Join the community: beta access, direct chats with the team and the first members.",
+    "test_body": "Join the test group: beta access and direct conversations with the team.",
     "test_button": "Join the Telegram group",
     "beta_title": "Testing Kiro is simple",
     "lang_title": "Choose a language",
@@ -49,20 +49,20 @@
     "point3_title": "Games as icebreakers.",
     "point3_desc": "No more awkward “hey”s. Our built-in mini-games spark attraction, pressure-free.",
     "point4_title": "From screen to reality.",
-    "point4_desc": "Kiro suggests spots, syncs your calendars and plans your real-life date."
+    "point4_desc": "Kiro helps you pick an activity, a place, a day and a time, then add the date to your calendar."
   },
   "games": {
     "eyebrow": "Dynamic interaction",
     "title": "Attraction can't be forced. It's played.",
     "desc": "Blank-page anxiety and ignored “hey”s are a thing of the past. Kiro swaps first-message stress for the thrill of play. Discover our interactive experiences, designed to turn simple curiosity into a real connection.",
-    "game1_title": "Match 5: the spark of common ground",
-    "game1_text": "Five targeted questions to measure your compatibility in real time. Instantly see what brings you together — as a percentage. Answered the exact opposite? Perfect. The algorithm will point it out with a wink: opposites often make the best stories.",
+    "game1_title": "Match Sync: the spark of common ground",
+    "game1_text": "5 dilemmas to measure your compatibility. See your score and the traits you share. Answered the exact opposite? Perfect: opposites often make the best stories.",
     "game2_title": "Truth or Dare,\nzero filter, 100% spontaneous",
     "game2_text": "Why be forgettable when you can be memorable? This reinvented classic is the ultimate weapon for starting a conversation effortlessly. Funny, bold or deep — it's the shortcut to grabbing attention and making interest skyrocket in seconds.",
     "game3_title": "Guess my number: the art of the comeback",
     "game3_text": "Conversation running out of steam? Don't let silence settle in. Launch this quick mental challenge to warm up the mood and spark curiosity. The goal is simple, the effect immediate: you revive the complicity, lighten the air and put fun back at the center.",
-    "game4_title": "Perfect Date: your passport to real life",
-    "game4_text": "The final test before meeting in person. Do you really know the person you're talking to? Prove it. Score at least 70% and the virtual stops here: Kiro takes over and instantly offers to plan your first real date.",
+    "game4_title": "Know me, date me: your passport to real life",
+    "game4_text": "The test before you meet. The other person picks their questions and gives their real answers; you guess them. With a high enough score and if they accept, Kiro offers to plan your first real date.",
     "more": "Read more",
     "less": "Read less",
     "completed": "Completed"
@@ -70,25 +70,25 @@
   "plans": {
     "eyebrow": "Plans",
     "title": "Free to start, more if you want",
-    "desc": "A complete free plan for the essentials of Kiro, and three plans to go further. Prices and offers shown in the app prevail.",
+    "desc": "A free plan for the essentials of Kiro, and three plans to go further. Full benefits, prices and offers are shown in the app.",
     "free_name": "Free",
-    "free_desc": "Discovery, matches, chat and icebreaker games, with daily quotas.",
+    "free_desc": "Discovery, matches, chat and a first icebreaker game, with daily quotas.",
     "standard_name": "Standard",
-    "standard_desc": "More Flames, messages and translations every day, Super Flames and premium challenges.",
+    "standard_desc": "Kiro's first paid plan.",
     "premium_name": "Premium",
-    "premium_desc": "See who liked you, advanced filters, incognito mode and speed dating.",
+    "premium_desc": "Kiro's mid-tier plan.",
     "max_name": "Max",
-    "max_desc": "No limits: maximum quotas, boost included, priority support and exclusive badges.",
+    "max_desc": "Kiro's most complete plan.",
     "popular": "Popular"
   },
   "cta": {
     "title": "Ready to meet differently?",
-    "desc": "The beta is open. Join the community and try Kiro today.",
+    "desc": "The beta is open: join the test group and try Kiro today.",
     "btn_telegram": "Join the Telegram",
     "btn_beta": "Install the beta"
   },
   "footer": {
-    "tagline": "Dating, places and communities.",
+    "tagline": "Dating, places and real-life dates.",
     "col_test": "Try the app",
     "test_telegram": "Telegram group",
     "test_ios": "iOS (TestFlight)",

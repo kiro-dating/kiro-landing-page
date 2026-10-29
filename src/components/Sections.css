@@ -284,7 +284,7 @@
   transform: translateY(-10px) rotate(5deg);
 }
 
-/* Perfect Date : calendrier + barre de 70 % */
+/* Connais-moi, invite-moi : calendrier + barre de 80 % (seuil 4/5) */
 .gi-date {
   display: grid;
   gap: 20px;
@@ -341,7 +341,7 @@
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
 }
 
-/* Rangée de progression : icône + « 70 % Complété » + barre */
+/* Rangée de progression : icône + « 80 % Complété » + barre */
 .date-row {
   display: flex;
   align-items: center;
@@ -389,7 +389,7 @@
 .date-bar i {
   position: absolute;
   inset: 0 auto 0 0;
-  width: 70%;
+  width: 80%;
   border-radius: 999px;
   background: #fff;
 }

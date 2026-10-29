@@ -11,7 +11,7 @@
   "hero": {
     "brand": "Kiro",
     "tagline": "Smetti di swipare. Vieni a incontrarti davvero.",
-    "secondary": "L'app di incontri che rompe il ghiaccio: giochi, luoghi, eventi e community per creare connessioni vere.",
+    "secondary": "L'app di incontri per vedersi davvero: luoghi in comune, giochi rompighiaccio, idee per uscire e appuntamenti pianificati nella chat.",
     "cta_test": "Prova Kiro",
     "cta_more": "Scopri di più",
     "scroll": "Scopri",
@@ -21,7 +21,7 @@
   "modals": {
     "close": "Chiudi",
     "test_title": "Prova Kiro subito",
-    "test_body": "Unisciti alla community: accesso alla beta, scambi diretti con il team e i primi membri.",
+    "test_body": "Unisciti al gruppo di test: accesso alla versione beta e contatto diretto con il team.",
     "test_button": "Unisciti al gruppo Telegram",
     "beta_title": "Provare Kiro è semplice",
     "lang_title": "Scegli una lingua",
@@ -49,20 +49,20 @@
     "point3_title": "Il gioco rompe il ghiaccio.",
     "point3_desc": "Basta «ciao, come va?». I nostri mini-giochi creano attrazione senza pressione.",
     "point4_title": "Dallo schermo alla realtà.",
-    "point4_desc": "Kiro suggerisce luoghi, sincronizza le agende e organizza il vostro vero appuntamento."
+    "point4_desc": "Kiro vi aiuta a scegliere un'attività, un luogo, un giorno e un orario, e poi ad aggiungere l'appuntamento al calendario."
   },
   "games": {
     "eyebrow": "Interazione dinamica",
     "title": "L'attrazione non si forza. Si gioca.",
     "desc": "La sindrome della pagina bianca e i «ciao, come va?» ignorati appartengono al passato. Kiro sostituisce l'ansia del primo messaggio con l'emozione del gioco. Scopri le nostre esperienze interattive, pensate per trasformare una semplice curiosità in una connessione vera.",
-    "game1_title": "Match 5: la scintilla dei punti in comune",
-    "game1_text": "5 domande mirate per misurare la vostra compatibilità in tempo reale. Scopri all'istante, in percentuale, cosa vi avvicina. Avete risposto l'esatto contrario? Perfetto. L'algoritmo ve lo ricorderà con ironia: gli opposti scrivono spesso le storie migliori.",
+    "game1_title": "Match Sync: la scintilla dei punti in comune",
+    "game1_text": "5 dilemmi per misurare la vostra compatibilità. Scoprite il vostro punteggio e i tratti che condividete. Avete risposto l'esatto contrario? Perfetto: gli opposti spesso scrivono le storie migliori.",
     "game2_title": "Obbligo o Verità,\nzero filtri, 100% spontaneo",
     "game2_text": "Perché essere banali quando si può essere memorabili? Questo grande classico reinventato è l'arma segreta per avviare una conversazione senza sforzo. Divertente, audace o profonda: è la scorciatoia definitiva per catturare l'attenzione e far salire l'interesse in pochi secondi.",
     "game3_title": "Indovina il mio numero: l'arte di ravvivare",
     "game3_text": "La conversazione si sta spegnendo? Non lasciare che il silenzio si installi. Lancia questa sfida mentale rapida per scaldare l'atmosfera e stuzzicare la curiosità. L'obiettivo è semplice, l'effetto immediato: risvegli la complicità, alleggerisci l'aria e rimetti il divertimento al centro.",
-    "game4_title": "Perfect Date: il passaporto per la vita reale",
-    "game4_text": "La prova finale prima dell'incontro dal vivo. Conosci davvero la persona con cui stai parlando? Supera il test. Se dimostri di conoscerla con almeno il 70% di risposte esatte, il virtuale finisce qui: Kiro prende il testimone e ti propone subito di organizzare il primo vero appuntamento.",
+    "game4_title": "Know me, date me: il passaporto per la vita reale",
+    "game4_text": "La prova prima dell'incontro. L'altra persona sceglie le sue domande e dà le sue vere risposte; tu devi indovinarle. Con un punteggio sufficiente, e se accetta, Kiro vi propone di pianificare il vostro primo vero appuntamento.",
     "more": "Mostra di più",
     "less": "Mostra meno",
     "completed": "Completato"
@@ -70,25 +70,25 @@
   "plans": {
     "eyebrow": "Abbonamenti",
     "title": "Gratis per iniziare, di più se vuoi",
-    "desc": "Un piano gratuito completo per vivere l'essenziale di Kiro, e tre piani per andare oltre. Fanno fede i prezzi e le offerte mostrati nell'app.",
+    "desc": "Un piano gratuito per l'essenziale di Kiro e tre piani per andare oltre. Vantaggi, prezzi e offerte sono indicati nell'app.",
     "free_name": "Gratis",
-    "free_desc": "Scoperta, match, chat e giochi rompighiaccio, con quote giornaliere.",
+    "free_desc": "Scoperta, match, chat e un primo gioco rompighiaccio, con quote giornaliere.",
     "standard_name": "Standard",
-    "standard_desc": "Più Flame, messaggi e traduzioni ogni giorno, Super Flame e sfide premium.",
+    "standard_desc": "Il primo piano a pagamento di Kiro.",
     "premium_name": "Premium",
-    "premium_desc": "Vedi chi ti ha messo like, filtri avanzati, modalità incognito e speed dating.",
+    "premium_desc": "Il piano intermedio di Kiro.",
     "max_name": "Max",
-    "max_desc": "Senza alcun limite: quote massime, boost incluso, supporto prioritario e badge esclusivi.",
+    "max_desc": "Il piano più completo di Kiro.",
     "popular": "Popolare"
   },
   "cta": {
     "title": "Pronto a incontrare in modo diverso?",
-    "desc": "La beta è aperta. Unisciti alla community e prova Kiro oggi stesso.",
+    "desc": "La beta è aperta: unisciti al gruppo di test e prova Kiro oggi stesso.",
     "btn_telegram": "Unisciti al Telegram",
     "btn_beta": "Installa la beta"
   },
   "footer": {
-    "tagline": "Incontri, luoghi e community.",
+    "tagline": "Incontri, luoghi e appuntamenti dal vivo.",
     "col_test": "Prova l'app",
     "test_telegram": "Gruppo Telegram",
     "test_ios": "iOS (TestFlight)",

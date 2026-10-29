@@ -98,7 +98,7 @@ const GameIllustration = ({ index, completedLabel }) => {
       <div className="date-row">
         <div className="date-cal"><CalendarCheck size={22} /></div>
         <div className="date-meta">
-          <b>70%</b>
+          <b>80%</b>
           <span>{completedLabel}</span>
         </div>
         <div className="date-bar"><i /></div>
