@@ -36,27 +36,15 @@ const FlameIcon = ({ color = '#ffffff' }) => (
   </svg>
 );
 
-const SuperFlameIcon = () => (
-  <svg viewBox="0 0 24 24" aria-hidden="true">
-    <path
-      d="M14.5 4.2c.4 2.3 1.7 3.3 2.8 4.6 1.2 1.3 1.9 2.5 1.9 4 0 2.8-2.2 5-4.7 5s-4.7-2.2-4.7-5c0-1.9 1.1-3.3 2.2-4.4-.1 1.4.5 2.2 1.4 2.6-.4-2.1.2-5 1.1-6.8Z"
-      fill="#ee5b35"
-    />
-    <g stroke="#ee5b35" strokeWidth="1.9" strokeLinecap="round">
-      <path d="M3.4 9.8h3.4" />
-      <path d="M2.6 13.4h4.4" />
-      <path d="M4.2 17h3.2" />
-    </g>
-  </svg>
-);
-
 /* ── Boutons d'action flottants, cliquables, animés ── */
 
 const ACTIONS = [
+/* La Super Flame (Boost) n'est pas disponible dans la version de lancement
+   (src/config/productClaims.json, « boost-super-flame ») : la maquette ne
+   montre que les actions réelles, la Flamme au centre. */
   { key: 'rewind', Icon: RewindIcon, className: 'act-rewind', anim: 'anim-spin', label: 'Photo précédente' },
-  { key: 'freeze', Icon: FreezeIcon, className: 'act-freeze', anim: 'anim-shake', label: 'Geler' },
   { key: 'flame', Icon: FlameIcon, className: 'act-flame', anim: 'anim-pop', label: 'Photo suivante' },
-  { key: 'super', Icon: SuperFlameIcon, className: 'act-super', anim: 'anim-fly', label: 'Super Flame' },
+  { key: 'freeze', Icon: FreezeIcon, className: 'act-freeze', anim: 'anim-shake', label: 'Geler' },
 ];
 
 /* ── Photos utilisateurs affichées dans l'écran du téléphone ──
@@ -78,7 +66,7 @@ const STACK_CARDS = PROFILE_PICS.map((src, i) => (
 ));
 
 export const PhoneShowcase = () => {
-  const [bursts, setBursts] = useState({ rewind: 0, freeze: 0, flame: 0, super: 0 });
+  const [bursts, setBursts] = useState({ rewind: 0, freeze: 0, flame: 0 });
   const stackApi = useRef(null);
 
   const fire = (key) => {

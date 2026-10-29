@@ -1,5 +1,5 @@
 {
-  "_doc": "Registre des fonctionnalités que le contenu public (métadonnées, copie du site, articles) ne doit PAS promettre tant qu'elles ne sont pas disponibles dans la version publiée de l'app. Lu par src/utils/__tests__/seo.test.js. Quand une fonctionnalité revient, après validation produit (Kiro Project Guardian), passer son `status` à \"available\" et mettre à jour `evidence` et `reviewedAt` : le test cesse alors de la bloquer, sans autre modification. Statuts : available | dormant | broken | abandoned | unverified.",
+  "_doc": "Registre des fonctionnalités que le contenu public (métadonnées, copie du site, articles) ne doit PAS promettre tant qu'elles ne sont pas disponibles dans la version publiée de l'app. Lu par src/utils/__tests__/seo.test.js. Quand une fonctionnalité revient, après validation produit (Kiro Project Guardian), passer son `status` à \"available\" et mettre à jour `evidence` et `reviewedAt` : le test cesse alors de la bloquer, sans autre modification. Périmètres : meta | locales | blog | components (chaînes visibles des composants React). Statuts : available | dormant | broken | abandoned | unverified.",
   "reviewedAt": "2026-10-29",
   "claims": [
     {
@@ -28,7 +28,8 @@
       "evidence": "featureFlags.influencersEnabled = false ; décision produit du 2026-10-28 (Guardian §4)",
       "scopes": [
         "meta",
-        "locales"
+        "locales",
+        "components"
       ],
       "patterns": [
         "\\bcercles?\\b",
@@ -50,7 +51,8 @@
       "evidence": "Guardian §4 — KiroSocial en pause",
       "scopes": [
         "meta",
-        "locales"
+        "locales",
+        "components"
       ],
       "patterns": [
         "influenceu(r|se)s?",
@@ -66,7 +68,8 @@
       "evidence": "audits/REPORT_REGISTRY.md — SUPA-VERIF du 2026-10-29 : backend absent (P1)",
       "scopes": [
         "meta",
-        "locales"
+        "locales",
+        "components"
       ],
       "patterns": [
         "super ?flames?",
@@ -80,7 +83,8 @@
       "evidence": "uniquement dans src/features/circles (release/android-rc1)",
       "scopes": [
         "meta",
-        "locales"
+        "locales",
+        "components"
       ],
       "patterns": [
         "speed ?dating"
@@ -93,7 +97,8 @@
       "evidence": "add-on IAP kiro_addon_incognito_monthly + UI dans CommunityHubScreen/PlaceDetailScreen ; aucun réglage de profil confirmé",
       "scopes": [
         "meta",
-        "locales"
+        "locales",
+        "components"
       ],
       "patterns": [
         "incogn",
@@ -108,7 +113,8 @@
       "evidence": "vérification par selfie présente seulement dans CommunityHubScreen (Cercles)",
       "scopes": [
         "meta",
-        "locales"
+        "locales",
+        "components"
       ],
       "patterns": [
         "profils? vérifiés?",
@@ -142,7 +148,8 @@
       "scopes": [
         "meta",
         "locales",
-        "blog"
+        "blog",
+        "components"
       ],
       "patterns": [
         "code SMS",
@@ -161,7 +168,8 @@
       "scopes": [
         "meta",
         "locales",
-        "blog"
+        "blog",
+        "components"
       ],
       "patterns": [
         "vente de billets",
@@ -178,7 +186,8 @@
       "evidence": "remplacé par « Connais-moi, invite-moi » (décision du 2026-10-24)",
       "scopes": [
         "meta",
-        "locales"
+        "locales",
+        "components"
       ],
       "patterns": [
         "perfect date"

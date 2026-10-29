@@ -25,7 +25,7 @@ const registry = JSON.parse(read('src/config/productClaims.json'));
 const indexHtml = read('index.html');
 
 const STATUSES = ['available', 'dormant', 'broken', 'abandoned', 'unverified'];
-const SCOPES = ['meta', 'locales', 'blog'];
+const SCOPES = ['meta', 'locales', 'blog', 'components'];
 
 /** Revendications interdites pour un périmètre donné (statut ≠ available). */
 const blocked = (scope, reg = registry) =>
@@ -141,4 +141,28 @@ describe('Articles publiés du blog', () => {
       expect(hits).toEqual([]);
     });
   }
+});
+
+describe('Composants React (texte visible et libellés d’accessibilité)', () => {
+  /* Seules les chaînes littérales sont lues — libellés, aria-label, alt, texte
+     JSX —, pas les identifiants ni les classes CSS (« translateY »…). La
+     maquette du téléphone a ainsi affiché « Super Flame » alors que le Boost
+     n’existe pas dans la version de lancement. */
+  const dir = path.join(ROOT, 'src/components');
+  const literals = (source) => [
+    ...[...source.matchAll(/'([^'\n]*)'|"([^"\n]*)"/g)].map((m) => m[1] ?? m[2]),
+    ...[...source.matchAll(/>([^<>{}]+)</g)].map((m) => m[1]),
+  ];
+  for (const file of fs.readdirSync(dir).filter((f) => f.endsWith('.jsx'))) {
+    it(`${file} : aucune fonctionnalité indisponible montrée`, () => {
+      const found = literals(fs.readFileSync(path.join(dir, file), 'utf8'))
+        .map((text) => ({ text, o: offenses(text, 'components') }))
+        .filter((x) => x.o.length);
+      expect(found, JSON.stringify(found, null, 1)).toEqual([]);
+    });
+  }
+
+  it('détecte bien un libellé interdit (contrôle négatif)', () => {
+    expect(offenses('Super Flame', 'components').map((o) => o.id)).toContain('boost-super-flame');
+  });
 });
