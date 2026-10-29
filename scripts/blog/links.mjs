@@ -25,6 +25,9 @@
 
 import { LANG_CODES, LANGS } from './config.mjs';
 
+/** Extensions de fichiers servis tels quels (jamais des pages). */
+const FILE_EXTENSION = /\.(?:xml|json|txt|css|js|mjs|map|png|jpe?g|webp|avif|gif|svg|ico|pdf|woff2?)$/i;
+
 /** Préfixes d'URL contrôlés (« /blog », « /en/blog »…). */
 const blogPrefixes = () => LANG_CODES.map((code) => LANGS[code].base);
 
@@ -82,20 +85,31 @@ export const assertNoBrokenInternalLinks = (byLang, generatedUrls) => {
  */
 export const findBrokenGeneratedLinks = (pages, existingUrls, siteUrl) => {
   const prefixes = blogPrefixes();
-  const origin = siteUrl.replace(/\/+$/, '');
-  const escaped = origin.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const absolute = new RegExp(`"${escaped}(/[^"#?]*)`, 'g');
+  const host = new URL(siteUrl).host.replace(/^www\./, '');
+  const escapedHost = host.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  /* Origine absolue du site, avec ou sans « www. », en http ou https, et
+     avec des barres éventuellement échappées (« \/ ») dans le JSON. */
+  const absolute = new RegExp(`https?:(?:\\\\?/){2}(?:www\\.)?${escapedHost}((?:\\\\?/[^"'\\s#?<>]*)*)`, 'g');
+  const relative = /(?:href|src|content)=["'](\/[^"'#?]*)/g;
+  const decode = (raw) => {
+    try {
+      return decodeURIComponent(raw.replace(/\\\//g, '/'));
+    } catch {
+      return raw;
+    }
+  };
   const broken = new Set();
 
   for (const { file, html } of pages) {
     const paths = [
-      ...[...html.matchAll(/href="(\/[^"#?]*)/g)].map((m) => m[1]),
+      ...[...html.matchAll(relative)].map((m) => m[1]),
       ...[...html.matchAll(absolute)].map((m) => m[1]),
-    ];
+    ].map(decode);
     for (const raw of paths) {
       if (!prefixes.some((prefix) => raw === prefix || raw.startsWith(`${prefix}/`))) continue;
-      /* Fichiers (flux RSS, index de recherche, feuilles de style) : hors périmètre. */
-      if (/\.[a-z0-9]+$/i.test(raw)) continue;
+      /* Fichiers (flux RSS, index de recherche, images…) : hors périmètre.
+         Liste fermée d'extensions : un slug contenant un point reste contrôlé. */
+      if (FILE_EXTENSION.test(raw)) continue;
       const url = raw.endsWith('/') ? raw : `${raw}/`;
       if (!existingUrls.has(url)) broken.add(`${file} → ${raw}`);
     }

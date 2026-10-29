@@ -293,6 +293,14 @@ const main = () => {
     );
   }
 
+  /* Les pages du blog sont entièrement produites par ce script : on repart
+     d'un dossier vide, sinon une page périmée (article retiré, ancien slug)
+     survivrait à un « npm run blog:build » isolé et passerait pour existante
+     aux yeux du garde-fou anti-lien-mort. */
+  for (const code of LANG_CODES) {
+    fs.rmSync(path.join(PATHS.dist, LANGS[code].base.replace(/^\/+/, '')), { recursive: true, force: true });
+  }
+
   const taxonomy = loadTaxonomy();
   const authors = loadAuthors();
   /* Registre des photographies, résolu une fois PAR LANGUE : les légendes et

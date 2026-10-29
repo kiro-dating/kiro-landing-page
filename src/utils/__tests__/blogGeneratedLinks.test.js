@@ -3,7 +3,7 @@
  *
  * Régression visée : sur /en/blog/photo-credits/, le crédit des photos d'un
  * auteur qui ne publie qu'en français pointait vers /en/blog/author/<slug>/,
- * une page jamais générée (8 liens morts, dont `mainEntityOfPage` en JSON-LD).
+ * une page jamais générée (6 liens, plus `mainEntityOfPage` en JSON-LD).
  */
 import { describe, expect, it } from 'vitest';
 
@@ -36,4 +36,20 @@ describe('findBrokenGeneratedLinks', () => {
       '<a href="/en/blog/#top">t</a><link href="/blog/rss.xml"><a href="/blog-assets/blog.abc.css">c</a>';
     expect(findBrokenGeneratedLinks(page(html), existing, SITE)).toEqual([]);
   });
+
+  it('lit aussi les apostrophes, www., http:// et les barres échappées du JSON', () => {
+    const variants = [
+      "<a href='/en/blog/author/pierre/'>P</a>",
+      '{"url":"https://www.kirodating.com/en/blog/author/pierre/"}',
+      '{"url":"http://kirodating.com/en/blog/author/pierre/"}',
+      '{"url":"https:\\/\\/kirodating.com\\/en\\/blog\\/author\\/pierre\\/"}',
+    ];
+    for (const html of variants) expect(findBrokenGeneratedLinks(page(html), existing, SITE), html).toHaveLength(1);
+  });
+
+  it('décode les chemins encodés et contrôle les slugs contenant un point', () => {
+    expect(findBrokenGeneratedLinks(page('<a href="/blog/auteur/pi%65rre/">P</a>'), existing, SITE)).toEqual([]);
+    expect(findBrokenGeneratedLinks(page('<a href="/blog/v1.2/">v</a>'), existing, SITE)).toHaveLength(1);
+  });
 });
+
