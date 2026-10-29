@@ -41,10 +41,10 @@ const FlameIcon = ({ color = '#ffffff' }) => (
 const ACTIONS = [
 /* La Super Flame (Boost) n'est pas disponible dans la version de lancement
    (src/config/productClaims.json, « boost-super-flame ») : la maquette ne
-   montre que les actions réelles, la Flamme au centre. */
+   montre que les actions réelles, dans l'ordre de l'app (DiscoverScreen). */
   { key: 'rewind', Icon: RewindIcon, className: 'act-rewind', anim: 'anim-spin', label: 'Photo précédente' },
-  { key: 'flame', Icon: FlameIcon, className: 'act-flame', anim: 'anim-pop', label: 'Photo suivante' },
   { key: 'freeze', Icon: FreezeIcon, className: 'act-freeze', anim: 'anim-shake', label: 'Geler' },
+  { key: 'flame', Icon: FlameIcon, className: 'act-flame', anim: 'anim-pop', label: 'Photo suivante' },
 ];
 
 /* ── Photos utilisateurs affichées dans l'écran du téléphone ──

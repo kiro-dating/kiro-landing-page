@@ -144,8 +144,10 @@ describe('Articles publiés du blog', () => {
 });
 
 describe('Composants React (texte visible et libellés d’accessibilité)', () => {
-  /* Seules les chaînes littérales sont lues — libellés, aria-label, alt, texte
-     JSX —, pas les identifiants ni les classes CSS (« translateY »…). La
+  /* Lit les chaînes entre guillemets ou apostrophes (libellés, aria-label,
+     alt, mais aussi className) et le texte JSX, pas les identifiants ni les
+     template literals ; d'où un périmètre réservé aux motifs sans risque de
+     confusion avec une classe CSS (« s-translate »). La
      maquette du téléphone a ainsi affiché « Super Flame » alors que le Boost
      n’existe pas dans la version de lancement. */
   const dir = path.join(ROOT, 'src/components');
