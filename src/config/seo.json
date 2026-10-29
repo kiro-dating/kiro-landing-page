@@ -1,0 +1,5 @@
+{
+  "_doc": "Titre et description de RÉSULTAT DE RECHERCHE de la page d’accueil (balises <title> et meta description). Rédigés à la main, distincts de l’aperçu de partage (og-preview.json, généré depuis le hero). Ne décrire que des fonctionnalités vérifiées dans la version de lancement — voir le test seo.test.js.",
+  "title": "Kiro Dating : rencontres en personne à Montréal",
+  "description": "Kiro, l'app de rencontre pour se voir en vrai à Montréal : rencontres par les lieux, jeux brise-glace et rendez-vous planifiés dans le chat."
+}

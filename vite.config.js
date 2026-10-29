@@ -3,6 +3,7 @@ import path from 'node:path'
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import { readOgPreview } from './scripts/og-preview.mjs'
+import { graph, jsonLd, organizationNode, websiteNode } from './scripts/blog/seo.mjs'
 
 /**
  * Sert les pages statiques du blog pendant `npm run dev`.
@@ -88,6 +89,17 @@ export default defineConfig(({ mode }) => {
      « Arrête de swiper » et affichait un domaine qui n'est pas le nôtre. */
   const preview = readOgPreview(process.cwd())
 
+  /* Titre et description de résultat de recherche (rédigés à la main, voir
+     src/config/seo.json). Échappés : ils finissent dans des attributs HTML. */
+  const seo = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), 'src/config/seo.json'), 'utf8'))
+  for (const key of ['title', 'description']) {
+    if (typeof seo[key] !== 'string' || !seo[key].trim()) {
+      throw new Error(`src/config/seo.json : « ${key} » est absent ou vide.`)
+    }
+  }
+  const escapeAttr = (value) =>
+    String(value).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+
   return {
     plugins: [
       react(),
@@ -102,6 +114,11 @@ export default defineConfig(({ mode }) => {
           handler: (html) =>
             Object.entries({
               '%VITE_SITE_URL%': siteUrl,
+              '%KIRO_SEO_TITLE%': escapeAttr(seo.title),
+              '%KIRO_SEO_DESCRIPTION%': escapeAttr(seo.description),
+              /* Même Organization/WebSite que les pages du blog : aucun
+                 conflit d'@id entre l'accueil et le blog. */
+              '%KIRO_JSON_LD%': jsonLd(graph([organizationNode(), websiteNode('fr')])),
               '%KIRO_TITLE%': preview.title,
               '%KIRO_OG_DESCRIPTION%': preview.description,
               '%KIRO_OG_IMAGE%': preview.image,
