@@ -66,3 +66,49 @@ export const assertNoBrokenInternalLinks = (byLang, generatedUrls) => {
       "  Une référence vers un article à venir doit rester du texte, pas un lien.",
   );
 };
+
+/**
+ * Même garde-fou, étendu aux pages GÉNÉRÉES (index, auteurs, crédits photo,
+ * catégories…) et aux URL de blog citées dans leur JSON-LD.
+ *
+ * Le contrôle des seuls articles avait laissé passer, sur /en/blog/photo-credits/,
+ * des liens vers une page d'auteur anglaise qui n'existait pas (l'auteur ne
+ * publiait qu'en français) — et le même lien mort dans `mainEntityOfPage`.
+ *
+ * @param {Array<{file: string, html: string}>} pages  pages écrites par le build
+ * @param {Set<string>} existingUrls  URLs qui ont réellement un index.html
+ * @param {string} siteUrl  origine absolue du site, sans barre finale
+ * @returns {string[]} descriptions « fichier → URL » des liens fautifs
+ */
+export const findBrokenGeneratedLinks = (pages, existingUrls, siteUrl) => {
+  const prefixes = blogPrefixes();
+  const origin = siteUrl.replace(/\/+$/, '');
+  const escaped = origin.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const absolute = new RegExp(`"${escaped}(/[^"#?]*)`, 'g');
+  const broken = new Set();
+
+  for (const { file, html } of pages) {
+    const paths = [
+      ...[...html.matchAll(/href="(\/[^"#?]*)/g)].map((m) => m[1]),
+      ...[...html.matchAll(absolute)].map((m) => m[1]),
+    ];
+    for (const raw of paths) {
+      if (!prefixes.some((prefix) => raw === prefix || raw.startsWith(`${prefix}/`))) continue;
+      /* Fichiers (flux RSS, index de recherche, feuilles de style) : hors périmètre. */
+      if (/\.[a-z0-9]+$/i.test(raw)) continue;
+      const url = raw.endsWith('/') ? raw : `${raw}/`;
+      if (!existingUrls.has(url)) broken.add(`${file} → ${raw}`);
+    }
+  }
+
+  return [...broken];
+};
+
+/** Fait échouer le build dès qu'une page générée cite une page de blog absente. */
+export const assertNoBrokenGeneratedLinks = (pages, existingUrls, siteUrl) => {
+  const broken = findBrokenGeneratedLinks(pages, existingUrls, siteUrl);
+  if (broken.length === 0) return;
+  throw new Error(
+    `${broken.length} lien(s) de pages générées pointent vers une page de blog inexistante :\n    · ${broken.join('\n    · ')}`,
+  );
+};
