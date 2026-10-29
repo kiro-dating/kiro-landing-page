@@ -1,0 +1,188 @@
+{
+  "_doc": "Registre des fonctionnalités que le contenu public (métadonnées, copie du site, articles) ne doit PAS promettre tant qu'elles ne sont pas disponibles dans la version publiée de l'app. Lu par src/utils/__tests__/seo.test.js. Quand une fonctionnalité revient, après validation produit (Kiro Project Guardian), passer son `status` à \"available\" et mettre à jour `evidence` et `reviewedAt` : le test cesse alors de la bloquer, sans autre modification. Statuts : available | dormant | broken | abandoned | unverified.",
+  "reviewedAt": "2026-10-29",
+  "claims": [
+    {
+      "id": "message-translation",
+      "label": "Traduction des messages",
+      "status": "dormant",
+      "evidence": "kiro-mobile docs/DORMANT_translation.md — entitlement chat_translation désactivé sur tous les plans",
+      "scopes": [
+        "meta",
+        "locales",
+        "blog"
+      ],
+      "patterns": [
+        "traduction instantanée",
+        "instant translation",
+        "tradu(c|ç|ct|ir|z)",
+        "translat",
+        "tradiksyon",
+        "übersetz"
+      ]
+    },
+    {
+      "id": "circles-communities",
+      "label": "Cercles et communautés",
+      "status": "abandoned",
+      "evidence": "featureFlags.influencersEnabled = false ; décision produit du 2026-10-28 (Guardian §4)",
+      "scopes": [
+        "meta",
+        "locales"
+      ],
+      "patterns": [
+        "\\bcercles?\\b",
+        "\\bcircles?\\b",
+        "círculos?",
+        "communautés",
+        "communities",
+        "comunidades",
+        "comunidade",
+        "comunità",
+        "kominote",
+        "gemeinschaften"
+      ]
+    },
+    {
+      "id": "influencers",
+      "label": "Influenceurs et créateurs",
+      "status": "abandoned",
+      "evidence": "Guardian §4 — KiroSocial en pause",
+      "scopes": [
+        "meta",
+        "locales"
+      ],
+      "patterns": [
+        "influenceu(r|se)s?",
+        "influencers?",
+        "influencer(a|o)s?",
+        "enfliyansè"
+      ]
+    },
+    {
+      "id": "boost-super-flame",
+      "label": "Boost / Super Flame",
+      "status": "broken",
+      "evidence": "audits/REPORT_REGISTRY.md — SUPA-VERIF du 2026-10-29 : backend absent (P1)",
+      "scopes": [
+        "meta",
+        "locales"
+      ],
+      "patterns": [
+        "super ?flames?",
+        "\\bboosts?\\b"
+      ]
+    },
+    {
+      "id": "speed-dating",
+      "label": "Speed dating dans l'app",
+      "status": "abandoned",
+      "evidence": "uniquement dans src/features/circles (release/android-rc1)",
+      "scopes": [
+        "meta",
+        "locales"
+      ],
+      "patterns": [
+        "speed ?dating"
+      ]
+    },
+    {
+      "id": "incognito",
+      "label": "Mode incognito",
+      "status": "unverified",
+      "evidence": "add-on IAP kiro_addon_incognito_monthly + UI dans CommunityHubScreen/PlaceDetailScreen ; aucun réglage de profil confirmé",
+      "scopes": [
+        "meta",
+        "locales"
+      ],
+      "patterns": [
+        "incogn",
+        "enkognito",
+        "inkognito"
+      ]
+    },
+    {
+      "id": "profile-verification",
+      "label": "Vérification de profil / badge vérifié",
+      "status": "abandoned",
+      "evidence": "vérification par selfie présente seulement dans CommunityHubScreen (Cercles)",
+      "scopes": [
+        "meta",
+        "locales"
+      ],
+      "patterns": [
+        "profils? vérifiés?",
+        "badge vérifié",
+        "vérification (par selfie|de profil)",
+        "verified (profiles?|badge|communities)",
+        "perfil(es)? verificados?",
+        "pwofil verifye"
+      ]
+    },
+    {
+      "id": "beta-waitlist",
+      "label": "Liste d'attente « réserve ta place »",
+      "status": "abandoned",
+      "evidence": "décision du 2026-10-26 : fin de la phase bêta du site",
+      "scopes": [
+        "meta"
+      ],
+      "patterns": [
+        "réserve ta place",
+        "reserve your spot",
+        "waitlist",
+        "liste d'attente"
+      ]
+    },
+    {
+      "id": "sms-login",
+      "label": "Connexion par code SMS",
+      "status": "abandoned",
+      "evidence": "Guardian §4 — parcours téléphone/OTP (Twilio) retiré ; LoginScreen.tsx : Google, Apple sur iOS",
+      "scopes": [
+        "meta",
+        "locales",
+        "blog"
+      ],
+      "patterns": [
+        "code SMS",
+        "SMS code",
+        "par SMS",
+        "by SMS",
+        "connexion par téléphone",
+        "phone login"
+      ]
+    },
+    {
+      "id": "ticket-sales",
+      "label": "Vente de billets dans l'app",
+      "status": "abandoned",
+      "evidence": "EventSheetBody.tsx : simple lien externe event.url",
+      "scopes": [
+        "meta",
+        "locales",
+        "blog"
+      ],
+      "patterns": [
+        "vente de billets",
+        "acheter (des|vos|tes) billets",
+        "buy tickets",
+        "sell tickets",
+        "comprar (boletos|entradas)"
+      ]
+    },
+    {
+      "id": "perfect-date-70",
+      "label": "Ancien jeu « Perfect Date » (70 %)",
+      "status": "abandoned",
+      "evidence": "remplacé par « Connais-moi, invite-moi » (décision du 2026-10-24)",
+      "scopes": [
+        "meta",
+        "locales"
+      ],
+      "patterns": [
+        "perfect date"
+      ]
+    }
+  ]
+}
