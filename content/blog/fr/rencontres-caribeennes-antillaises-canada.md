@@ -20,7 +20,7 @@ description: 'Antillais, caribéen, haïtien : ce n’est pas la même chose. O�
 excerpt: 'Vouloir rencontrer quelqu’un qui comprend ta culture sans avoir à tout expliquer, ce n’est pas se replier — c’est chercher un point de départ. Voici ce qui existe aujourd’hui au Canada, ce qui manque, et comment s’y prendre sans réduire personne à son origine.'
 
 publishedAt: '2026-08-08'
-updatedAt: '2026-08-08'
+updatedAt: '2026-10-29'
 
 category: 'diaspora'
 author: 'pierre-handy-charles'
@@ -210,7 +210,7 @@ Précision nécessaire, parce que la confusion existe : **l'île Maurice ne fait
 
 Une chose à dire clairement avant tout le reste : **Kiro n'est pas une application ethnique.** Elle est ouverte à tout le monde, elle ne réserve rien à une communauté, et elle ne peut promettre à personne de rencontrer quelqu'un d'une origine donnée. Ce qu'elle essaie de faire est différent — donner à chacun les moyens de dire ce qui compte, au lieu de le laisser espérer que l'algorithme devine.
 
-L'**onboarding** demande ce que tu cherches, plutôt que de l'inférer de ton comportement. Le **test de personnalité**, appuyé sur le modèle Big Five, sert à situer quelques traits stables — pas à prédire une relation, aucun questionnaire ne sait faire ça. La **biographie assistée** aide à écrire ce qu'on a du mal à formuler, ce qui est plus utile qu'on ne le pense quand on hésite entre trop en dire et rien dire du tout. Les **lieux** permettent de partir de ce qu'on aime faire, ce qui est souvent une meilleure entrée en matière qu'une liste de critères. L'**indicateur d'affinité** montre sur quoi deux personnes se rejoignent, plutôt qu'un pourcentage opaque. Les **jeux de conversation** existent parce que le vrai obstacle est rarement le premier message : c'est le troisième. Et la **traduction instantanée**, créole inclus, existe parce que la langue ne devrait pas décider à ta place qui tu peux rencontrer.
+L'**onboarding** demande ce que tu cherches, plutôt que de l'inférer de ton comportement. Le **test de personnalité**, appuyé sur le modèle Big Five, sert à situer quelques traits stables — pas à prédire une relation, aucun questionnaire ne sait faire ça. La **biographie assistée** aide à écrire ce qu'on a du mal à formuler, ce qui est plus utile qu'on ne le pense quand on hésite entre trop en dire et rien dire du tout. Les **lieux** permettent de partir de ce qu'on aime faire, ce qui est souvent une meilleure entrée en matière qu'une liste de critères. L'**indicateur d'affinité** montre sur quoi deux personnes se rejoignent, plutôt qu'un pourcentage opaque. Les **jeux de conversation** existent parce que le vrai obstacle est rarement le premier message : c'est le troisième. Et quand l'échange prend, la **planification intégrée** aide à passer du chat à un vrai rendez-vous : une activité, un lieu choisi à deux, un jour et une heure.
 
 ## Une première rencontre qui se passe bien
 

@@ -25,6 +25,9 @@
 
 import { LANG_CODES, LANGS } from './config.mjs';
 
+/** Extensions de fichiers servis tels quels (jamais des pages). */
+const FILE_EXTENSION = /\.(?:xml|json|txt|css|js|mjs|map|png|jpe?g|webp|avif|gif|svg|ico|pdf|woff2?)$/i;
+
 /** Préfixes d'URL contrôlés (« /blog », « /en/blog »…). */
 const blogPrefixes = () => LANG_CODES.map((code) => LANGS[code].base);
 
@@ -64,5 +67,62 @@ export const assertNoBrokenInternalLinks = (byLang, generatedUrls) => {
   throw new Error(
     `${broken.length} lien(s) interne(s) pointent vers une page inexistante :\n    · ${broken.join('\n    · ')}\n` +
       "  Une référence vers un article à venir doit rester du texte, pas un lien.",
+  );
+};
+
+/**
+ * Même garde-fou, étendu aux pages GÉNÉRÉES (index, auteurs, crédits photo,
+ * catégories…) et aux URL de blog citées dans leur JSON-LD.
+ *
+ * Le contrôle des seuls articles avait laissé passer, sur /en/blog/photo-credits/,
+ * des liens vers une page d'auteur anglaise qui n'existait pas (l'auteur ne
+ * publiait qu'en français) — et le même lien mort dans `mainEntityOfPage`.
+ *
+ * @param {Array<{file: string, html: string}>} pages  pages écrites par le build
+ * @param {Set<string>} existingUrls  URLs qui ont réellement un index.html
+ * @param {string} siteUrl  origine absolue du site, sans barre finale
+ * @returns {string[]} descriptions « fichier → URL » des liens fautifs
+ */
+export const findBrokenGeneratedLinks = (pages, existingUrls, siteUrl) => {
+  const prefixes = blogPrefixes();
+  const host = new URL(siteUrl).host.replace(/^www\./, '');
+  const escapedHost = host.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  /* Origine absolue du site, avec ou sans « www. », en http ou https, et
+     avec des barres éventuellement échappées (« \/ ») dans le JSON. */
+  const absolute = new RegExp(`https?:(?:\\\\?/){2}(?:www\\.)?${escapedHost}((?:\\\\?/[^"'\\s#?<>]*)*)`, 'g');
+  const relative = /(?:href|src|content)=["'](\/[^"'#?]*)/g;
+  const decode = (raw) => {
+    try {
+      return decodeURIComponent(raw.replace(/\\\//g, '/'));
+    } catch {
+      return raw;
+    }
+  };
+  const broken = new Set();
+
+  for (const { file, html } of pages) {
+    const paths = [
+      ...[...html.matchAll(relative)].map((m) => m[1]),
+      ...[...html.matchAll(absolute)].map((m) => m[1]),
+    ].map(decode);
+    for (const raw of paths) {
+      if (!prefixes.some((prefix) => raw === prefix || raw.startsWith(`${prefix}/`))) continue;
+      /* Fichiers (flux RSS, index de recherche, images…) : hors périmètre.
+         Liste fermée d'extensions : un slug contenant un point reste contrôlé. */
+      if (FILE_EXTENSION.test(raw)) continue;
+      const url = raw.endsWith('/') ? raw : `${raw}/`;
+      if (!existingUrls.has(url)) broken.add(`${file} → ${raw}`);
+    }
+  }
+
+  return [...broken];
+};
+
+/** Fait échouer le build dès qu'une page générée cite une page de blog absente. */
+export const assertNoBrokenGeneratedLinks = (pages, existingUrls, siteUrl) => {
+  const broken = findBrokenGeneratedLinks(pages, existingUrls, siteUrl);
+  if (broken.length === 0) return;
+  throw new Error(
+    `${broken.length} lien(s) de pages générées pointent vers une page de blog inexistante :\n    · ${broken.join('\n    · ')}`,
   );
 };

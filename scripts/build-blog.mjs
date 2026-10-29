@@ -49,7 +49,7 @@ import {
   urls,
 } from './blog/templates.mjs';
 import { robots, rss, searchIndex, sitemap, sitemapIndex } from './blog/feeds.mjs';
-import { assertNoBrokenInternalLinks } from './blog/links.mjs';
+import { assertNoBrokenGeneratedLinks, assertNoBrokenInternalLinks } from './blog/links.mjs';
 import {
   abs,
   articleNode,
@@ -304,6 +304,14 @@ const main = () => {
     );
   }
 
+  /* Les pages du blog sont entièrement produites par ce script : on repart
+     d'un dossier vide, sinon une page périmée (article retiré, ancien slug)
+     survivrait à un « npm run blog:build » isolé et passerait pour existante
+     aux yeux du garde-fou anti-lien-mort. */
+  for (const code of LANG_CODES) {
+    fs.rmSync(path.join(PATHS.dist, LANGS[code].base.replace(/^\/+/, '')), { recursive: true, force: true });
+  }
+
   const taxonomy = loadTaxonomy();
   const authors = loadAuthors();
   /* Registre des photographies, résolu une fois PAR LANGUE : les légendes et
@@ -329,6 +337,30 @@ const main = () => {
           decorate(post, { taxonomy, authors }),
         )
       : [];
+  }
+
+  /**
+   * Page d'auteur à citer pour un auteur, dans une langue donnée.
+   *
+   * Une page d'auteur n'existe que dans les langues où il publie. Ailleurs
+   * (crédit photo d'un auteur qui n'écrit qu'en français, sur la page anglaise
+   * des crédits), on renvoie vers sa page dans la première langue où elle
+   * existe, plutôt que vers une URL qui n'a jamais été générée.
+   */
+  const authorPagePath = (key, lang) => {
+    const publishes = (code) => byLang[code].some((post) => post.authorKey === key);
+    const target = publishes(lang) ? lang : LANG_CODES.find(publishes);
+    if (!target) {
+      throw new ContentError(
+        `auteur « ${key} » cité (photographe) mais sans aucun article publié : aucune page d'auteur à lier`,
+      );
+    }
+    return urls(target).author(slugify(authors[key]?.slug || key));
+  };
+  for (const lang of LANG_CODES) {
+    for (const photo of photosByLang[lang].values()) {
+      photo.photographer.path = authorPagePath(photo.photographer.key, lang);
+    }
   }
 
   /**
@@ -617,7 +649,12 @@ const main = () => {
           hrefFor: (n) => u.category(slug, n),
           alternates:
             page === 1
-              ? LANG_CODES.filter((code) => category.slug[code]).map((code) => ({
+              ? /* Seulement les langues où la catégorie a une page : un
+                   hreflang vers une page jamais générée est un lien mort. */
+                LANG_CODES.filter(
+                  (code) =>
+                    category.slug[code] && byLang[code].some((p) => p.categoryKey === category.key),
+                ).map((code) => ({
                   lang: code,
                   path: urls(code).category(category.slug[code]),
                 }))
@@ -872,7 +909,8 @@ const main = () => {
          toujours la même personne. */
       const creditPersons = unique(creditPhotos.map((photo) => photo.photographer.key)).map(
         (key) =>
-          personByAuthor.get(key) || personNode(localizeAuthor(authors[key], key, lang)),
+          personByAuthor.get(key) ||
+          personNode({ ...localizeAuthor(authors[key], key, lang), path: authorPagePath(key, lang) }),
       );
       const url = u.photoCredits();
       writePage(
@@ -950,6 +988,29 @@ const main = () => {
   /* — Garde-fou : aucun lien interne mort — */
   assertNoBrokenInternalLinks(byLang, allUrls);
   if (PREVIEW) assertNoBrokenInternalLinks(draftsByLang, allUrls);
+
+  /* Pages générées (auteurs, crédits, index…) : chaque lien de blog, et chaque
+     URL de blog citée dans le JSON-LD, doit mener à une page réellement écrite. */
+  {
+    const pages = [];
+    const existing = new Set();
+    const walk = (dir) => {
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) walk(full);
+        else if (entry.name === 'index.html') {
+          const url = `/${path.relative(PATHS.dist, path.dirname(full)).split(path.sep).join('/')}/`;
+          existing.add(url);
+          pages.push({ file: url, html: fs.readFileSync(full, 'utf8') });
+        }
+      }
+    };
+    for (const code of LANG_CODES) {
+      const dir = path.join(PATHS.dist, LANGS[code].base.replace(/^\/+/, ''));
+      if (fs.existsSync(dir)) walk(dir);
+    }
+    assertNoBrokenGeneratedLinks(pages, existing, SITE_URL);
+  }
 
   /* — Sitemaps + robots — */
   const today = isoDay(new Date());
