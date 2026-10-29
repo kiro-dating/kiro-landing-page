@@ -85,6 +85,16 @@ describe('SEO de la page d’accueil', () => {
     expect(seo.description.length).toBeLessThanOrEqual(160);
   });
 
+  /* Décision de positionnement du 2026-10-29 (Pierre) : le titre porte la
+     marque et la promesse « en personne », sans ville, pour rester valable à
+     l'international ; le signal local (Montréal) vit dans la description.
+     Changer ce choix = décision de marque, pas une retouche SEO. */
+  it('garde un titre international et le signal local dans la description', () => {
+    expect(seo.title).toMatch(/^Kiro\b/);
+    expect(seo.title).not.toMatch(/montr[ée]al/i);
+    expect(seo.description).toMatch(/Montréal/);
+  });
+
   it('ne promet aucune fonctionnalité indisponible', () => {
     const text = `${seo.title}\n${seo.description}\n${indexHtml}`;
     expect(offenses(text, 'meta')).toEqual([]);
